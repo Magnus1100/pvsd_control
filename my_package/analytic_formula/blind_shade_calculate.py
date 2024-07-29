@@ -1,15 +1,17 @@
 import math as mt
-from analytic_formula import epw_data_file as ed
-from analytic_formula import vis_data as vd
+from my_package.analytic_formula import epw_data_file as ed
+from my_package.analytic_formula import vis_data as vd
 
 
 class pvShadeBlind:
-    def __init__(self, sd_width, sd_length, pv_panel_area, pv_efficiency, window_azimuth):
+    def __init__(self, sd_width, sd_length, pv_panel_area, pv_efficiency, window_azimuth, slat_count, window_height):
         self.sd_width = sd_width
         self.sd_length = sd_length
         self.panel_area = pv_panel_area
         self.pv_efficiency = pv_efficiency
         self.window_azimuth = window_azimuth
+        self.slat_count = slat_count
+        self.window_height = window_height
 
 
 class ShadeCalculate:

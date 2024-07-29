@@ -1,6 +1,6 @@
 import math
 import polars as pl
-from analytic_formula import epw_data_file as edf
+from my_package.analytic_formula import epw_data_file as edf
 
 
 class pvgCalculator:

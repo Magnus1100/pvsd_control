@@ -97,11 +97,10 @@ class calculateED:
 
         # 计算坐标（相对坐标）
         x_axis = mt.sin(sd_angle)
-        if sd_location >= 0:
-            z_axis = hw - l_slat * (1 - mt.cos(sd_angle)) + sd_location * (sd_index + 1)  # loc0.01 第3块板 0.04
-        else:
-            z_axis = hw - l_slat * (1 - mt.cos(sd_angle)) + sd_location * (
-                    ED_slat_count - sd_index - 1)  # loc-0.01 第15块板 -0.01
+        if sd_location >= 0:  # loc0.01 第3块板 0.04
+            z_axis = hw - l_slat * (1 - mt.cos(sd_angle)) + sd_location * (sd_index + 1)
+        else:  # loc-0.01 第15块板 -0.01
+            z_axis = hw - l_slat * (1 - mt.cos(sd_angle)) + sd_location * (ED_slat_count - sd_index - 1)
 
         return x_axis, z_axis
 
@@ -271,7 +270,7 @@ class shade_pygmo:
         single_hoy = 12
 
         # 导入数据集
-        epw_data_file_path = './source/data/epw_data.csv'
+        epw_data_file_path = 'source/dataset/epw_data.csv'
         epw_dataset = pd.read_csv(epw_data_file_path, index_col=0)
         # ===== 输入值 =====
 
@@ -324,7 +323,7 @@ class shade_pygmo:
         # ===== 输入值 =====
 
         # 导入数据集
-        epw_data_file_path = './source/data/epw_data.csv'
+        epw_data_file_path = 'source/dataset/epw_data.csv'
         epw_dataset = pd.read_csv(epw_data_file_path, index_col=0)
 
         # 并行优化多个HOY

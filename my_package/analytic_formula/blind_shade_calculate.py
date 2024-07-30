@@ -1,6 +1,6 @@
 import math as mt
+import pandas as pd
 from my_package.analytic_formula import epw_data_file as ed
-from my_package.analytic_formula import vis_data as vd
 
 
 class pvShadeBlind:
@@ -15,6 +15,7 @@ class pvShadeBlind:
 
 
 class ShadeCalculate:
+    # 遮挡计算&视野获取
     @staticmethod
     def GetAngle(hoy, name):
         angle = ed.epw_dataset.loc[int(hoy), name]
@@ -23,8 +24,10 @@ class ShadeCalculate:
 
     @staticmethod
     def GetVis(sd_angle, sd_location):
-        vis = vd.vis_dataset[(vd.vis_dataset['sd_angle'] == sd_angle) &
-                             (vd.vis_dataset['sd_location'] == sd_location)]['vis'].values
+        vis_data_file_path = r'./source/dataset/vis_data.csv'
+        vis_data = pd.read_csv(vis_data_file_path)
+        vis = vis_data[(vis_data['sd_angle'] == sd_angle) &
+                             (vis_data['sd_location'] == sd_location)]['vis'].values
         return vis
 
     @staticmethod

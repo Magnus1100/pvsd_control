@@ -13,7 +13,11 @@ from analytic_formula import pvg_calculate as pc
 
 # 声明 pvsd 实例
 pvsd_instance = bsc.pvShadeBlind(0.15, 2.1, 20, 0.7, 0,
-                                 16, 2.4)
+                                 0.6,16, 2.4)
+epw_data_file_path = 'source/dataset/epw_data.csv'
+vis_data = pd.read_csv('source/dataset/vis_data.csv')
+sDGP = np.loadtxt('source/data/sDGP.txt')
+sUDI = np.loadtxt('source/data/sUDI.txt')
 
 
 class hoyEditor:
@@ -85,6 +89,11 @@ def visualizeFitness(results, hoy_list):
     plt.title('Average Fitness Values Over Generations for Different HOYs')
     plt.legend()
     plt.show()
+
+
+def normalizeValue(value, min_value, max_value):
+    normalized_value = (value - min_value) / (max_value - min_value)
+    return normalized_value
 
 
 class calculateED:
@@ -167,35 +176,38 @@ class MyProblem:
         - weighted_vals : 加权得到的优化值
         """
         # 1，2，sudi/sdgp 机器学习模型预测
-        val_sdgp = model_sdgp.predict(predict_parameters)[0]
+        pred_sdgp = model_sdgp.predict(predict_parameters)[0]
+        val_sdgp = normalizeValue(pred_sdgp, min(sDGP)/100, max(sDGP)/100)  # 标准化sDGP(sDGP最小值为76，需要标准化)
+
         val_sudi = model_sudi.predict(predict_parameters)[0]
-        print(val_sdgp, val_sudi)
+        print('val_sdgp:%.2f\nval_sudi:%.2f' % (val_sdgp, val_sudi))
 
         # 3，数据库调用查询vis
         val_vis = bsc.ShadeCalculate.GetVis(sd_angle_degree, sd_location)
         val_vis = float(val_vis[0])
-        print(val_vis)
+        print('val_vis:%.2f' % val_vis)
 
         # 4，调用公式计算pv发电量
-        shade_percent = bsc.ShadeCalculate.AllShadePercent(pvsd.sd_length, pvsd.sd_width, sd_interval,
-                                                           self.ver_angle, self.hor_angle, sd_angle)
+        shade_percent = bsc.ShadeCalculate.AllShadePercent(pvsd.sd_length, pvsd.sd_width, sd_interval, self.ver_angle, self.hor_angle, sd_angle)
         shade_rad = pc.pvgCalculator.calculateIrradiance(pvsd.window_azimuth, sd_angle, 0.6, self.hoy)
         pvg_value = pc.pvgCalculator.calculateHoyPvGeneration(shade_rad, pvsd.panel_area, pvsd.pv_efficiency)
         val_shade = pvg_value * shade_percent / self.max_pvg
-        print(val_shade)
+        print('val_shade:%.2f' % val_shade)
 
         # 5，加入形变参数
         ED_max = calculateED.GetPvsdED(0, 0.15, 90, -0.15)
         if self.previous_best_angle is None or self.previous_best_loc is None:
             ED_moment = calculateED.GetPvsdED(0, 0.15, sd_angle_degree, sd_location)
         else:
-            ED_moment = calculateED.GetPvsdED(self.previous_best_angle, sd_angle_degree, self.previous_best_loc, sd_location)
-
-        ED_percent = ED_moment / ED_max
+            ED_moment = calculateED.GetPvsdED(self.previous_best_angle, sd_angle_degree, self.previous_best_loc,
+                                              sd_location)
+        ED_val = ED_moment / ED_max
+        print('ED_percent:%.2f' % ED_val)
+        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>')
 
         # final value - 加权优化值
         weighted_vals = - (val_sdgp * self.my_weights[0] + val_sudi * self.my_weights[1] + val_vis * self.my_weights[2]
-                           + val_shade * self.my_weights[3] + ED_percent * 0.1)  # 避免ED对fitness产生较大影响
+                           + val_shade * self.my_weights[3] + ED_val * 0.1)  # 避免ED对fitness产生较大影响
 
         # 保存每一步的适应度
         self.fitness_history.append(- weighted_vals)
@@ -224,7 +236,7 @@ class MyProblem:
 
 class shade_pygmo:
     @staticmethod
-    def optimize_hoy(hoy, epw_dataset, my_weights, gen_size=2, pop_size=2):
+    def optimize_hoy(hoy, epw_dataset, my_weights, gen_size=10, pop_size=10):
         my_ver_angle = bsc.ShadeCalculate.GetAngle(hoy, 'Ver_Angle')
         my_hor_angle = bsc.ShadeCalculate.GetAngle(hoy, 'Hor_Angle')
         my_azimuth = epw_dataset.loc[hoy, 'Azimuth']
@@ -261,16 +273,11 @@ class shade_pygmo:
         return hoy, best_fitness, time_sd_angle, time_sd_site, all_fitness
 
     @staticmethod
-    def main_single(optimize_weight):
+    def main_single(optimize_weight, single_hoy):
         # ===== 计时器 =====
         start_time = time.time()
 
-        # ===== 输入值 =====
-        # 优化时间
-        single_hoy = 12
-
         # 导入数据集
-        epw_data_file_path = 'source/dataset/epw_data.csv'
         epw_dataset = pd.read_csv(epw_data_file_path, index_col=0)
         # ===== 输入值 =====
 
@@ -307,23 +314,12 @@ class shade_pygmo:
         # ===== 输出最优个体 =====
 
     @staticmethod
-    def main_parallel(optimize_weight):
+    def main_parallel(optimize_weight, hoy_list):
         # ===== 计时器 =====
         start_time = time.time()
         # ===== 计时器 =====
 
-        # 日期输入值
-        start_date = "6-21"
-        end_date = "6-21"
-        skip_weekdays = False
-        start_hour = 8
-        end_hour = 17
-        hoy_list = hoyEditor.generateHoyList(start_date, end_date, skip_weekdays, start_hour, end_hour)  # 需要优化的HOY列表
-        print(hoy_list)
-        # ===== 输入值 =====
-
         # 导入数据集
-        epw_data_file_path = 'source/dataset/epw_data.csv'
         epw_dataset = pd.read_csv(epw_data_file_path, index_col=0)
 
         # 并行优化多个HOY
@@ -361,39 +357,28 @@ class shade_pygmo:
         print("Schedule DataFrame:")
         print(schedule_df)
 
-        # schedule_df = pd.DataFrame({'hoy': hoy in sorted_results})
-        # epw_dataset['sd_angle'] = sd_angle in sorted_results
-        # epw_dataset['sd_site'] = sd_site in sorted_results
-        # epw_dataset['best_fitness'] = best_fitness in sorted_results
-        #
-        # print(schedule_df)
-
 
 def main():
     # ===== 输入值 =====
     # 权重输入值
-    weight1 = 0.1  # 眩光权重[0,1]
+    weight1 = 0.4  # 眩光权重[0,1]
     weight2 = 0.4  # 采光权重[0,1]
-    weight3 = 0.4  # 视野权重[0,1]
+    weight3 = 0.1  # 视野权重[0,1]
     weight4 = 1 - (weight1 + weight2 + weight3)  # 光伏发电量权重[0,1]
     my_weights = [weight1, weight2, weight3, weight4]  # 权重集合
 
-    # schedule优化
-    shade_pygmo.main_parallel(my_weights)
+    # 生成 hoy 列表
+    start_date = "6-21"  # 夏至日
+    end_date = "6-21"
+    skip_weekdays = False
+    start_hour = 8
+    end_hour = 17
+    main_hoy = hoyEditor.generateHoyList(start_date, end_date, skip_weekdays, start_hour, end_hour)  # 需要优化的HOY列表
 
-    # # 选择优化方式
-    # print("请选择要运行的优化方式:")
-    # print("1. 单个优化")
-    # print("2. 并行优化")
-    #
-    # choice = input("请输入选项数字 (1 or 2): ")
-    #
-    # if choice == '1':
-    #     shade_pygmo.main_single(my_weights)
-    # elif choice == '2':
-    #     shade_pygmo.main_parallel(my_weights)
-    # else:
-    #     print("无效的选项，请输入 '1' 或 '2'.")
+    if isinstance(main_hoy, list):
+        shade_pygmo.main_parallel(my_weights, main_hoy)
+    else:
+        shade_pygmo.main_single(my_weights, main_hoy)
 
 
 if __name__ == "__main__":

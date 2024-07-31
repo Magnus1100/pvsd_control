@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import polars as pl
 
 # 测试路径
 # epw_data_file_path = './source/data/epw_data.csv'
@@ -71,3 +72,22 @@ import numpy as np
 #
 # data_collector = pd.concat([data_collector, new_row], ignore_index=True)
 # print(data_collector)
+# 示例数据
+# schedule = {
+#     1: {'sd_angle': 30, 'sd_site': 'SiteA', 'best_fitness': 0.95},
+#     2: {'sd_angle': 45, 'sd_site': 'SiteB', 'best_fitness': 0.92},
+#     3: {'sd_angle': 60, 'sd_site': 'SiteC', 'best_fitness': 0.85},
+# }
+# # 提取 HOY 列
+# hoy_values = list(schedule.keys())
+# # 创建 DataFrame
+# schedule_df = pl.DataFrame({'HOY': hoy_values})
+# schedule_df = schedule_df.with_columns([
+#     pl.Series('sd_angle', [entry['sd_angle'] for entry in schedule.values()]),
+#     pl.Series('sd_site', [entry['sd_site'] for entry in schedule.values()]),
+#     pl.Series('best_fitness', [entry['best_fitness'] for entry in schedule.values()])
+# ])
+#
+# print("Schedule DataFrame:")
+# print(schedule_df)
+

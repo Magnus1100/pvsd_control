@@ -4,6 +4,7 @@ import math as mt
 import numpy as np
 import pandas as pd
 import pygmo as pg
+import polars as pl
 import matplotlib.pyplot as plt
 
 from datetime import datetime, timedelta
@@ -375,6 +376,10 @@ class shade_pygmo:
         # 汇总所有HOY的最优角度，生成schedule
         schedule = {hoy: (sd_angle, sd_site, best_fitness[0]) for hoy, best_fitness, sd_angle, sd_site, all_fitness in
                     sorted_results}
+        hoy_list = list(schedule.keys())
+        angles = [values[0] for values in schedule.values()]
+        sites = [values[1] for values in schedule.values()]
+        best_fitness = [values[2] for values in schedule.values()]
 
         # ===== 计时器 =====
         end_time = time.time()
@@ -386,8 +391,13 @@ class shade_pygmo:
         visualizeFitness(results, hoy_list)
 
         # 创建 DataFrame
-        schedule_df = pd.DataFrame.from_dict(schedule, orient='index', columns=['sd_angle', 'sd_site', 'best_fitness'])
-        schedule_df.index.name = 'HOY'
+        # 使用字典创建 DataFrame
+        schedule_df = pl.DataFrame({
+            'HOY': hoy_list,
+            'angle': angles,
+            'site': sites,
+            'best_fitness': best_fitness
+        })
 
         print("Schedule DataFrame:")
         print(schedule_df)

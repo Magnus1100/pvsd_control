@@ -208,7 +208,7 @@ class MyProblem:
             ED_moment = calculateED.GetPvsdED(self.previous_best_angle, sd_angle_degree, self.previous_best_loc,
                                               sd_location)
         normalized_ED = ED_moment / ED_max
-        val_ED = normalized_ED * 0.1  # 权重设置为0.1
+        val_ED = normalized_ED * 0  # 权重设置为0.1
 
         # final value - 加权优化值
         val_all = val_sdgp + val_sudi + val_vis + val_pvg + val_ED
@@ -392,12 +392,12 @@ class shade_pygmo:
 
         # 创建 DataFrame
         # 使用字典创建 DataFrame
-        schedule_df = pl.DataFrame({
+        schedule_df = pd.DataFrame({
             'HOY': hoy_list,
             'angle': angles,
             'site': sites,
-            'best_fitness': best_fitness
-        })
+            'best_fitness': best_fitness,
+        }).reset_index(drop=True)
 
         print("Schedule DataFrame:")
         print(schedule_df)
@@ -406,15 +406,15 @@ class shade_pygmo:
 def main():
     # ===== 输入值 =====
     # 权重输入值
-    weight_dgp = 0  # 眩光权重[0,1]
+    weight_dgp = 1  # 眩光权重[0,1]
     weight_udi = 0  # 采光权重[0,1]
     weight_vis = 0  # 视野权重[0,1]
-    weight_pvg = 1  # 光伏发电量权重[0,1]
+    weight_pvg = 0  # 光伏发电量权重[0,1]
     my_weights = [weight_dgp, weight_udi, weight_vis, weight_pvg]  # 权重集合
 
     # 生成 hoy 列表
-    start_date = "6-21"  # 夏至日
-    end_date = "6-21"
+    start_date = "9-21"
+    end_date = "9-21"
     skip_weekdays = False
     start_hour = 8
     end_hour = 17

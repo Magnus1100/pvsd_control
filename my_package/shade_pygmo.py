@@ -4,7 +4,6 @@ import math as mt
 import numpy as np
 import pandas as pd
 import pygmo as pg
-import polars as pl
 import matplotlib.pyplot as plt
 
 from datetime import datetime, timedelta
@@ -12,7 +11,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from analytic_formula import blind_shade_calculate as bsc
 from analytic_formula import pvg_calculate as pc
 
-# 声明 pvsd 实例
+# 声明实例/全局变量
 pvsd_instance = bsc.pvShadeBlind(0.15, 2.1, 20, 0.7, 0,
                                  0.6, 16, 2.4)
 epw_data_file_path = 'source/dataset/epw_data.csv'
@@ -23,17 +22,15 @@ sUDI = np.loadtxt('source/data/sUDI.txt')
 
 class hoyEditor:
     @staticmethod
-    def generateHoyList(start_date_str, end_date_str, exclude_weekends=False, start_hour=0, end_hour=23):
+    def generateHoyList(start_date_str, end_date_str, exclude_weekends=False, start_hour=8, end_hour=17):
         """
         根据输入的日期范围和条件生成 HOY 列表。
-
         Args:
             start_date_str (str): 开始日期，格式为 'MM-DD'。
             end_date_str (str): 结束日期，格式为 'MM-DD'。
             exclude_weekends (bool): 是否排除周末，默认为 False。
             start_hour (int): 每天的开始小时，默认为 0。
             end_hour (int): 每天的结束小时，默认为 23。
-
         Returns:
             list: 对应的 HOY 列表。
         """
@@ -151,9 +148,14 @@ class MyProblem:
         self.my_weights = my_weights
         self.max_pvg = max_pvg
         self.fitness_history = []  # 保存每一步的适应度
-        # self.data_collector = pd.DataFrame(
-        #     columns=['sdgp:', 'sdgp_valued:', 'sUDI:', 'sUDI_valued:', 'vis', 'vis_valued:', 'pvg', 'pvg_valued:', 'ED',
-        #              'ED_valued:'])
+        self.data_collector = pd.DataFrame(
+            columns=['generation', 'individual_index', 'sd_angle', 'sd_location',
+                     'sDGP', 'sUDI', 'vis', 'pvg', 'ED',
+                     'sDGP_valued', 'sUDI_valued', 'vis_valued', 'pvg_valued', 'ED_valued'])
+
+        # 初始化当前代和个体索引
+        self.current_generation = None
+        self.current_individual = None
 
     def fitness(self, x):
         sd_angle, sd_location = x
@@ -218,32 +220,25 @@ class MyProblem:
         self.fitness_history.append(- val_optimize)
 
         # 保存每一步值，以便分析
-        # self.data_collector = self.data_collector.append({
-        #     'sdgp:': pred_sdgp,
-        #     'sdgp_valued:': val_sdgp,
-        #     'sUDI:': pred_sudi,
-        #     'sUDI_valued:': val_sudi,
-        #     'vis': vis,
-        #     'vis_valued:': val_vis,
-        #     'pvg': pvg_value,
-        #     'pvg_valued:': val_pvg,
-        #     'ED': ED_moment,
-        #     'ED_valued:': val_ED
-        # }, ignore_index=True)
+        step_data = pd.DataFrame({
+            'generation': [self.current_generation],
+            'individual_index': [self.current_individual],
+            'sd_angle': [sd_angle_degree],
+            'sd_location': [sd_location],
+            'sdgp:': [pred_sdgp],
+            'sUDI:': [pred_sudi],
+            'vis': [vis],
+            'pvg': [pvg_value],
+            'ED': [ED_moment],
+            'sdgp_valued:': [val_sdgp],
+            'sUDI_valued:': [val_sudi],
+            'vis_valued:': [val_vis],
+            'pvg_valued:': [val_pvg],
+            'ED_valued:': [val_ED]
+        })
+        self.data_collector = pd.concat([self.data_collector, step_data], ignore_index=True)
 
         # ========== 打印结果 ==========
-        print('sdgp: %.2f' % pred_sdgp)
-        print('sudi: %.2f' % pred_sudi)
-        print('vis: %.2f' % vis)
-        print('pvg: %.2f' % pvg_value)
-        print('ED: %.2f' % ED_moment)
-        print('---------------------------')
-        print('val_sdgp: %.2f' % val_sdgp)
-        print('val_sudi: %.2f' % val_sudi)
-        print('val_vis: %.2f' % val_vis)
-        print('val_pvg: %.2f' % val_pvg)
-        print('val_ED: %.2f' % val_ED)
-        print('----------------------------')
         print('sd_angle: ' + str(sd_angle_degree))
         print('sd_location: ' + str(sd_location))
         print('weighted_vals: %2f' % abs(val_optimize))
@@ -263,6 +258,10 @@ class MyProblem:
     def update_previous_best(self, angle, loc):
         self.previous_best_angle = angle
         self.previous_best_loc = loc
+
+    def update_generation_info(self, generation, individual_index):
+        self.current_generation = generation
+        self.current_individual = individual_index
 
 
 class shade_pygmo:
@@ -290,13 +289,19 @@ class shade_pygmo:
         for gen in range(gen_size):
             pop = algo.evolve(pop)
             current_gen_fitness = -pop.get_f()  # 获取当前代所有个体的适应度值
-            all_fitness.append(current_gen_fitness.copy())
 
+            # 记录每代每个个体的索引信息
+            for idx, individual in enumerate(pop.get_x()):
+                problem_instance.update_generation_info(gen, idx)  # 更新当前代和个体索引
+                prob.evaluate(individual)  # 评估个体的适应度
+
+            all_fitness.append(current_gen_fitness.copy())
             # 获取当前代最优个体
             best_idx = pop.best_idx()
             best_angle, best_loc = pop.get_x()[best_idx]
             problem_instance.update_previous_best(best_angle, best_loc)  # 更新上一代最优个体
-            # all_data_collectors = pd.concat([all_data_collectors, problem_instance.data_collector], ignore_index=True)
+
+
 
         # 获取最优解的目标函数值和决策变量值
         best_fitness = pop.get_f()[pop.best_idx()]
@@ -365,6 +370,7 @@ class shade_pygmo:
 
         # 按照 hoy 字段从小到大排序
         sorted_results = sorted(results, key=lambda x: x[0])
+
         # 输出结果
         for hoy, best_fitness, sd_angle, sd_site, all_fitness in sorted_results:
             print(f"Hoy: {hoy}")
@@ -406,19 +412,21 @@ class shade_pygmo:
 def main():
     # ===== 输入值 =====
     # 权重输入值
-    weight_dgp = 1  # 眩光权重[0,1]
-    weight_udi = 0  # 采光权重[0,1]
-    weight_vis = 0  # 视野权重[0,1]
-    weight_pvg = 0  # 光伏发电量权重[0,1]
+    weight_dgp = 0.25  # 眩光权重[0,1]
+    weight_udi = 0.25  # 采光权重[0,1]
+    weight_vis = 0.25  # 视野权重[0,1]
+    weight_pvg = 0.25  # 光伏发电量权重[0,1]
     my_weights = [weight_dgp, weight_udi, weight_vis, weight_pvg]  # 权重集合
 
     # 生成 hoy 列表
-    start_date = "9-21"
-    end_date = "9-21"
-    skip_weekdays = False
-    start_hour = 8
-    end_hour = 17
-    main_hoy = hoyEditor.generateHoyList(start_date, end_date, skip_weekdays, start_hour, end_hour)  # 需要优化的HOY列表
+    spring_date, summer_date, autumn_date, winter_date = "3-21", "6-21", "9-21", "12-21"  # 典型日期
+
+    springDay_hoy = hoyEditor.generateHoyList(spring_date, spring_date)  # 春分
+    summerDay_hoy = hoyEditor.generateHoyList(summer_date, summer_date)  # 夏至
+    autumnDay_hoy = hoyEditor.generateHoyList(autumn_date, autumn_date)  # 秋分
+    winterDay_hoy = hoyEditor.generateHoyList(winter_date, winter_date)  # 冬至
+
+    main_hoy = springDay_hoy + summerDay_hoy + autumnDay_hoy + winterDay_hoy  # 需要优化的HOY列表
 
     if isinstance(main_hoy, list):
         shade_pygmo.main_parallel(my_weights, main_hoy)

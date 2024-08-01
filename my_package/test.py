@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 import polars as pl
+import shade_pygmo as sp
+from scipy.spatial import distance
 
 # 测试路径
 # epw_data_file_path = './source/data/epw_data.csv'
@@ -91,3 +93,54 @@ import polars as pl
 # print("Schedule DataFrame:")
 # print(schedule_df)
 
+# 测试hoy结合
+# spring_date, summer_date, autumn_date, winter_date = "3-21", "6-21", "9-21", "12-21"  # 典型日期
+#
+# springDay_hoy = sp.hoyEditor.generateHoyList(spring_date, spring_date, False)  # 春分
+# summerDay_hoy = sp.hoyEditor.generateHoyList(summer_date, summer_date, False)  # 夏至
+# autumnDay_hoy = sp.hoyEditor.generateHoyList(autumn_date, autumn_date, False)  # 秋分
+# winterDay_hoy = sp.hoyEditor.generateHoyList(winter_date, winter_date, False)  # 冬至
+# print(springDay_hoy, summerDay_hoy, autumnDay_hoy, winterDay_hoy)
+#
+# main_hoy = springDay_hoy + summerDay_hoy + autumnDay_hoy + winterDay_hoy  # 需要优化的HOY列表
+# print(main_hoy)
+
+# 测试欧式距离
+# a = sp.calculateED.GetAxis(0, 0.12, 0, 16)
+# print(a)
+# b = sp.calculateED.GetED(0, 1, 0, 2)
+# print(b)
+# c = distance.euclidean((0, 0, 0), (0, 1, 2))
+# print(c)
+
+# df = pd.DataFrame(columns=['a', 'b', 'c'])
+# a = pd.DataFrame({
+#     'b': [2],
+#     'c': [3]
+# })
+# new_df = pd.concat([df, a], ignore_index=True)
+# new_df2 = pd.concat([df, a], ignore_index=True)
+# new_df3 = pd.concat([df, a], ignore_index=True)
+# new_df4 = pd.concat([df, a], ignore_index=True)
+# print(new_df4)
+
+df = pd.DataFrame(
+    columns=['sdgp:', 'sdgp_valued:', 'sUDI:', 'sUDI_valued:', 'vis', 'vis_valued:', 'pvg', 'pvg_valued:', 'ED',
+             'ED_valued:'])
+
+step_data = pd.DataFrame({
+    'sdgp': [1],
+    'sUDI': [1],
+    'vis': [1],
+    'pvg': [1],
+    'ED': [1],
+    'sdgp_valued': [1],
+    'sUDI_valued': [1],
+    'vis_valued': [1],
+    'pvg_valued': [1],
+    'ED_valued': [1]
+})
+
+df = pd.concat([df,step_data], ignore_index=True)
+df.to_csv('test.csv')
+print(df)

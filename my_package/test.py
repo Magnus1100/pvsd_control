@@ -3,6 +3,8 @@ import numpy as np
 import polars as pl
 import shade_pygmo as sp
 from scipy.spatial import distance
+import pygmo as pg
+
 
 # 测试路径
 # epw_data_file_path = './source/data/epw_data.csv'
@@ -124,23 +126,88 @@ from scipy.spatial import distance
 # new_df4 = pd.concat([df, a], ignore_index=True)
 # print(new_df4)
 
-df = pd.DataFrame(
-    columns=['sdgp:', 'sdgp_valued:', 'sUDI:', 'sUDI_valued:', 'vis', 'vis_valued:', 'pvg', 'pvg_valued:', 'ED',
-             'ED_valued:'])
+# df = pd.DataFrame(
+#     columns=['sdgp:', 'sdgp_valued:', 'sUDI:', 'sUDI_valued:', 'vis', 'vis_valued:', 'pvg', 'pvg_valued:', 'ED',
+#              'ED_valued:'])
+#
+# step_data = pd.DataFrame({
+#     'sdgp': [1],
+#     'sUDI': [1],
+#     'vis': [1],
+#     'pvg': [1],
+#     'ED': [1],
+#     'sdgp_valued': [1],
+#     'sUDI_valued': [1],
+#     'vis_valued': [1],
+#     'pvg_valued': [1],
+#     'ED_valued': [1]
+# })
+#
+# df = pd.concat([df,step_data], ignore_index=True)
+# df.to_csv('test.csv')
+# print(df)
+#
+# import pandas as pd
+#
+# # 创建两个示例 DataFrame
+# df1 = pd.DataFrame({'A': [1, 2], 'B': [3, 4]})
+# df2 = pd.DataFrame({'C': [5, 6], 'D': [7, 8]})
+#
+# # 使用 assign 方法
+# df1 = df1.assign(C=df2['C'], D=df2['D'])
+#
+# print(df1)
+# a = pg.problem
 
-step_data = pd.DataFrame({
-    'sdgp': [1],
-    'sUDI': [1],
-    'vis': [1],
-    'pvg': [1],
-    'ED': [1],
-    'sdgp_valued': [1],
-    'sUDI_valued': [1],
-    'vis_valued': [1],
-    'pvg_valued': [1],
-    'ED_valued': [1]
-})
+# a = sp.DataCollector()
+#
+# # 添加数据条目
+# sp.data_collector.add_entry({
+#     'generation': 1,
+#     'individual_index': 1,
+#     'sd_angle': 30,
+#     'sd_location': 'location1',
+#     'sDGP': 0.5,
+#     'sUDI': 0.7,
+#     'vis': 0.9,
+#     'pvg': 0.3,
+#     'ED': 0.6,
+#     'sDGP_valued': 0.8,
+#     'sUDI_valued': 0.9,
+#     'vis_valued': 1.0,
+#     'pvg_valued': 0.4,
+#     'ED_valued': 0.7
+# })
 
-df = pd.concat([df,step_data], ignore_index=True)
-df.to_csv('test.csv')
-print(df)
+# class DataCollector:
+#     def __init__(self):
+#         self.columns = ['generation', 'individual_index', 'sd_angle', 'sd_location',
+#                         'sDGP', 'sUDI', 'vis', 'pvg', 'ED',
+#                         'sDGP_valued', 'sUDI_valued', 'vis_valued', 'pvg_valued', 'ED_valued']
+#         self.data = []
+#
+#     def add_entry(self, entry):
+#         self.data.append(entry)
+#
+#     def to_dataframe(self):
+#         return pd.DataFrame(self.data, columns=self.columns)
+#
+#     def to_csv(self, filename):
+#         df = self.to_dataframe()
+#         df.to_csv(filename, index=False)
+#         print(f"Data exported to {filename}")
+#
+# # 使用示例
+# # data_collector = DataCollector()
+#
+# # 添加数据条目
+# data_collector.add_entry([
+#     1, 1, 30, 'location1', 0.5, 0.7, 0.9, 0.3, 0.6, 0.8, 0.9, 1.0, 0.4, 0.7
+# ])
+# data_collector.add_entry([
+#     1, 2, 45, 'location2', 0.6, 0.8, 0.95, 0.35, 0.65, 0.85, 0.95, 1.05, 0.45, 0.75
+# ])
+#
+# print(data_collector)
+# # 导出到 Excel 文件
+# data_collector.to_csv('output.csv')

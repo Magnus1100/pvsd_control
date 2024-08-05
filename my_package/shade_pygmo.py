@@ -148,14 +148,10 @@ class MyProblem:
         self.my_weights = my_weights
         self.max_pvg = max_pvg
         self.fitness_history = []  # 保存每一步的适应度
-        self.data_collector = pd.DataFrame(
-            columns=['generation', 'individual_index', 'sd_angle', 'sd_location',
-                     'sDGP', 'sUDI', 'vis', 'pvg', 'ED',
-                     'sDGP_valued', 'sUDI_valued', 'vis_valued', 'pvg_valued', 'ED_valued'])
+        self.data_collector = []  # 保存每一步的数据条目
 
-        # 初始化当前代和个体索引
-        self.current_generation = None
-        self.current_individual = None
+        self.current_generation = 0  # 当前代数
+        self.population_size = 0  # 当前个体数
 
     def fitness(self, x):
         sd_angle, sd_location = x
@@ -219,24 +215,23 @@ class MyProblem:
         # 保存每一步的适应度
         self.fitness_history.append(- val_optimize)
 
-        # 保存每一步值，以便分析
-        step_data = pd.DataFrame({
-            'generation': [self.current_generation],
-            'individual_index': [self.current_individual],
-            'sd_angle': [sd_angle_degree],
-            'sd_location': [sd_location],
-            'sdgp:': [pred_sdgp],
-            'sUDI:': [pred_sudi],
-            'vis': [vis],
-            'pvg': [pvg_value],
-            'ED': [ED_moment],
-            'sdgp_valued:': [val_sdgp],
-            'sUDI_valued:': [val_sudi],
-            'vis_valued:': [val_vis],
-            'pvg_valued:': [val_pvg],
-            'ED_valued:': [val_ED]
+        # 保存每一代每个个体数据
+        self.data_collector.append({
+            'generation': self.current_generation,
+            'population_size': self.population_size,
+            'sd_angle': sd_angle_degree,
+            'sd_location': sd_location,
+            'sdgp': pred_sdgp,
+            'sudi': pred_sudi,
+            'vis': vis,
+            'pvg': pvg_value,
+            'ED': ED_moment,
+            'val_sdgp': val_sdgp,
+            'val_sudi': val_sudi,
+            'val_vis': val_vis,
+            'val_pvg': val_pvg,
+            'val_ED': val_ED
         })
-        self.data_collector = pd.concat([self.data_collector, step_data], ignore_index=True)
 
         # ========== 打印结果 ==========
         print('sd_angle: ' + str(sd_angle_degree))
@@ -259,23 +254,22 @@ class MyProblem:
         self.previous_best_angle = angle
         self.previous_best_loc = loc
 
-    def update_generation_info(self, generation, individual_index):
+    # 更新代数和个体数
+    def update_generation_and_population(self, generation, population_size):
         self.current_generation = generation
-        self.current_individual = individual_index
+        self.population_size = population_size
 
 
 class shade_pygmo:
     @staticmethod
-    def optimize_hoy(hoy, epw_dataset, my_weights, gen_size=10, pop_size=10):
+    def optimize_hoy(hoy, epw_dataset, my_weights, gen_size=2, pop_size=2):
         my_ver_angle = bsc.ShadeCalculate.GetAngle(hoy, 'Ver_Angle')
         my_hor_angle = bsc.ShadeCalculate.GetAngle(hoy, 'Hor_Angle')
         my_azimuth = epw_dataset.loc[hoy, 'Azimuth']
         my_altitude = epw_dataset.loc[hoy, 'Altitude']
         my_max_pvg = epw_dataset.loc[hoy, 'max_pv_generation']
 
-        # 创建一个空的 DataFrame，用于存储所有 HOY 的 data_collector 数据
-        # all_data_collectors = pd.DataFrame()
-
+        # 声明优化问题实例
         problem_instance = MyProblem(hoy, my_azimuth, my_altitude, my_ver_angle, my_hor_angle, my_weights, my_max_pvg)
         prob = pg.problem(problem_instance)
 
@@ -283,25 +277,24 @@ class shade_pygmo:
         algo = pg.algorithm(pg.pso(gen=1))
         # 创建种群
         pop = pg.population(prob, size=pop_size)
-        # 用于保存所有代的适应度值
-        all_fitness = []
-        # 进行优化
+
+        all_generations_data = []  # 用于保存所有代数据
+        all_fitness = []  # 用于保存所有代的适应度值
+
+        # =========== 进行优化  =============
         for gen in range(gen_size):
+            print(f"Generation {gen} - Problem instance ID: {id(problem_instance)}")
             pop = algo.evolve(pop)
-            current_gen_fitness = -pop.get_f()  # 获取当前代所有个体的适应度值
 
-            # 记录每代每个个体的索引信息
-            for idx, individual in enumerate(pop.get_x()):
-                problem_instance.update_generation_info(gen, idx)  # 更新当前代和个体索引
-                prob.evaluate(individual)  # 评估个体的适应度
-
+            # 获取当前代所有个体的适应度值
+            current_gen_fitness = -pop.get_f()
             all_fitness.append(current_gen_fitness.copy())
+
             # 获取当前代最优个体
             best_idx = pop.best_idx()
             best_angle, best_loc = pop.get_x()[best_idx]
             problem_instance.update_previous_best(best_angle, best_loc)  # 更新上一代最优个体
-
-
+        # ===========  进行优化  =============
 
         # 获取最优解的目标函数值和决策变量值
         best_fitness = pop.get_f()[pop.best_idx()]
@@ -309,7 +302,6 @@ class shade_pygmo:
 
         time_sd_angle = round(mt.degrees(best_solution[0]))
         time_sd_site = best_solution[1].round(2)
-        # all_data_collectors.to_csv('all_data_collectors.csv')
 
         return hoy, best_fitness, time_sd_angle, time_sd_site, all_fitness
 
@@ -320,11 +312,10 @@ class shade_pygmo:
 
         # 导入数据集
         epw_dataset = pd.read_csv(epw_data_file_path, index_col=0)
-        # ===== 输入值 =====
 
         # 优化单个HOY
         hoy, best_fitness, time_sd_angle, time_sd_site, all_fitness = shade_pygmo.optimize_hoy(single_hoy, epw_dataset,
-                                                                                               optimize_weight)
+                                                                                               optimize_weight, 2, 2)
 
         # ===== 计时器 =====
         end_time = time.time()
@@ -393,8 +384,8 @@ class shade_pygmo:
         print("Total time cost:", execution_time, "s")
         # ===== 计时器 =====
 
-        # 可视化结果
-        visualizeFitness(results, hoy_list)
+        # # 可视化结果
+        # visualizeFitness(results, hoy_list)
 
         # 创建 DataFrame
         # 使用字典创建 DataFrame
@@ -426,7 +417,7 @@ def main():
     autumnDay_hoy = hoyEditor.generateHoyList(autumn_date, autumn_date)  # 秋分
     winterDay_hoy = hoyEditor.generateHoyList(winter_date, winter_date)  # 冬至
 
-    main_hoy = springDay_hoy + summerDay_hoy + autumnDay_hoy + winterDay_hoy  # 需要优化的HOY列表
+    main_hoy = springDay_hoy  # 需要优化的HOY列表
 
     if isinstance(main_hoy, list):
         shade_pygmo.main_parallel(my_weights, main_hoy)

@@ -211,3 +211,15 @@ import pygmo as pg
 # print(data_collector)
 # # 导出到 Excel 文件
 # data_collector.to_csv('output.csv')
+
+pop_size = 3
+gen_size = 4
+gen_list = np.repeat(range(gen_size+1), pop_size)
+pop_list = []
+for i in range(gen_size + 1):
+    for item in range(pop_size):
+        pop_list.append(item)
+a = pd.DataFrame()
+a['gen'] = gen_list
+a['pop'] = pop_list
+print(a)

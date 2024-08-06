@@ -2,8 +2,11 @@ import math
 import polars as pl
 from my_package.analytic_formula import epw_data_file as edf
 
+#  全局变量
+pv_use_ratio = 0.6
 
-class pvgCalculator:
+
+class pvgCalculator:  # 计算光伏发电量
     @staticmethod
     def calculateIrradiance(surface_azimuth, shading_angle, window_transmittance, hoy):
         """
@@ -48,9 +51,8 @@ class pvgCalculator:
         if cos_theta < 0:
             cos_theta = 0
 
-        # 计算直射辐射量
+        # 计算直射/漫射辐射量
         I_direct_surface = I_direct * cos_theta
-
         I_diffuse_surface = I_direct * (
                 (1 - f1) * ((1 + beta_cos) / 2) +
                 (f1 * max(0, theta_cos) / max(math.cos(1.48353), f1)) +
@@ -61,7 +63,7 @@ class pvgCalculator:
         albedo = 0.2
         I_reflected = albedo * I_diffuse
 
-        # 计算总辐照量
+        # 计算窗内总辐照量
         total_irradiance = (I_direct_surface + I_diffuse_surface + I_reflected) * window_transmittance
 
         return total_irradiance
@@ -125,11 +127,10 @@ class pvgCalculator:
             total_irradiance = irradiance * panel_area
 
             # 计算光伏组件的实际输出功率
-            actual_power_output = total_irradiance * 0.75  # 假设光伏组件的利用率为75%
+            actual_power_output = total_irradiance * pv_use_ratio  # 假设光伏组件的利用率为60%
 
             # 计算发电量
             pv_generation = actual_power_output * conversion_efficiency
-
             pv_generations.append(pv_generation)
 
         # 将结果转换为 Polars 的 DataFrame
@@ -143,7 +144,10 @@ class pvgCalculator:
 
     @staticmethod
     def calculateHoyPvGeneration(radiance, panel_area, conversion_efficiency):
-        return radiance * panel_area * conversion_efficiency * 0.75  # 假设光伏组件的利用率为75%
+        """
+        计算每个小时具体的发电量
+        """
+        return radiance * panel_area * conversion_efficiency * pv_use_ratio  # 假设光伏组件的利用率为60%
 
 
 def main():

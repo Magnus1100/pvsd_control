@@ -11,13 +11,37 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from analytic_formula import blind_shade_calculate as bsc
 from analytic_formula import pvg_calculate as pc
 
-# 声明实例/全局变量
+# >>> 声明实例 <<<
 pvsd_instance = bsc.pvShadeBlind(0.15, 2.1, 20, 0.7, 0,
                                  0.6, 16, 2.4)
+# >>> 读取数据 <<<
 epw_data_file_path = 'source/dataset/epw_data.csv'
 vis_data = pd.read_csv('source/dataset/vis_data.csv')
 sDGP = np.loadtxt('source/data/sDGP.txt')
 sUDI = np.loadtxt('source/data/sUDI.txt')
+
+# >>> 全局变量 <<<
+all_data = []  # 数据记录
+pygmo_gen = 10  # 迭代次数
+pygmo_pop = 10  # 每代人口
+weight_ED = 0  # 欧式距离权重
+
+
+def get_unique_filename(base_name, extension, counter):
+    today_date = datetime.now().strftime('%Y%m%d')  # 当前日期格式为 YYYYMMDD
+    return f'{base_name}_{today_date}_{counter}.{extension}'
+
+
+def save_dataframe(df, base_name, extension='csv', start_counter=1):
+    counter = start_counter
+    while True:
+        filename = get_unique_filename(base_name, extension, counter)
+        try:
+            df.to_csv(filename, index=False)
+            print(f'文件已保存为 {filename}')
+            break
+        except FileExistsError:
+            counter += 1  # 如果文件已存在，则增加计数器
 
 
 class hoyEditor:
@@ -89,6 +113,19 @@ def visualizeFitness(results, hoy_list):
     plt.show()
 
 
+# 更新代数和个体数列表
+def UpdateGenAndInd(data_list, gen_size, pop_size):
+    gen_list = np.repeat(range(gen_size + 1), pop_size)
+    pop_list = []
+    for i in range(gen_size + 1):
+        for item in range(pop_size):
+            pop_list.append(item)
+    data_list['Gen'] = gen_list
+    data_list['Ind'] = pop_list
+
+    return data_list
+
+
 def normalizeValue(value, min_value, max_value):
     normalized_value = (value - min_value) / (max_value - min_value)
     return normalized_value
@@ -150,9 +187,6 @@ class MyProblem:
         self.fitness_history = []  # 保存每一步的适应度
         self.data_collector = []  # 保存每一步的数据条目
 
-        self.current_generation = 0  # 当前代数
-        self.population_size = 0  # 当前个体数
-
     def fitness(self, x):
         sd_angle, sd_location = x
         sd_location = sd_location.round(2)
@@ -194,8 +228,9 @@ class MyProblem:
         shade_percent = bsc.ShadeCalculate.AllShadePercent(pvsd.sd_length, pvsd.sd_width, sd_interval, self.ver_angle,
                                                            self.hor_angle, sd_angle)
         shade_rad = pc.pvgCalculator.calculateIrradiance(pvsd.window_azimuth, sd_angle, 0.6, self.hoy)
-        pvg_value = pc.pvgCalculator.calculateHoyPvGeneration(shade_rad, pvsd.panel_area, pvsd.pv_efficiency)
-        normalized_pvg = pvg_value * shade_percent / self.max_pvg
+        pvg_value = pc.pvgCalculator.calculateHoyPvGeneration(shade_rad, pvsd.panel_area,
+                                                              pvsd.pv_efficiency) * (1 - shade_percent)
+        normalized_pvg = pvg_value / self.max_pvg
         val_pvg = normalized_pvg * self.my_weights[3]
 
         # 5，加入形变参数
@@ -206,7 +241,7 @@ class MyProblem:
             ED_moment = calculateED.GetPvsdED(self.previous_best_angle, sd_angle_degree, self.previous_best_loc,
                                               sd_location)
         normalized_ED = ED_moment / ED_max
-        val_ED = normalized_ED * 0  # 权重设置为0.1
+        val_ED = normalized_ED * weight_ED
 
         # final value - 加权优化值
         val_all = val_sdgp + val_sudi + val_vis + val_pvg + val_ED
@@ -216,22 +251,29 @@ class MyProblem:
         self.fitness_history.append(- val_optimize)
 
         # 保存每一代每个个体数据
+        round_size = 3
         self.data_collector.append({
-            'generation': self.current_generation,
-            'population_size': self.population_size,
-            'sd_angle': sd_angle_degree,
-            'sd_location': sd_location,
-            'sdgp': pred_sdgp,
-            'sudi': pred_sudi,
-            'vis': vis,
-            'pvg': pvg_value,
-            'ED': ED_moment,
-            'val_sdgp': val_sdgp,
-            'val_sudi': val_sudi,
-            'val_vis': val_vis,
-            'val_pvg': val_pvg,
-            'val_ED': val_ED
+            'Hoy': self.hoy,  # 基础数据 <<<
+            'Gen': 0,
+            'Ind': 0,
+            'Sd_A': sd_angle_degree,
+            'Sd_L': sd_location,
+            # 'SDGP': round(pred_sdgp, round_size),  # sDGP <<<
+            # 'Val_SDGP': round(val_sdgp, round_size),
+            # 'SUDI': round(pred_sudi, round_size),  # sUDI <<<
+            # 'Val_SUDI': round(val_sudi, round_size),
+            # 'Vis': round(vis, round_size),         # VIS <<<
+            # 'Val_Vis': round(val_vis, round_size),
+            'Pvg': round(pvg_value, round_size),  # PVG <<<
+            'shade_percent': round(shade_percent, round_size),
+            'shade_rad': round(shade_rad, round_size),
+            'Val_Pvg': round(val_pvg, round_size),
+            # 'ED': round(ED_moment, round_size),    # ED <<<
+            # 'Val_ED': round(val_ED, round_size),
+            'Optimizer': round(val_optimize, round_size)
         })
+        all_data.append(self.data_collector.copy())
+        self.data_collector.clear()
 
         # ========== 打印结果 ==========
         print('sd_angle: ' + str(sd_angle_degree))
@@ -254,15 +296,10 @@ class MyProblem:
         self.previous_best_angle = angle
         self.previous_best_loc = loc
 
-    # 更新代数和个体数
-    def update_generation_and_population(self, generation, population_size):
-        self.current_generation = generation
-        self.population_size = population_size
-
 
 class shade_pygmo:
     @staticmethod
-    def optimize_hoy(hoy, epw_dataset, my_weights, gen_size=2, pop_size=2):
+    def optimize_hoy(hoy, epw_dataset, my_weights, gen_size=pygmo_gen, pop_size=pygmo_pop):
         my_ver_angle = bsc.ShadeCalculate.GetAngle(hoy, 'Ver_Angle')
         my_hor_angle = bsc.ShadeCalculate.GetAngle(hoy, 'Hor_Angle')
         my_azimuth = epw_dataset.loc[hoy, 'Azimuth']
@@ -277,13 +314,10 @@ class shade_pygmo:
         algo = pg.algorithm(pg.pso(gen=1))
         # 创建种群
         pop = pg.population(prob, size=pop_size)
-
-        all_generations_data = []  # 用于保存所有代数据
         all_fitness = []  # 用于保存所有代的适应度值
 
         # =========== 进行优化  =============
         for gen in range(gen_size):
-            print(f"Generation {gen} - Problem instance ID: {id(problem_instance)}")
             pop = algo.evolve(pop)
 
             # 获取当前代所有个体的适应度值
@@ -314,29 +348,14 @@ class shade_pygmo:
         epw_dataset = pd.read_csv(epw_data_file_path, index_col=0)
 
         # 优化单个HOY
-        hoy, best_fitness, time_sd_angle, time_sd_site, all_fitness = shade_pygmo.optimize_hoy(single_hoy, epw_dataset,
-                                                                                               optimize_weight, 2, 2)
+        hoy, best_fitness, time_sd_angle, time_sd_site, all_fitness = \
+            (shade_pygmo.optimize_hoy(single_hoy, epw_dataset, optimize_weight))
 
         # ===== 计时器 =====
         end_time = time.time()
         execution_time = format(end_time - start_time, '.2f')
         print("Time cost:", execution_time, "s")
         # ===== 计时器 =====
-
-        # ===== 可视化 =====
-        cmap = plt.get_cmap('viridis')  # 获取viridis色图
-        colors = cmap(np.linspace(0.2, 0.8, len(all_fitness)))  # 生成同一色系的不同深浅颜色
-        for gen in range(len(all_fitness)):
-            fitness_values = all_fitness[gen]
-            generations = [gen] * len(fitness_values)  # 生成当前代的代数
-            plt.scatter(generations, fitness_values, color=colors[gen])
-
-        plt.xlabel('Generation')
-        plt.ylabel('Fitness Value')
-        plt.title('Fitness Values Over Generations')
-        plt.xlim(0, len(all_fitness) - 1)  # 设置横坐标轴的范围，从 0 到 gen_size - 1
-        plt.show()
-        # ===== 可视化 =====
 
         # ===== 输出最优个体 =====
         print("Best solution:")
@@ -402,27 +421,36 @@ class shade_pygmo:
 
 def main():
     # ===== 输入值 =====
-    # 权重输入值
-    weight_dgp = 0.25  # 眩光权重[0,1]
-    weight_udi = 0.25  # 采光权重[0,1]
-    weight_vis = 0.25  # 视野权重[0,1]
-    weight_pvg = 0.25  # 光伏发电量权重[0,1]
+    # >>> 权重输入值 <<<
+    weight_dgp = 0  # 眩光权重[0,1]
+    weight_udi = 0  # 采光权重[0,1]
+    weight_vis = 0  # 视野权重[0,1]
+    weight_pvg = 1  # 光伏发电量权重[0,1]
     my_weights = [weight_dgp, weight_udi, weight_vis, weight_pvg]  # 权重集合
 
-    # 生成 hoy 列表
-    spring_date, summer_date, autumn_date, winter_date = "3-21", "6-21", "9-21", "12-21"  # 典型日期
+    # >>> hoy 输入值 <<<
 
+    spring_date, summer_date, autumn_date, winter_date = "3-21", "6-21", "9-21", "12-21"  # 典型日期
     springDay_hoy = hoyEditor.generateHoyList(spring_date, spring_date)  # 春分
     summerDay_hoy = hoyEditor.generateHoyList(summer_date, summer_date)  # 夏至
     autumnDay_hoy = hoyEditor.generateHoyList(autumn_date, autumn_date)  # 秋分
     winterDay_hoy = hoyEditor.generateHoyList(winter_date, winter_date)  # 冬至
+    main_hoy = springDay_hoy + summerDay_hoy + autumnDay_hoy + winterDay_hoy  # 需要优化的HOY列表
+    # main_hoy = 1932
 
-    main_hoy = springDay_hoy  # 需要优化的HOY列表
-
+    # >>> 主程序 <<<
     if isinstance(main_hoy, list):
         shade_pygmo.main_parallel(my_weights, main_hoy)
     else:
         shade_pygmo.main_single(my_weights, main_hoy)
+
+    # # 展平嵌套列表
+    # flat_list = [item for sublist in all_data for item in sublist]
+    # # 转换为 DataFrame
+    # my_df = pd.DataFrame(flat_list)
+    # # 更新代数/个体列表
+    # UpdateGenAndInd(my_df, pygmo_gen, pygmo_pop)
+    # save_dataframe(my_df, 'output', 'csv')
 
 
 if __name__ == "__main__":

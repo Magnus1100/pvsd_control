@@ -16,12 +16,17 @@
 # # 打印内容以供调试
 # print(vis_data)
 
-import numpy as np
+# import numpy as np
+#
+# sDGP = np.loadtxt('../source/data/sDGP.txt')
+# print(min(sDGP))
+# print(max(sDGP))
+#
+# sUDI = np.loadtxt('../source/data/sUDI.txt')
+# print(min(sUDI))
+# print(max(sUDI))
 
-sDGP = np.loadtxt('../source/data/sDGP.txt')
-print(min(sDGP))
-print(max(sDGP))
+import blind_shade_calculate as bsc
 
-sUDI = np.loadtxt('../source/data/sUDI.txt')
-print(min(sUDI))
-print(max(sUDI))
+a = bsc.ShadeCalculate.GetVis(0, 0.06)
+print(a)

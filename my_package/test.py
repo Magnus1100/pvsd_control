@@ -5,7 +5,6 @@ import shade_pygmo as sp
 from scipy.spatial import distance
 import pygmo as pg
 
-
 # 测试路径
 # epw_data_file_path = './source/data/epw_data.csv'
 # epw_dataset = pd.read_csv(epw_data_file_path, index_col=0)
@@ -214,7 +213,7 @@ import pygmo as pg
 
 pop_size = 3
 gen_size = 4
-gen_list = np.repeat(range(gen_size+1), pop_size)
+gen_list = np.repeat(range(gen_size + 1), pop_size)
 pop_list = []
 for i in range(gen_size + 1):
     for item in range(pop_size):
@@ -223,3 +222,5 @@ a = pd.DataFrame()
 a['gen'] = gen_list
 a['pop'] = pop_list
 print(a)
+
+sp.save_dataframe(a, 'a')

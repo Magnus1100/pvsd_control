@@ -1,5 +1,6 @@
 import time
 import joblib
+import os
 import math as mt
 import numpy as np
 import pandas as pd
@@ -24,6 +25,11 @@ sUDI = np.loadtxt('source/data/sUDI.txt')
 all_data = []  # 数据记录
 pygmo_gen = 10  # 迭代次数
 pygmo_pop = 10  # 每代人口
+
+weight_dgp = 0  # 眩光权重[0,1]
+weight_udi = 1  # 采光权重[0,1]
+weight_vis = 0  # 视野权重[0,1]
+weight_pvg = 0  # 光伏发电量权重[0,1]
 weight_ED = 0  # 欧式距离权重
 
 
@@ -36,11 +42,14 @@ def save_dataframe(df, base_name, extension='csv', start_counter=1):
     counter = start_counter
     while True:
         filename = get_unique_filename(base_name, extension, counter)
-        try:
-            df.to_csv(filename, index=False)
-            print(f'文件已保存为 {filename}')
-            break
-        except FileExistsError:
+        if not os.path.exists(filename):
+            try:
+                df.to_csv(filename, index=False)
+                print(f'文件已保存为 {filename}')
+                break
+            except FileExistsError:
+                counter += 1  # 如果文件已存在，则增加计数器
+        else:
             counter += 1  # 如果文件已存在，则增加计数器
 
 
@@ -253,23 +262,23 @@ class MyProblem:
         # 保存每一代每个个体数据
         round_size = 3
         self.data_collector.append({
-            'Hoy': self.hoy,  # 基础数据 <<<
+            'Hoy': self.hoy,                       # 基本信息 <<<
             'Gen': 0,
             'Ind': 0,
             'Sd_A': sd_angle_degree,
             'Sd_L': sd_location,
-            # 'SDGP': round(pred_sdgp, round_size),  # sDGP <<<
-            # 'Val_SDGP': round(val_sdgp, round_size),
-            # 'SUDI': round(pred_sudi, round_size),  # sUDI <<<
-            # 'Val_SUDI': round(val_sudi, round_size),
-            # 'Vis': round(vis, round_size),         # VIS <<<
-            # 'Val_Vis': round(val_vis, round_size),
-            'Pvg': round(pvg_value, round_size),  # PVG <<<
+            'SDGP': round(pred_sdgp, round_size),  # sDGP <<<
+            'Val_SDGP': round(val_sdgp, round_size),
+            'SUDI': round(pred_sudi, round_size),  # sUDI <<<
+            'Val_SUDI': round(val_sudi, round_size),
+            'Vis': round(vis, round_size),         # VIS <<<
+            'Val_Vis': round(val_vis, round_size),
+            'Pvg': round(pvg_value, round_size),   # PVG <<<
             'shade_percent': round(shade_percent, round_size),
             'shade_rad': round(shade_rad, round_size),
             'Val_Pvg': round(val_pvg, round_size),
-            # 'ED': round(ED_moment, round_size),    # ED <<<
-            # 'Val_ED': round(val_ED, round_size),
+            'ED': round(ED_moment, round_size),    # ED <<<
+            'Val_ED': round(val_ED, round_size),
             'Optimizer': round(val_optimize, round_size)
         })
         all_data.append(self.data_collector.copy())
@@ -422,10 +431,6 @@ class shade_pygmo:
 def main():
     # ===== 输入值 =====
     # >>> 权重输入值 <<<
-    weight_dgp = 0  # 眩光权重[0,1]
-    weight_udi = 0  # 采光权重[0,1]
-    weight_vis = 0  # 视野权重[0,1]
-    weight_pvg = 1  # 光伏发电量权重[0,1]
     my_weights = [weight_dgp, weight_udi, weight_vis, weight_pvg]  # 权重集合
 
     # >>> hoy 输入值 <<<
@@ -444,13 +449,13 @@ def main():
     else:
         shade_pygmo.main_single(my_weights, main_hoy)
 
-    # # 展平嵌套列表
-    # flat_list = [item for sublist in all_data for item in sublist]
-    # # 转换为 DataFrame
-    # my_df = pd.DataFrame(flat_list)
-    # # 更新代数/个体列表
-    # UpdateGenAndInd(my_df, pygmo_gen, pygmo_pop)
-    # save_dataframe(my_df, 'output', 'csv')
+    # 展平嵌套列表
+    flat_list = [item for sublist in all_data for item in sublist]
+    # 转换为 DataFrame
+    my_df = pd.DataFrame(flat_list)
+    # 更新代数/个体列表
+    UpdateGenAndInd(my_df, pygmo_gen, pygmo_pop)
+    save_dataframe(my_df, 'output', 'csv')
 
 
 if __name__ == "__main__":

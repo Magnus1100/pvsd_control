@@ -4,7 +4,8 @@ from my_package.analytic_formula import epw_data_file as ed
 
 
 class pvShadeBlind:
-    def __init__(self, sd_width, sd_length, pv_panel_area, pv_efficiency, window_azimuth,window_transmittance, slat_count, window_height):
+    def __init__(self, sd_width, sd_length, pv_panel_area, pv_efficiency, window_azimuth, window_transmittance,
+                 slat_count, window_height):
         self.sd_width = sd_width
         self.sd_length = sd_length
         self.panel_area = pv_panel_area
@@ -28,7 +29,7 @@ class ShadeCalculate:
         vis_data_file_path = r'./source/dataset/vis_data.csv'
         vis_data = pd.read_csv(vis_data_file_path)
         vis = vis_data[(vis_data['sd_angle'] == sd_angle) &
-                             (vis_data['sd_location'] == sd_location)]['vis'].values
+                       (vis_data['sd_location'] == sd_location)]['vis'].values
         return vis
 
     @staticmethod

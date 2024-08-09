@@ -194,6 +194,8 @@ class MyProblem:
         self.my_weights = my_weights
         self.max_pvg = max_pvg
         self.fitness_history = []  # 保存每一步的适应度
+        self.optimize_history = []
+
         self.data_collector = []  # 保存每一步的数据条目
 
     def fitness(self, x):
@@ -242,27 +244,22 @@ class MyProblem:
         normalized_pvg = pvg_value / self.max_pvg
         val_pvg = normalized_pvg * self.my_weights[3]
 
-        # 5，加入形变参数
-        ED_max = calculateED.GetPvsdED(0, 0.15, 90, -0.15)
-        if self.previous_best_angle is None or self.previous_best_loc is None:
-            ED_moment = calculateED.GetPvsdED(0, 0.15, sd_angle_degree, sd_location)
-        else:
-            ED_moment = calculateED.GetPvsdED(self.previous_best_angle, sd_angle_degree, self.previous_best_loc,
-                                              sd_location)
-        normalized_ED = ED_moment / ED_max
-        val_ED = normalized_ED * weight_ED
-
         # final value - 加权优化值
-        val_all = val_sdgp + val_sudi + val_vis + val_pvg + val_ED
+        val_all = val_sdgp + val_sudi + val_vis + val_pvg
         val_optimize = - val_all
 
-        # 保存每一步的适应度
-        self.fitness_history.append(- val_optimize)
+        # 保存每一步个体形态和适应度
+        self.fitness_history.append(val_optimize)
+        self.optimize_history.clear()
+        self.optimize_history.append({
+            'shade_form': x,
+            'fitness': val_optimize
+        })
 
         # 保存每一代每个个体数据
         round_size = 3
         self.data_collector.append({
-            'Hoy': self.hoy,                       # 基本信息 <<<
+            'Hoy': self.hoy,  # 基本信息 <<<
             'Gen': 0,
             'Ind': 0,
             'Sd_A': sd_angle_degree,
@@ -271,14 +268,14 @@ class MyProblem:
             'Val_SDGP': round(val_sdgp, round_size),
             'SUDI': round(pred_sudi, round_size),  # sUDI <<<
             'Val_SUDI': round(val_sudi, round_size),
-            'Vis': round(vis, round_size),         # VIS <<<
+            'Vis': round(vis, round_size),  # VIS <<<
             'Val_Vis': round(val_vis, round_size),
-            'Pvg': round(pvg_value, round_size),   # PVG <<<
+            'Pvg': round(pvg_value, round_size),  # PVG <<<
             'shade_percent': round(shade_percent, round_size),
             'shade_rad': round(shade_rad, round_size),
             'Val_Pvg': round(val_pvg, round_size),
-            'ED': round(ED_moment, round_size),    # ED <<<
-            'Val_ED': round(val_ED, round_size),
+            # 'ED': round(ED_moment, round_size),  # ED <<<
+            # 'Val_ED': round(val_ED, round_size),
             'Optimizer': round(val_optimize, round_size)
         })
         all_data.append(self.data_collector.copy())
@@ -291,6 +288,52 @@ class MyProblem:
         print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
         # ========== 打印结果 ==========
         return [val_optimize]
+
+    def getAllBestIndividual(self):
+        # 找到所有最优个体
+        min_fitness = min(self.fitness_history)
+        best_individuals = [ind for ind, fit in self.optimize_history if fit == min_fitness]
+        best_form = best_individuals[0]['shade_form']
+
+        return best_form
+
+    def compute_best_individual(self):
+        # 获取最优个体的角度和位置
+        individual_best_angle = self.getAllBestIndividual()[0]
+        individual_best_location = self.getAllBestIndividual()[1]
+        index = range(len(individual_best_angle))
+
+        # 初始化列表
+        best_individual_list = {
+            'index': index,
+            'angle': individual_best_angle,
+            'location': individual_best_location,
+            'ED': []
+        }
+
+        # 计算ED最大值
+        ED_max = calculateED.GetPvsdED(0, 0.15, 90, -0.15)
+
+        # 遍历所有个体，计算每个个体的ED值
+        for i in range(len(individual_best_angle)):
+            if self.previous_best_angle is None or self.previous_best_loc is None:
+                ED_moment = calculateED.GetPvsdED(0, 0.15, individual_best_angle[i], individual_best_location[i])
+            else:
+                ED_moment = calculateED.GetPvsdED(self.previous_best_angle, individual_best_angle[i],
+                                                  self.previous_best_loc, individual_best_location[i])
+
+            normalized_ED_value = ED_moment / ED_max
+            best_individual_list['ED'].append(normalized_ED_value)
+
+        # 找到最小的ED值及其对应的索引
+        best_ED = min(best_individual_list['ED'])
+        best_indi = best_individual_list['ED'].index(best_ED)
+
+        # 返回结果作为包含角度和位置的列表
+        return [
+            individual_best_angle[best_indi],
+            individual_best_location[best_indi]
+        ]
 
     @staticmethod
     def get_bounds():
@@ -427,6 +470,9 @@ class shade_pygmo:
         print("Schedule DataFrame:")
         print(schedule_df)
 
+
+# class shade_sade:
+#     def __init__(self):
 
 def main():
     # ===== 输入值 =====

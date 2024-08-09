@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import polars as pl
-import shade_pygmo as sp
+import shade_optimizer as sp
 from scipy.spatial import distance
 import pygmo as pg
 
@@ -211,16 +211,140 @@ import pygmo as pg
 # # 导出到 Excel 文件
 # data_collector.to_csv('output.csv')
 
-pop_size = 3
-gen_size = 4
-gen_list = np.repeat(range(gen_size + 1), pop_size)
-pop_list = []
-for i in range(gen_size + 1):
-    for item in range(pop_size):
-        pop_list.append(item)
-a = pd.DataFrame()
-a['gen'] = gen_list
-a['pop'] = pop_list
-print(a)
+# pop_size = 3
+# gen_size = 4
+# gen_list = np.repeat(range(gen_size + 1), pop_size)
+# pop_list = []
+# for i in range(gen_size + 1):
+#     for item in range(pop_size):
+#         pop_list.append(item)
+# a = pd.DataFrame()
+# a['gen'] = gen_list
+# a['pop'] = pop_list
+# print(a)
+#
+# sp.save_dataframe(a, 'a')
 
-sp.save_dataframe(a, 'a')
+
+# import pygmo as pg
+#
+#
+# class MyProblem:
+#     def __init__(self):
+#         # 定义问题的维度，例如这里假设问题是2维的
+#         self.dim = 2
+#
+#     # pygmo要求定义以下方法
+#     def fitness(self, x):
+#         # 定义目标函数，例如我们定义一个简单的二次函数作为目标
+#         return [x[0] ** 2 + x[1] ** 2]
+#
+#     def get_bounds(self):
+#         # 定义决策变量的上下界，例如我们定义为[-5, 5]区间
+#         return ([-5] * self.dim, [5] * self.dim)
+#
+#     def get_name(self):
+#         return "My Custom Problem"
+#
+#     def get_nobj(self):
+#         return 1  # 这里我们定义一个单目标优化问题
+#
+#     def get_nix(self):
+#         return self.dim  # 决策变量的维度
+#
+#
+# # 假设你已经定义好了问题和算法
+# prob = pg.problem(MyProblem())  # 替换为你的问题
+# algo = pg.algorithm(pg.sade(gen=100))  # 选择你的算法并设置生成代数
+#
+# # 创建进化岛
+# isl = pg.island(algo=algo, prob=prob, size=20)
+#
+# # 执行演化
+# isl.evolve()
+# isl.wait_check()
+#
+# # 获取种群
+# pop = isl.get_population()
+#
+# # 获取适应度最高的个体
+# best_idx = pop.best_idx()
+# best_individual = pop.get_x()[best_idx]
+# best_fitness = pop.get_f()[best_idx]
+#
+# print("适应度最高的个体:", best_individual)
+# print("该个体的适应度值:", best_fitness)
+# fitness = [0.5, 0.6]
+# a = [
+#     {
+#         'id': [1, 2],
+#         'fitness': 0.5
+#     },
+#     {
+#         'id': [3, 4],
+#         'fitness': 0.6
+#     }
+# ]
+#
+# min_fitness = min(fitness)
+# best_individuals = [ind for ind in a if ind['fitness'] == min_fitness]
+# print(best_individuals)
+#
+# best_form = best_individuals[0]['id']
+# best_angle = best_form[0]
+# best_loc = best_form[1]
+# print(best_form, best_angle, best_loc)
+
+# 获取最优形变
+# index = [1, 2, 3]
+# individual_best_angle = [45, 90, 135]
+# individual_best_location = [-0.1, -0.2, -0.3]
+# ED = [0.1, 0.2, 0.3]
+#
+# best_individual_list = {
+#         'index': index,
+#         'angle': individual_best_angle,
+#         'location': individual_best_location,
+#         'ED': ED
+#     }
+# print(best_individual_list)
+# list_fit = pd.DataFrame(best_individual_list)
+# # 定义要匹配的ED值
+# best_ED = 0.2
+#
+# # 筛选ED等于best_ED的行，并提取对应的angle和location
+# selected_rows = list_fit[list_fit['ED'] == best_ED]
+# angles = selected_rows['angle'].values
+# locations = selected_rows['location'].values
+#
+# # 打印结果
+# print("Selected Angles:", angles)
+# print("Selected Locations:", locations)
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+# 示例问题集
+questions = [
+    "如何提高编程效率？",
+    "什么是机器学习？",
+    "如何学习Python编程？",
+    "推荐几本关于数据科学的书籍。",
+    "如何选择适合自己的编程语言？"
+]
+
+# 用户查询
+user_input = input("请输入你的查询: ")
+
+# 初始化TF-IDF向量化器
+vectorizer = TfidfVectorizer()
+
+# 将问题和用户查询转换为TF-IDF矩阵
+tfidf_matrix = vectorizer.fit_transform(questions + [user_input])
+
+# 计算问题与用户查询之间的余弦相似度
+cosine_similarities = cosine_similarity(tfidf_matrix[-1], tfidf_matrix[:-1])
+
+# 输出每个问题的相似度得分
+for i, score in enumerate(cosine_similarities[0]):
+    print(f"问题: '{questions[i]}'\n相似度得分: {score:.4f}\n")

@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import polars as pl
-import shade_optimizer as sp
+# import shade_optimizer as sp
 from scipy.spatial import distance
 import pygmo as pg
 
@@ -321,30 +321,15 @@ import pygmo as pg
 # print("Selected Angles:", angles)
 # print("Selected Locations:", locations)
 
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+a = [2, 2, 3, 1, 4, 5, 1]
+B = [1, 2, 3, 4, 5, 6, [1,7]]
 
-# 示例问题集
-questions = [
-    "如何提高编程效率？",
-    "什么是机器学习？",
-    "如何学习Python编程？",
-    "推荐几本关于数据科学的书籍。",
-    "如何选择适合自己的编程语言？"
-]
+C = pd.DataFrame({
+    'a': a,
+    'B': B
+})
 
-# 用户查询
-user_input = input("请输入你的查询: ")
-
-# 初始化TF-IDF向量化器
-vectorizer = TfidfVectorizer()
-
-# 将问题和用户查询转换为TF-IDF矩阵
-tfidf_matrix = vectorizer.fit_transform(questions + [user_input])
-
-# 计算问题与用户查询之间的余弦相似度
-cosine_similarities = cosine_similarity(tfidf_matrix[-1], tfidf_matrix[:-1])
-
-# 输出每个问题的相似度得分
-for i, score in enumerate(cosine_similarities[0]):
-    print(f"问题: '{questions[i]}'\n相似度得分: {score:.4f}\n")
+D = min(a)
+# 筛选出 a 列等于 D 的所有行，并提取 B 列的值
+E = C[C['a'] == D]['B'].values
+print(E)

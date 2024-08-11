@@ -23,8 +23,9 @@ sUDI = np.loadtxt('source/data/sUDI.txt')
 
 # >>> 全局变量 <<<
 all_data = []  # 数据记录
-pygmo_gen = 10  # 迭代次数
-pygmo_pop = 10  # 每代人口
+optimizer_data = []  # 优化数据记录
+pygmo_gen = 2  # 迭代次数
+pygmo_pop = 2  # 每代人口
 
 weight_dgp = 0  # 眩光权重[0,1]
 weight_udi = 1  # 采光权重[0,1]
@@ -250,6 +251,7 @@ class MyProblem:
 
         # 保存每一步个体形态和适应度
         self.fitness_history.append(val_optimize)
+        # print('fitness_history', self.fitness_history)
         self.optimize_history.clear()
         self.optimize_history.append({
             'shade_form': x,
@@ -289,27 +291,8 @@ class MyProblem:
         # ========== 打印结果 ==========
         return [val_optimize]
 
-    def getAllBestIndividual(self):
-        # 找到所有最优个体
-        min_fitness = min(self.fitness_history)
-        best_individuals = [ind for ind, fit in self.optimize_history if fit == min_fitness]
-        best_form = best_individuals[0]['shade_form']
-
-        return best_form
-
-    def compute_best_individual(self):
-        # 获取最优个体的角度和位置
-        individual_best_angle = self.getAllBestIndividual()[0]
-        individual_best_location = self.getAllBestIndividual()[1]
-        index = range(len(individual_best_angle))
-
-        # 初始化列表
-        best_individual_list = {
-            'index': index,
-            'angle': individual_best_angle,
-            'location': individual_best_location,
-            'ED': []
-        }
+    @staticmethod
+    def computeBestIndividual(fitness_history, solution_history):
 
         # 计算ED最大值
         ED_max = calculateED.GetPvsdED(0, 0.15, 90, -0.15)
@@ -367,6 +350,7 @@ class shade_pygmo:
         # 创建种群
         pop = pg.population(prob, size=pop_size)
         all_fitness = []  # 用于保存所有代的适应度值
+        all_solution = []  # 保存所有代个体参数
 
         # =========== 进行优化  =============
         for gen in range(gen_size):
@@ -375,6 +359,10 @@ class shade_pygmo:
             # 获取当前代所有个体的适应度值
             current_gen_fitness = -pop.get_f()
             all_fitness.append(current_gen_fitness.copy())
+
+            # 获取当前代所有个体的参数
+            current_gen_solution = pop.get_x()
+            all_solution.append(current_gen_solution.copy())
 
             # 获取当前代最优个体
             best_idx = pop.best_idx()
@@ -385,6 +373,18 @@ class shade_pygmo:
         # 获取最优解的目标函数值和决策变量值
         best_fitness = pop.get_f()[pop.best_idx()]
         best_solution = pop.get_x()[pop.best_idx()]
+
+        # 展平嵌套列表
+        flat_all_fit = [item for sublist in all_fitness for item in sublist]
+        flat_all_sol = [item for sublist in all_solution for item in sublist]
+
+        data = pd.DataFrame({
+            'Fitness': flat_all_fit,
+            'Solution': flat_all_sol,
+        })
+
+        ind_a = data['Solution'][1][1]
+        print(ind_a)
 
         time_sd_angle = round(mt.degrees(best_solution[0]))
         time_sd_site = best_solution[1].round(2)
@@ -470,9 +470,16 @@ class shade_pygmo:
         print("Schedule DataFrame:")
         print(schedule_df)
 
+    @staticmethod
+    def outputCSV():
+        # 展平嵌套列表
+        flat_list = [item for sublist in all_data for item in sublist]
+        # 转换为 DataFrame
+        my_df = pd.DataFrame(flat_list)
+        # 更新代数/个体列表
+        UpdateGenAndInd(my_df, pygmo_gen, pygmo_pop)
+        save_dataframe(my_df, 'output', 'csv')
 
-# class shade_sade:
-#     def __init__(self):
 
 def main():
     # ===== 输入值 =====
@@ -481,13 +488,13 @@ def main():
 
     # >>> hoy 输入值 <<<
 
-    spring_date, summer_date, autumn_date, winter_date = "3-21", "6-21", "9-21", "12-21"  # 典型日期
-    springDay_hoy = hoyEditor.generateHoyList(spring_date, spring_date)  # 春分
-    summerDay_hoy = hoyEditor.generateHoyList(summer_date, summer_date)  # 夏至
-    autumnDay_hoy = hoyEditor.generateHoyList(autumn_date, autumn_date)  # 秋分
-    winterDay_hoy = hoyEditor.generateHoyList(winter_date, winter_date)  # 冬至
-    main_hoy = springDay_hoy + summerDay_hoy + autumnDay_hoy + winterDay_hoy  # 需要优化的HOY列表
-    # main_hoy = 1932
+    # spring_date, summer_date, autumn_date, winter_date = "3-21", "6-21", "9-21", "12-21"  # 典型日期
+    # springDay_hoy = hoyEditor.generateHoyList(spring_date, spring_date)  # 春分
+    # summerDay_hoy = hoyEditor.generateHoyList(summer_date, summer_date)  # 夏至
+    # autumnDay_hoy = hoyEditor.generateHoyList(autumn_date, autumn_date)  # 秋分
+    # winterDay_hoy = hoyEditor.generateHoyList(winter_date, winter_date)  # 冬至
+    # main_hoy = springDay_hoy + summerDay_hoy + autumnDay_hoy + winterDay_hoy  # 需要优化的HOY列表
+    main_hoy = 1932
 
     # >>> 主程序 <<<
     if isinstance(main_hoy, list):
@@ -495,13 +502,7 @@ def main():
     else:
         shade_pygmo.main_single(my_weights, main_hoy)
 
-    # 展平嵌套列表
-    flat_list = [item for sublist in all_data for item in sublist]
-    # 转换为 DataFrame
-    my_df = pd.DataFrame(flat_list)
-    # 更新代数/个体列表
-    UpdateGenAndInd(my_df, pygmo_gen, pygmo_pop)
-    save_dataframe(my_df, 'output', 'csv')
+    # shade_pygmo.outputCSV()
 
 
 if __name__ == "__main__":

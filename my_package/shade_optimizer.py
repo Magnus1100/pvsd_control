@@ -24,12 +24,12 @@ sUDI = np.loadtxt('source/data/sUDI.txt')
 # >>> 全局变量 <<<
 all_data = []  # 数据记录
 optimizer_data = []  # 优化数据记录
-pygmo_gen = 2  # 迭代次数
-pygmo_pop = 2  # 每代人口
+pygmo_gen = 3  # 迭代次数
+pygmo_pop = 3  # 每代人口
 
 weight_dgp = 0  # 眩光权重[0,1]
-weight_udi = 1  # 采光权重[0,1]
-weight_vis = 0  # 视野权重[0,1]
+weight_udi = 0  # 采光权重[0,1]
+weight_vis = 1  # 视野权重[0,1]
 weight_pvg = 0  # 光伏发电量权重[0,1]
 weight_ED = 0  # 欧式距离权重
 
@@ -292,33 +292,6 @@ class MyProblem:
         return [val_optimize]
 
     @staticmethod
-    def computeBestIndividual(fitness_history, solution_history):
-
-        # 计算ED最大值
-        ED_max = calculateED.GetPvsdED(0, 0.15, 90, -0.15)
-
-        # 遍历所有个体，计算每个个体的ED值
-        for i in range(len(individual_best_angle)):
-            if self.previous_best_angle is None or self.previous_best_loc is None:
-                ED_moment = calculateED.GetPvsdED(0, 0.15, individual_best_angle[i], individual_best_location[i])
-            else:
-                ED_moment = calculateED.GetPvsdED(self.previous_best_angle, individual_best_angle[i],
-                                                  self.previous_best_loc, individual_best_location[i])
-
-            normalized_ED_value = ED_moment / ED_max
-            best_individual_list['ED'].append(normalized_ED_value)
-
-        # 找到最小的ED值及其对应的索引
-        best_ED = min(best_individual_list['ED'])
-        best_indi = best_individual_list['ED'].index(best_ED)
-
-        # 返回结果作为包含角度和位置的列表
-        return [
-            individual_best_angle[best_indi],
-            individual_best_location[best_indi]
-        ]
-
-    @staticmethod
     def get_bounds():
         return [mt.radians(0), -0.12], [mt.radians(90), 0.12]
 
@@ -356,12 +329,11 @@ class shade_pygmo:
         for gen in range(gen_size):
             pop = algo.evolve(pop)
 
-            # 获取当前代所有个体的适应度值
+            # 获取当前代所有个体的适应度值和参数
             current_gen_fitness = -pop.get_f()
-            all_fitness.append(current_gen_fitness.copy())
-
-            # 获取当前代所有个体的参数
             current_gen_solution = pop.get_x()
+
+            all_fitness.append(current_gen_fitness.copy())
             all_solution.append(current_gen_solution.copy())
 
             # 获取当前代最优个体
@@ -377,14 +349,33 @@ class shade_pygmo:
         # 展平嵌套列表
         flat_all_fit = [item for sublist in all_fitness for item in sublist]
         flat_all_sol = [item for sublist in all_solution for item in sublist]
-
         data = pd.DataFrame({
             'Fitness': flat_all_fit,
             'Solution': flat_all_sol,
         })
+        # 展开 Fitness 列
+        data['Fitness'] = data['Fitness'].apply(lambda x: x[0])
+        # 获取最小的 Fitness 值
+        min_fitness = data['Fitness'].min()
+        # 筛选出 Fitness 等于最小值的行
+        min_fitness_solutions = data[data['Fitness'] == min_fitness]['Solution'].tolist()
+        # 分别提取 sd_angle 和 sd_location
+        sd_angles = [sol[0] for sol in min_fitness_solutions]
+        sd_locations = [sol[1] for sol in min_fitness_solutions]
+        ED_list = []
+        # 输出结果
+        for i in range(len(sd_angles)):
+            ED_moment = calculateED.GetPvsdED(best_angle, best_loc, sd_angles[i], sd_locations[i])
+            ED_list.append(ED_moment)
 
-        ind_a = data['Solution'][1][1]
-        print(ind_a)
+        df_ED = pd.DataFrame({
+            'Angle': sd_angles,
+            'Location': sd_locations,
+            'ED': ED_list
+        })
+        print(df_ED)
+        # 筛选出 ED 等于最小值的所有行
+        best_ED = min(ED_list)
 
         time_sd_angle = round(mt.degrees(best_solution[0]))
         time_sd_site = best_solution[1].round(2)

@@ -1,6 +1,6 @@
 import math as mt
 import pandas as pd
-from pvsd_control.my_package.analytic_formula import epw_data_file as ed
+from my_package.analytic_formula import epw_data_file as ed
 
 
 class pvShadeBlind:

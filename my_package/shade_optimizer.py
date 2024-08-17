@@ -34,11 +34,13 @@ weight_pvg = 0  # 光伏发电量权重[0,1]
 weight_ED = 0  # 欧式距离权重
 
 
+# 获取唯一的文件名字。应用在最后的csv生成中。
 def get_unique_filename(base_name, extension, counter):
-    today_date = datetime.now().strftime('%Y%m%d')  # 当前日期格式为 YYYYMMDD
+    today_date = datetime.now().strftime('%Y%m%d')  # 当前日期格式为 YYYYMMD
     return f'{base_name}_{today_date}_{counter}.{extension}'
 
 
+# 将dataframe保存在可以自己命名的csv文件里。如果名字重复则生成一个新文件。
 def save_dataframe(df, base_name, extension='csv', start_counter=1):
     counter = start_counter
     while True:
@@ -54,11 +56,17 @@ def save_dataframe(df, base_name, extension='csv', start_counter=1):
             counter += 1  # 如果文件已存在，则增加计数器
 
 
+# 生成hoy列表
 class hoyEditor:
+    """
+    Fun1：生成hoy列表
+    """
+
     @staticmethod
     def generateHoyList(start_date_str, end_date_str, exclude_weekends=False, start_hour=8, end_hour=17):
         """
         根据输入的日期范围和条件生成 HOY 列表。
+
         Args:
             start_date_str (str): 开始日期，格式为 'MM-DD'。
             end_date_str (str): 结束日期，格式为 'MM-DD'。
@@ -123,8 +131,7 @@ def visualizeFitness(results, hoy_list):
     plt.show()
 
 
-# 更新代数和个体数列表
-def UpdateGenAndInd(data_list, gen_size, pop_size):
+def UpdateGenAndInd(data_list, gen_size, pop_size):  # 更新代数和个体数列表
     gen_list = np.repeat(range(gen_size + 1), pop_size)
     pop_list = []
     for i in range(gen_size + 1):
@@ -344,8 +351,8 @@ class shade_pygmo:
 
         # 获取最优解的目标函数值和决策变量值
         best_fitness = pop.get_f()[pop.best_idx()]
-        best_solution = pop.get_x()[pop.best_idx()]
 
+        # ===========  筛选ED最小的形态  ============
         # 展平嵌套列表
         flat_all_fit = [item for sublist in all_fitness for item in sublist]
         flat_all_sol = [item for sublist in all_solution for item in sublist]
@@ -373,12 +380,21 @@ class shade_pygmo:
             'Location': sd_locations,
             'ED': ED_list
         })
-        print(df_ED)
         # 筛选出 ED 等于最小值的所有行
         best_ED = min(ED_list)
+        all_best_angle = df_ED[df_ED['ED'] == best_ED]['Angle'].values
+        all_best_loc = df_ED[df_ED['ED'] == best_ED]['Location'].values
 
-        time_sd_angle = round(mt.degrees(best_solution[0]))
-        time_sd_site = best_solution[1].round(2)
+        # 标准化数据
+        time_sd_angle = round(mt.degrees(all_best_angle[0]))
+        time_sd_site = all_best_loc[0].round(2)
+        print(df_ED)
+
+        # 数据输出
+        print('best_ED:', best_ED)
+        print('time_sd_angle:', time_sd_angle)
+        print('time_sd_site:', time_sd_site)
+        # ===========  筛选ED最小的形态  ============
 
         return hoy, best_fitness, time_sd_angle, time_sd_site, all_fitness
 
@@ -449,7 +465,6 @@ class shade_pygmo:
         # # 可视化结果
         # visualizeFitness(results, hoy_list)
 
-        # 创建 DataFrame
         # 使用字典创建 DataFrame
         schedule_df = pd.DataFrame({
             'HOY': hoy_list,
@@ -479,13 +494,13 @@ def main():
 
     # >>> hoy 输入值 <<<
 
-    # spring_date, summer_date, autumn_date, winter_date = "3-21", "6-21", "9-21", "12-21"  # 典型日期
-    # springDay_hoy = hoyEditor.generateHoyList(spring_date, spring_date)  # 春分
-    # summerDay_hoy = hoyEditor.generateHoyList(summer_date, summer_date)  # 夏至
-    # autumnDay_hoy = hoyEditor.generateHoyList(autumn_date, autumn_date)  # 秋分
-    # winterDay_hoy = hoyEditor.generateHoyList(winter_date, winter_date)  # 冬至
-    # main_hoy = springDay_hoy + summerDay_hoy + autumnDay_hoy + winterDay_hoy  # 需要优化的HOY列表
-    main_hoy = 1932
+    spring_date, summer_date, autumn_date, winter_date = "3-21", "6-21", "9-21", "12-21"  # 典型日期
+    springDay_hoy = hoyEditor.generateHoyList(spring_date, spring_date)  # 春分
+    summerDay_hoy = hoyEditor.generateHoyList(summer_date, summer_date)  # 夏至
+    autumnDay_hoy = hoyEditor.generateHoyList(autumn_date, autumn_date)  # 秋分
+    winterDay_hoy = hoyEditor.generateHoyList(winter_date, winter_date)  # 冬至
+    main_hoy = springDay_hoy + summerDay_hoy + autumnDay_hoy + winterDay_hoy  # 需要优化的HOY列表
+    # main_hoy = 1932
 
     # >>> 主程序 <<<
     if isinstance(main_hoy, list):
@@ -493,7 +508,7 @@ def main():
     else:
         shade_pygmo.main_single(my_weights, main_hoy)
 
-    # shade_pygmo.outputCSV()
+    shade_pygmo.outputCSV()
 
 
 if __name__ == "__main__":

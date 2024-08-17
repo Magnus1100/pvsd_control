@@ -1,6 +1,6 @@
 import math
 import polars as pl
-from pvsd_control.my_package.analytic_formula import epw_data_file as edf
+from my_package.analytic_formula import epw_data_file as edf
 
 #  全局变量
 pv_use_ratio = 0.6

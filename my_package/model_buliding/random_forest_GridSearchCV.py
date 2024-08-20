@@ -6,10 +6,13 @@ import data_process as dp
 
 # 建立数据集
 data1 = dp.new_df
-data2 = dp.normalized_data
+data2 = dp.normalized_df
 
 x = data2[['Azimuth', 'Altitude', 'Shade Angle', 'Shade Interval']]
 y = data1[['sDGP']]
+
+print(x)
+print(y)
 
 # 将 y 转换为一维数组
 y_array = y.values.ravel()

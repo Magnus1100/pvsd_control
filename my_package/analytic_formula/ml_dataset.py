@@ -33,7 +33,7 @@ copied_azimuth = []
 copied_altitude = []
 
 # 复制交替的列数据 349 次(循环复制)
-for i in range(349):
+for i in range(255):
     for item in azimuth:
         copied_azimuth.append(item)
     for item in altitude:

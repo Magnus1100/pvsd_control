@@ -1,6 +1,7 @@
-import time
-import joblib
 import os
+import time
+import pickle
+import joblib
 import math as mt
 import numpy as np
 import pandas as pd
@@ -18,20 +19,35 @@ pvsd_instance = bsc.pvShadeBlind(0.15, 2.1, 20, 0.7, 0,
 # >>> 读取数据 <<<
 epw_data_file_path = 'source/dataset/epw_data.csv'
 vis_data = pd.read_csv('source/dataset/vis_data.csv')
-sDGP = np.loadtxt('source/data/sDGP.txt')
+sDGP = np.loadtxt('source/data/1126335/sDGP_10p_0.38_1126335.txt')
 sUDI = np.loadtxt('source/data/sUDI.txt')
+azimuth = np.loadtxt('source/data/azimuth.txt')
+altitude = np.loadtxt('source/data/altitude.txt')
 
 # >>> 全局变量 <<<
 all_data = []  # 数据记录
 optimizer_data = []  # 优化数据记录
-pygmo_gen = 3  # 迭代次数
-pygmo_pop = 3  # 每代人口
+pygmo_gen, pygmo_pop = 3, 3  # 迭代次数，每代人口
+weight_dgp, weight_udi, weight_vis, weight_pvg = 1, 0, 0, 0  # 各项权重[0,1]
 
-weight_dgp = 0  # 眩光权重[0,1]
-weight_udi = 0  # 采光权重[0,1]
-weight_vis = 1  # 视野权重[0,1]
-weight_pvg = 0  # 光伏发电量权重[0,1]
-weight_ED = 0  # 欧式距离权重
+# 取值范围
+min_angle, max_angle = mt.radians(0), mt.radians(90)  # 角度范围
+min_position, max_position = -0.14, 0.14  # 位置范围
+min_azimuth, max_azimuth = mt.radians(min(azimuth)), mt.radians(max(azimuth))  # 方位角范围
+min_altitude, max_altitude = mt.radians(min(altitude)), mt.radians(max(altitude))  # 高度角范围
+
+print('angle_round:', [min_angle, round(max_angle, 3)])
+print('azimuth_round:', [round(min_azimuth, 3), round(max_azimuth, 3)])
+print('altitude_round:', [round(min_altitude, 3), round(max_altitude, 3)])
+
+# 尝试加载已有的数据，如果文件不存在则提示未找到旧值
+try:
+    with open('saved_values.pkl', 'rb') as f:
+        old_values = pickle.load(f)
+        print("Old values:", old_values)
+except FileNotFoundError:
+    old_values = [mt.radians(90), 0]
+    print("No previous values found.")
 
 
 # 获取唯一的文件名字。应用在最后的csv生成中。
@@ -194,26 +210,35 @@ class MyProblem:
         self.previous_best_angle = None
         self.previous_best_loc = None
 
-        self.hoy = hoy
-        self.Azimuth = azimuth
-        self.Altitude = altitude
-        self.ver_angle = ver_angle
-        self.hor_angle = hor_angle
-        self.my_weights = my_weights
-        self.max_pvg = max_pvg
+        self.hoy = hoy  # 当前时间
+        self.Azimuth = azimuth  # 太阳方位角
+        self.Altitude = altitude  # 太阳高度角
+        self.ver_angle = ver_angle  # 表面和太阳向量的垂直夹角
+        self.hor_angle = hor_angle  # 表面和太阳向量的水平夹角
+        self.my_weights = my_weights  # 权重值
+        self.max_pvg = max_pvg  # 不同时刻最大发电量（用以标准化发电量）
         self.fitness_history = []  # 保存每一步的适应度
         self.optimize_history = []
 
         self.data_collector = []  # 保存每一步的数据条目
 
     def fitness(self, x):
+        # 生成值变量
         sd_angle, sd_location = x
         sd_location = sd_location.round(2)
+        # 计算板间距
         sd_interval = (0.15 - abs(sd_location)).round(2)  # 间距
         sd_angle_degree = int(mt.degrees(sd_angle))
 
         # 调用外部的机器学习模型进行预测
-        predict_parameter = [self.Azimuth, self.Altitude, sd_angle_degree, sd_location]
+        # 归一化数据
+        normalized_azimuth = normalizeValue(self.Azimuth, min_azimuth, max_azimuth)
+        normalized_altitude = normalizeValue(self.Altitude, min_altitude, max_altitude)
+        normalized_angle = normalizeValue(sd_angle, min_angle, max_angle)
+        normalized_position = normalizeValue(sd_location, min_position, max_position)
+        # 预测特征序列
+        predict_parameter = [normalized_azimuth, normalized_altitude, normalized_angle, normalized_position]
+        print(predict_parameter)
         feature_names = ['Azimuth', 'Altitude', 'Shade Angle', 'Shade Interval']
         predict_parameters = pd.DataFrame([predict_parameter], columns=feature_names)
 
@@ -232,7 +257,7 @@ class MyProblem:
         """
         # 1，2，sudi/sdgp 机器学习模型预测
         pred_sdgp = model_sdgp.predict(predict_parameters)[0]
-        normalized_sdgp = normalizeValue(pred_sdgp, min(sDGP) / 100, max(sDGP) / 100)  # 标准化sDGP(sDGP最小值为76，需要标准化)
+        normalized_sdgp = normalizeValue(pred_sdgp, min(sDGP), max(sDGP))  # 标准化sDGP
         val_sdgp = normalized_sdgp * self.my_weights[0]
 
         pred_sudi = model_sudi.predict(predict_parameters)[0]
@@ -258,7 +283,6 @@ class MyProblem:
 
         # 保存每一步个体形态和适应度
         self.fitness_history.append(val_optimize)
-        # print('fitness_history', self.fitness_history)
         self.optimize_history.clear()
         self.optimize_history.append({
             'shade_form': x,
@@ -274,17 +298,15 @@ class MyProblem:
             'Sd_A': sd_angle_degree,
             'Sd_L': sd_location,
             'SDGP': round(pred_sdgp, round_size),  # sDGP <<<
-            'Val_SDGP': round(val_sdgp, round_size),
             'SUDI': round(pred_sudi, round_size),  # sUDI <<<
-            'Val_SUDI': round(val_sudi, round_size),
             'Vis': round(vis, round_size),  # VIS <<<
-            'Val_Vis': round(val_vis, round_size),
             'Pvg': round(pvg_value, round_size),  # PVG <<<
+            'Val_SDGP': round(val_sdgp, round_size),
+            'Val_SUDI': round(val_sudi, round_size),
+            'Val_Vis': round(val_vis, round_size),
+            'Val_Pvg': round(val_pvg, round_size),
             'shade_percent': round(shade_percent, round_size),
             'shade_rad': round(shade_rad, round_size),
-            'Val_Pvg': round(val_pvg, round_size),
-            # 'ED': round(ED_moment, round_size),  # ED <<<
-            # 'Val_ED': round(val_ED, round_size),
             'Optimizer': round(val_optimize, round_size)
         })
         all_data.append(self.data_collector.copy())
@@ -300,7 +322,7 @@ class MyProblem:
 
     @staticmethod
     def get_bounds():
-        return [mt.radians(0), -0.12], [mt.radians(90), 0.12]
+        return [min_angle, min_position], [max_angle, max_position]
 
     @staticmethod
     def get_names():
@@ -315,10 +337,18 @@ class MyProblem:
 class shade_pygmo:
     @staticmethod
     def optimize_hoy(hoy, epw_dataset, my_weights, gen_size=pygmo_gen, pop_size=pygmo_pop):
+
+        # 垂直角，水平角
         my_ver_angle = bsc.ShadeCalculate.GetAngle(hoy, 'Ver_Angle')
         my_hor_angle = bsc.ShadeCalculate.GetAngle(hoy, 'Hor_Angle')
+
+        # 方位角
         my_azimuth = epw_dataset.loc[hoy, 'Azimuth']
+        my_azimuth = mt.radians(my_azimuth)
+
+        # 高度角
         my_altitude = epw_dataset.loc[hoy, 'Altitude']
+        my_altitude = mt.radians(my_altitude)
         my_max_pvg = epw_dataset.loc[hoy, 'max_pv_generation']
 
         # 声明优化问题实例
@@ -367,8 +397,11 @@ class shade_pygmo:
         # 筛选出 Fitness 等于最小值的行
         min_fitness_solutions = data[data['Fitness'] == min_fitness]['Solution'].tolist()
         # 分别提取 sd_angle 和 sd_location
-        sd_angles = [sol[0] for sol in min_fitness_solutions]
-        sd_locations = [sol[1] for sol in min_fitness_solutions]
+        sd_angles, sd_locations = [sol[0] for sol in min_fitness_solutions], [sol[1] for sol in min_fitness_solutions]
+        print(len(sd_angles))
+        for i in range(len(sd_angles)):
+            sd_angles[i] = int(mt.degrees(sd_angles[i]))
+            sd_locations[i] = round(sd_locations[i], 2)
         ED_list = []
         # 输出结果
         for i in range(len(sd_angles)):
@@ -386,17 +419,23 @@ class shade_pygmo:
         all_best_loc = df_ED[df_ED['ED'] == best_ED]['Location'].values
 
         # 标准化数据
-        time_sd_angle = round(mt.degrees(all_best_angle[0]))
-        time_sd_site = all_best_loc[0].round(2)
+        time_sd_angle = round(all_best_angle[0])
+        time_sd_position = all_best_loc[0].round(2)
         print(df_ED)
+
+        # 将新的数据保存到文件中，覆盖之前的数据
+        best_value = [time_sd_angle, time_sd_position]
+        with open('saved_values.pkl', 'wb') as ff:
+            pickle.dump(best_value, ff)
+        print("Saved new values:", best_value)
 
         # 数据输出
         print('best_ED:', best_ED)
         print('time_sd_angle:', time_sd_angle)
-        print('time_sd_site:', time_sd_site)
+        print('time_sd_position:', time_sd_position)
         # ===========  筛选ED最小的形态  ============
 
-        return hoy, best_fitness, time_sd_angle, time_sd_site, all_fitness
+        return hoy, best_fitness, time_sd_angle, time_sd_position, all_fitness
 
     @staticmethod
     def main_single(optimize_weight, single_hoy):
@@ -407,7 +446,7 @@ class shade_pygmo:
         epw_dataset = pd.read_csv(epw_data_file_path, index_col=0)
 
         # 优化单个HOY
-        hoy, best_fitness, time_sd_angle, time_sd_site, all_fitness = \
+        hoy, best_fitness, time_sd_angle, time_sd_position, all_fitness = \
             (shade_pygmo.optimize_hoy(single_hoy, epw_dataset, optimize_weight))
 
         # ===== 计时器 =====
@@ -420,7 +459,7 @@ class shade_pygmo:
         print("Best solution:")
         print("Fitness:", best_fitness.round(2))
         print("Best sd_angle:", time_sd_angle)
-        print("Best sd_location:", time_sd_site)
+        print("Best sd_location:", time_sd_position)
         # ===== 输出最优个体 =====
 
     @staticmethod
@@ -494,13 +533,13 @@ def main():
 
     # >>> hoy 输入值 <<<
 
-    spring_date, summer_date, autumn_date, winter_date = "3-21", "6-21", "9-21", "12-21"  # 典型日期
-    springDay_hoy = hoyEditor.generateHoyList(spring_date, spring_date)  # 春分
-    summerDay_hoy = hoyEditor.generateHoyList(summer_date, summer_date)  # 夏至
-    autumnDay_hoy = hoyEditor.generateHoyList(autumn_date, autumn_date)  # 秋分
-    winterDay_hoy = hoyEditor.generateHoyList(winter_date, winter_date)  # 冬至
-    main_hoy = springDay_hoy + summerDay_hoy + autumnDay_hoy + winterDay_hoy  # 需要优化的HOY列表
-    # main_hoy = 1932
+    # spring_date, summer_date, autumn_date, winter_date = "3-21", "6-21", "9-21", "12-21"  # 典型日期
+    # springDay_hoy = hoyEditor.generateHoyList(spring_date, spring_date)  # 春分
+    # summerDay_hoy = hoyEditor.generateHoyList(summer_date, summer_date)  # 夏至
+    # autumnDay_hoy = hoyEditor.generateHoyList(autumn_date, autumn_date)  # 秋分
+    # winterDay_hoy = hoyEditor.generateHoyList(winter_date, winter_date)  # 冬至
+    # main_hoy = springDay_hoy + summerDay_hoy + autumnDay_hoy + winterDay_hoy  # 需要优化的HOY列表
+    main_hoy = 1936
 
     # >>> 主程序 <<<
     if isinstance(main_hoy, list):

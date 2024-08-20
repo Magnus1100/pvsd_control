@@ -1,8 +1,6 @@
 import pandas as pd
 import numpy as np
 import math as mt
-import seaborn as sns
-import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
 
 
@@ -32,7 +30,6 @@ df2 = pd.read_csv('../source/data/dataset_found (2).csv', header=None)
 # shade_interval = df2.iloc[:, 1]
 
 
-
 sDGP = np.loadtxt('../source/data/1126335/sDGP_10p_0.38_1126335.txt')
 sd_angle = np.loadtxt('../source/data/1126335/angle_255.txt')
 sd_angle = [round(mt.radians(angle), 2) for angle in sd_angle]
@@ -50,17 +47,14 @@ for i in range(255):
     for item in altitude:
         copied_altitude.append(item)
 
-print(sd_angle)
-print(sd_position)
-
 # 重复复制遮阳数据4417次（单次复制）
 copied_angle = np.repeat(sd_angle, 4417)
 copied_interval = np.repeat(sd_position, 4417)
-print(copied_interval)
-print(copied_angle)
 
-print(len(copied_azimuth))
-print(len(copied_altitude))
+# print(copied_interval)
+# print(copied_angle)
+# print(len(copied_azimuth))
+# print(len(copied_altitude))
 
 # 生成连续的序号
 index1 = pd.RangeIndex(start=1, stop=len(copied_azimuth) + 1)
@@ -79,7 +73,6 @@ new_df.index = index1
 # new_df.to_csv('../source/data/1126335/240820_sDGP.csv', index=False)
 
 normalized_df = normalize_data(new_df)
-normalized_df.to_csv('../source/data/1126335/240820_normalized_sDGP.csv')
-print(new_df)
-
-print(normalized_df)
+# normalized_df.to_csv('../source/data/1126335/240820_normalized_sDGP.csv')
+# print(new_df)
+# print(normalized_df)

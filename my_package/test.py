@@ -321,15 +321,54 @@ import pygmo as pg
 # print("Selected Angles:", angles)
 # print("Selected Locations:", locations)
 
-a = [2, 2, 3, 1, 4, 5, 1]
-B = [1, 2, 3, 4, 5, 6, [1,7]]
+# a = [2, 2, 3, 1, 4, 5, 1]
+# B = [1, 2, 3, 4, 5, 6, [1,7]]
+#
+# C = pd.DataFrame({
+#     'a': a,
+#     'B': B
+# })
+#
+# D = min(a)
+# # 筛选出 a 列等于 D 的所有行，并提取 B 列的值
+# E = C[C['a'] == D]['B'].values
+# print(E)
 
-C = pd.DataFrame({
-    'a': a,
-    'B': B
-})
+# import pickle
+#
+# # 尝试加载已有的数据，如果文件不存在则初始化一个空列表
+# try:
+#     with open('saved_values.pkl', 'rb') as f:
+#         values = pickle.load(f)
+# except FileNotFoundError:
+#     values = []
+#
+# # 添加新的值（假设是本次运行生成的值）
+# new_value = 54  # 示例值，可以是任何计算或输出的结果
+# values.append(new_value)
+#
+# # 将更新后的数据保存回文件
+# with open('saved_values.pkl', 'wb') as f:
+#     pickle.dump(values, f)
+#
+# print("Updated values:", values)
 
-D = min(a)
-# 筛选出 a 列等于 D 的所有行，并提取 B 列的值
-E = C[C['a'] == D]['B'].values
-print(E)
+import pickle
+
+# 尝试加载已有的数据，如果文件不存在则提示未找到旧值
+try:
+    with open('saved_values.pkl', 'rb') as f:
+        old_values = pickle.load(f)
+        print("Old values:", old_values)
+except FileNotFoundError:
+    old_values = None
+    print("No previous values found.")
+
+# 生成新值，这个值会替代之前保存的值
+new_values = [0.12,0.22]  # 示例值，可以是本次运行生成的任何数据
+
+# 将新的数据保存到文件中，覆盖之前的数据
+with open('saved_values.pkl', 'wb') as f:
+    pickle.dump(new_values, f)
+
+print("Saved new values:", new_values)

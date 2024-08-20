@@ -1,15 +1,23 @@
+import os
+import joblib
+import pandas as pd
+from tqdm import tqdm
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
-import data_process as dp
-from tqdm import tqdm
+
 
 # 建立数据集
-data1 = dp.new_df
-data2= dp.normalized_data
+df_path = r'../source/data/1126335/240820_sDGP.csv'
+df = pd.read_csv(df_path)
 
-x = data2[['Azimuth', 'Altitude', 'Shade Angle', 'Shade Interval']]
-#y = data1[['sDGP']]
-y = data1[['sUDI']]
+df_normalized_path = r'../source/data/1126335/240820_normalized_sDGP.csv'
+df_normalized = pd.read_csv(df_normalized_path)
+
+data1 = df_normalized
+data2 = df
+
+x = data1[['Azimuth', 'Altitude', 'Shade Angle', 'Shade Interval']]
+y = data2[['sDGP']]
 
 # 将 y 转换为一维数组
 y_array = y.values.ravel()
@@ -34,14 +42,20 @@ for i in tqdm(range(n_estimators), desc="Training Progress"):
     random_forest.fit(x_train, y_train)
     train_score = random_forest.score(x_train, y_train)
     train_scores.append(train_score)
-    print(f"Iteration {i+1}, Training Score: {train_score}")
+    print(f"Iteration {i + 1}, Training Score: {train_score}")
 
 # 输出训练过程中每棵树的得分
 print("Training Scores for each tree:", train_scores)
 
 # 拟合模型
 random_forest.fit(x_train, y_train)
+model_path = r'D:\03-GitHub\pvsd_control\my_package\source\models\sDGP_RF_0820_V1.pkl'
 
+# 获取路径中不包括文件名的部分
+directory = os.path.dirname(model_path)
+
+# 如果路径不存在，则创建路径
+if not os.path.exists(directory):
+    os.makedirs(directory)
 # 保存模型
-import joblib
-joblib.dump(random_forest, 'D:\pythonProject\pythonProject\.venv\models\sUDI_model/random_forest_model-V1-0515.pkl')
+joblib.dump(random_forest, model_path)

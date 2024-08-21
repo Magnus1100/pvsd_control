@@ -6,20 +6,21 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from sklearn.model_selection import train_test_split
 
 # 指定特征与目标
-df_path = r'../source/data/1126335/240820_sDGP.csv'
-df_normalized_path = r'../source/data/1126335/240820_normalized_sDGP.csv'
+df_path = r'../source/data/1126335/240821_sDGP.csv'
+df_normalized_path = r'../source/data/1126335/240821_normalized_sDGP.csv'
+
 df = pd.read_csv(df_path)
 df_normalized = pd.read_csv(df_normalized_path)
 
 # x = df_normalized[['Azimuth', 'Altitude', 'Shade Angle', 'Shade Interval']]
-x = df[['Azimuth', 'Altitude', 'Shade Angle', 'Shade Interval']]
+x = df_normalized[['Azimuth', 'Altitude', 'Shade Angle', 'Shade Interval']]
 y = df[['sDGP']]
 
 # 划分测试集
-x_train, x_test, y_train, y_true = train_test_split(x, y, test_size=0.00005, random_state=25)
+x_train, x_test, y_train, y_true = train_test_split(x, y, test_size=0.00005, random_state=30)
 
 # 加载模型
-model_sdgp = joblib.load(r'..\source\model_0820\sDGP_RF_0820_V1.pkl')
+model_sdgp = joblib.load(r'..\source\models\sDGP_RF_0821_V1.pkl')
 
 # 使用模型预测测试集
 y_pred = model_sdgp.predict(x_test)

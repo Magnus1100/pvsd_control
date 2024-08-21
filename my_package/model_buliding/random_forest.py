@@ -7,11 +7,14 @@ from sklearn.model_selection import train_test_split
 
 
 # 建立数据集
-df_path = r'../source/data/1126335/240820_sDGP.csv'
+df_path = r'../source/data/1126335/240821_sDGP.csv'
 df = pd.read_csv(df_path)
 
-df_normalized_path = r'../source/data/1126335/240820_normalized_sDGP.csv'
+df_normalized_path = r'../source/data/1126335/240821_normalized_sDGP.csv'
 df_normalized = pd.read_csv(df_normalized_path)
+
+print(df.shape)
+print(df_normalized.shape)
 
 data1 = df_normalized
 data2 = df
@@ -49,7 +52,7 @@ print("Training Scores for each tree:", train_scores)
 
 # 拟合模型
 random_forest.fit(x_train, y_train)
-model_path = r'D:\03-GitHub\pvsd_control\my_package\source\models\sDGP_RF_0820_V1.pkl'
+model_path = r'F:\pvsd_code\pvsd_control\my_package\source\models\sDGP_RF_0821_V1.pkl'
 
 # 获取路径中不包括文件名的部分
 directory = os.path.dirname(model_path)

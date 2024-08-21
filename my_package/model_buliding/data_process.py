@@ -30,7 +30,7 @@ df2 = pd.read_csv('../source/data/dataset_found (2).csv', header=None)
 # shade_interval = df2.iloc[:, 1]
 
 
-sDGP = np.loadtxt('../source/data/1126335/sDGP_10p_0.38_1126335.txt')
+sDGP = np.loadtxt('../source/data/1126335/240821_sDGP.txt')
 sd_angle = np.loadtxt('../source/data/1126335/angle_255.txt')
 sd_angle = [round(mt.radians(angle), 2) for angle in sd_angle]
 sd_position = np.loadtxt('../source/data/1126335/position_255.txt')
@@ -70,9 +70,9 @@ new_df['sDGP'] = sDGP
 
 # 重新索引，将连续的序号赋给 DataFrame
 new_df.index = index1
-# new_df.to_csv('../source/data/1126335/240820_sDGP.csv', index=False)
+new_df.to_csv('../source/data/1126335/240821_sDGP.csv', index=False)
 
 normalized_df = normalize_data(new_df)
-# normalized_df.to_csv('../source/data/1126335/240820_normalized_sDGP.csv')
+normalized_df.to_csv('../source/data/1126335/240821_normalized_sDGP.csv')
 # print(new_df)
 # print(normalized_df)

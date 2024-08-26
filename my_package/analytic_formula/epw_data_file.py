@@ -164,5 +164,6 @@ epw_dataset['I_diffuse'] = diffuse_rad
 epw_dataset['sky_cover'] = sky_cover/10
 
 f_directory = calculateSolarParameters(hoys, 22.55, 114.10, 8.0)
-
+# epw_dataset.to_csv('../source/data/epw_dataset.csv')
+# f_directory.to_csv('../source/data/f_directory.csv')
 # print(epw_dataset, f_directory)

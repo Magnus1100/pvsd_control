@@ -19,16 +19,21 @@ pvsd_instance = bsc.pvShadeBlind(0.15, 2.1, 20, 0.7, 0,
 # >>> 读取数据 <<<
 epw_data_file_path = 'source/dataset/epw_data.csv'
 vis_data = pd.read_csv('source/dataset/vis_data.csv')
-sDGP = np.loadtxt('source/data/1126335/sDGP_10p_0.38_1126335.txt')
+sDGP = np.loadtxt('source/data/1126335/240821_sDGP.txt')
 sUDI = np.loadtxt('source/data/sUDI.txt')
 azimuth = np.loadtxt('source/data/azimuth.txt')
 altitude = np.loadtxt('source/data/altitude.txt')
 
+# ml模型
+model_sdgp = joblib.load('./source/model_optimizer/sDGP_RF_0821_V1.pkl')
+model_sudi = joblib.load('./source/model_optimizer/sUDI_random_forest_model.pkl')
+
 # >>> 全局变量 <<<
 all_data = []  # 数据记录
 optimizer_data = []  # 优化数据记录
+shade_schedule = pd.DataFrame(columns=['Hoy', 'SD_Angle', 'SD_Position'])
 pygmo_gen, pygmo_pop = 3, 3  # 迭代次数，每代人口
-weight_dgp, weight_udi, weight_vis, weight_pvg = 1, 0, 0, 0  # 各项权重[0,1]
+weight_dgp, weight_udi, weight_vis, weight_pvg = 1, 1, 1, 1  # 各项权重[0,1]
 
 # 取值范围
 min_angle, max_angle = mt.radians(0), mt.radians(90)  # 角度范围
@@ -39,15 +44,6 @@ min_altitude, max_altitude = mt.radians(min(altitude)), mt.radians(max(altitude)
 print('angle_round:', [min_angle, round(max_angle, 3)])
 print('azimuth_round:', [round(min_azimuth, 3), round(max_azimuth, 3)])
 print('altitude_round:', [round(min_altitude, 3), round(max_altitude, 3)])
-
-# 尝试加载已有的数据，如果文件不存在则提示未找到旧值
-try:
-    with open('saved_values.pkl', 'rb') as f:
-        old_values = pickle.load(f)
-        print("Old values:", old_values)
-except FileNotFoundError:
-    old_values = [mt.radians(90), 0]
-    print("No previous values found.")
 
 
 # 获取唯一的文件名字。应用在最后的csv生成中。
@@ -242,9 +238,6 @@ class MyProblem:
         feature_names = ['Azimuth', 'Altitude', 'Shade Angle', 'Shade Interval']
         predict_parameters = pd.DataFrame([predict_parameter], columns=feature_names)
 
-        model_sdgp = joblib.load('./source/model_optimizer/sDGP_random_forest_model.pkl')
-        model_sudi = joblib.load('./source/model_optimizer/sUDI_random_forest_model.pkl')
-
         pvsd = pvsd_instance
         """
         计算各优化值
@@ -338,6 +331,15 @@ class shade_pygmo:
     @staticmethod
     def optimize_hoy(hoy, epw_dataset, my_weights, gen_size=pygmo_gen, pop_size=pygmo_pop):
 
+        # 尝试加载已有的数据，如果文件不存在则提示未找到旧值
+        try:
+            with open('saved_values.pkl', 'rb') as f:
+                old_values = pickle.load(f)
+                print("Old values:", old_values)
+        except FileNotFoundError:
+            old_values = [mt.radians(90), 0]
+            print("No previous values found.")
+
         # 垂直角，水平角
         my_ver_angle = bsc.ShadeCalculate.GetAngle(hoy, 'Ver_Angle')
         my_hor_angle = bsc.ShadeCalculate.GetAngle(hoy, 'Hor_Angle')
@@ -398,7 +400,6 @@ class shade_pygmo:
         min_fitness_solutions = data[data['Fitness'] == min_fitness]['Solution'].tolist()
         # 分别提取 sd_angle 和 sd_location
         sd_angles, sd_locations = [sol[0] for sol in min_fitness_solutions], [sol[1] for sol in min_fitness_solutions]
-        print(len(sd_angles))
         for i in range(len(sd_angles)):
             sd_angles[i] = int(mt.degrees(sd_angles[i]))
             sd_locations[i] = round(sd_locations[i], 2)
@@ -439,8 +440,6 @@ class shade_pygmo:
 
     @staticmethod
     def main_single(optimize_weight, single_hoy):
-        # ===== 计时器 =====
-        start_time = time.time()
 
         # 导入数据集
         epw_dataset = pd.read_csv(epw_data_file_path, index_col=0)
@@ -449,24 +448,16 @@ class shade_pygmo:
         hoy, best_fitness, time_sd_angle, time_sd_position, all_fitness = \
             (shade_pygmo.optimize_hoy(single_hoy, epw_dataset, optimize_weight))
 
-        # ===== 计时器 =====
-        end_time = time.time()
-        execution_time = format(end_time - start_time, '.2f')
-        print("Time cost:", execution_time, "s")
-        # ===== 计时器 =====
-
         # ===== 输出最优个体 =====
         print("Best solution:")
         print("Fitness:", best_fitness.round(2))
         print("Best sd_angle:", time_sd_angle)
         print("Best sd_location:", time_sd_position)
         # ===== 输出最优个体 =====
+        return time_sd_angle, time_sd_position
 
     @staticmethod
     def main_parallel(optimize_weight, hoy_list):
-        # ===== 计时器 =====
-        start_time = time.time()
-        # ===== 计时器 =====
 
         # 导入数据集
         epw_dataset = pd.read_csv(epw_data_file_path, index_col=0)
@@ -494,12 +485,6 @@ class shade_pygmo:
         angles = [values[0] for values in schedule.values()]
         sites = [values[1] for values in schedule.values()]
         best_fitness = [values[2] for values in schedule.values()]
-
-        # ===== 计时器 =====
-        end_time = time.time()
-        execution_time = format(end_time - start_time, '.2f')
-        print("Total time cost:", execution_time, "s")
-        # ===== 计时器 =====
 
         # # 可视化结果
         # visualizeFitness(results, hoy_list)
@@ -539,15 +524,23 @@ def main():
     # autumnDay_hoy = hoyEditor.generateHoyList(autumn_date, autumn_date)  # 秋分
     # winterDay_hoy = hoyEditor.generateHoyList(winter_date, winter_date)  # 冬至
     # main_hoy = springDay_hoy + summerDay_hoy + autumnDay_hoy + winterDay_hoy  # 需要优化的HOY列表
-    main_hoy = 1936
+    main_hoy = range(8, 18)
+    # ===== 计时器 =====
+    start_time = time.time()
 
     # >>> 主程序 <<<
-    if isinstance(main_hoy, list):
-        shade_pygmo.main_parallel(my_weights, main_hoy)
-    else:
-        shade_pygmo.main_single(my_weights, main_hoy)
+    for hoy in main_hoy:
+        schedule = shade_pygmo.main_single(my_weights, hoy)
+        shade_schedule.loc[main_hoy.index(hoy)] = [hoy, schedule[0], schedule[1]]
 
-    shade_pygmo.outputCSV()
+    # ===== 计时器 =====
+    end_time = time.time()
+    execution_time = format(end_time - start_time, '.2f')
+    print("Total time cost:", execution_time, "s")
+    # ===== 计时器 =====
+    print(shade_schedule)
+    print('done!')
+
 
 
 if __name__ == "__main__":

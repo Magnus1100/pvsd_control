@@ -1,6 +1,7 @@
 import math as mt
 import pandas as pd
-from my_package.analytic_formula import epw_data_file as ed
+
+epw_data = pd.read_csv('./source/data/epw_dataset.csv')
 
 
 class pvShadeBlind:
@@ -20,7 +21,7 @@ class ShadeCalculate:
     # 遮挡计算&视野获取
     @staticmethod
     def GetAngle(hoy, name):
-        angle = ed.epw_dataset.loc[int(hoy), name]
+        angle = epw_data.loc[int(hoy), name]
         radi = mt.radians(angle)
         return radi
 

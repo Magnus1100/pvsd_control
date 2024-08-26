@@ -59,24 +59,24 @@ def main():
     # # 显示图形
     # plt.show()
 
-    # # 创建子图
-    # fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
-    #
-    # # 在第一个子图上绘制 sDGP_1541553 的分布
-    # ax1.hist(sDGP_1541553, bins=50, color='blue', edgecolor='black')
-    # ax1.set_title('Distribution of sDGP_1541553')
-    # ax1.set_xlabel('Value')
-    # ax1.set_ylabel('Frequency')
-    #
-    # # 在第二个子图上绘制 sDGP_1126335 的分布
-    # ax2.hist(sDGP_1126335, bins=50, color='red', edgecolor='black')
-    # ax2.set_title('Distribution of sDGP_1126335')
-    # ax2.set_xlabel('Value')
-    # ax2.set_ylabel('Frequency')
-    #
-    # # 调整布局并显示图像
-    # plt.tight_layout()
-    # plt.show()
+    # 创建子图
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
+
+    # 在第一个子图上绘制 sDGP_1541553 的分布
+    ax1.hist(sDGP_1541553, bins=50, color='blue', edgecolor='black')
+    ax1.set_title('Distribution of sDGP_1541553')
+    ax1.set_xlabel('Value')
+    ax1.set_ylabel('Frequency')
+
+    # 在第二个子图上绘制 sDGP_1126335 的分布
+    ax2.hist(sDGP_1126335, bins=50, color='red', edgecolor='black')
+    ax2.set_title('Distribution of sDGP_1126335')
+    ax2.set_xlabel('Value')
+    ax2.set_ylabel('Frequency')
+
+    # 调整布局并显示图像
+    plt.tight_layout()
+    plt.show()
 
     # 每4417行转化成一列
     chunk_size = 4417

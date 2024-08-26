@@ -1,6 +1,6 @@
 import math
 import polars as pl
-from my_package.analytic_formula import epw_data_file as edf
+from . import epw_data_file as edf
 
 #  全局变量
 pv_use_ratio = 0.6
@@ -157,7 +157,7 @@ def main():
 
     edf.epw_dataset['max_irradiance'] = max_pv_generation['Max_Irradiance']
     edf.epw_dataset['max_pv_generation'] = max_pv_generation['PV_Generation(Wh)']
-    edf.epw_dataset.to_csv('epw_data.csv')
+    # edf.epw_dataset.to_csv('epw_data.csv')
     # print(edf.epw_dataset)
 
 

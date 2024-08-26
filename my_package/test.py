@@ -353,22 +353,33 @@ import pygmo as pg
 #
 # print("Updated values:", values)
 
-import pickle
+# import pickle
+#
+# # 尝试加载已有的数据，如果文件不存在则提示未找到旧值
+# try:
+#     with open('saved_values.pkl', 'rb') as f:
+#         old_values = pickle.load(f)
+#         print("Old values:", old_values)
+# except FileNotFoundError:
+#     old_values = None
+#     print("No previous values found.")
+#
+# # 生成新值，这个值会替代之前保存的值
+# new_values = [0.12,0.22]  # 示例值，可以是本次运行生成的任何数据
+#
+# # 将新的数据保存到文件中，覆盖之前的数据
+# with open('saved_values.pkl', 'wb') as f:
+#     pickle.dump(new_values, f)
+#
+# print("Saved new values:", new_values)
 
-# 尝试加载已有的数据，如果文件不存在则提示未找到旧值
-try:
-    with open('saved_values.pkl', 'rb') as f:
-        old_values = pickle.load(f)
-        print("Old values:", old_values)
-except FileNotFoundError:
-    old_values = None
-    print("No previous values found.")
+# a = range(8, 17)
+# for a in a:
+#     print(a)
+a = range(9,17)
+df = pd.DataFrame(columns=['Hoy', 'Angle', 'Position'])
+# 显示空的 DataFrame
+for i in a:
+    df.loc[a.index(i)] = [1, 45.0, 0.12]  # 添加第一行
 
-# 生成新值，这个值会替代之前保存的值
-new_values = [0.12,0.22]  # 示例值，可以是本次运行生成的任何数据
-
-# 将新的数据保存到文件中，覆盖之前的数据
-with open('saved_values.pkl', 'wb') as f:
-    pickle.dump(new_values, f)
-
-print("Saved new values:", new_values)
+print(df)

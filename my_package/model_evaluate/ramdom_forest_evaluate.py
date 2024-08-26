@@ -17,7 +17,7 @@ x = df_normalized[['Azimuth', 'Altitude', 'Shade Angle', 'Shade Interval']]
 y = df[['sDGP']]
 
 # 划分测试集
-x_train, x_test, y_train, y_true = train_test_split(x, y, test_size=0.00005, random_state=30)
+x_train, x_test, y_train, y_true = train_test_split(x, y, test_size=0.001, random_state=50)
 
 # 加载模型
 model_sdgp = joblib.load(r'..\source\models\sDGP_RF_0821_V1.pkl')

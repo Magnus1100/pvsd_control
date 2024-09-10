@@ -3,8 +3,8 @@ import subprocess
 
 def main():
     energyplus_to_fmu_path = r'energyplus_to_fmu/EnergyPlusToFMU.py'
-    model_file = "idf_test0704.idf"  # 确保模型文件位于模型目录下
-    idd_file = r'C:\EnergyPlusV23-1-0\Energy+.idd'
+    model_file = "idf_test0901.idf"  # 确保模型文件位于模型目录下
+    idd_file = r'C:\EnergyPlusV24-1-0\Energy+.idd'
     epw_file = r'..\source\epw_file\CHN_Guangdong.Shenzhen.594930_SWERA.epw'
 
     # 构建命令字符串

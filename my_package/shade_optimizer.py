@@ -515,15 +515,6 @@ def main():
     # ===== 输入值 =====
     # >>> 权重输入值 <<<
     my_weights = [weight_dgp, weight_udi, weight_vis, weight_pvg]  # 权重集合
-
-    # >>> hoy 输入值 <<<
-
-    # spring_date, summer_date, autumn_date, winter_date = "3-21", "6-21", "9-21", "12-21"  # 典型日期
-    # springDay_hoy = hoyEditor.generateHoyList(spring_date, spring_date)  # 春分
-    # summerDay_hoy = hoyEditor.generateHoyList(summer_date, summer_date)  # 夏至
-    # autumnDay_hoy = hoyEditor.generateHoyList(autumn_date, autumn_date)  # 秋分
-    # winterDay_hoy = hoyEditor.generateHoyList(winter_date, winter_date)  # 冬至
-    # main_hoy = springDay_hoy + summerDay_hoy + autumnDay_hoy + winterDay_hoy  # 需要优化的HOY列表
     main_hoy = range(8, 18)
     # ===== 计时器 =====
     start_time = time.time()
@@ -540,7 +531,6 @@ def main():
     # ===== 计时器 =====
     print(shade_schedule)
     print('done!')
-
 
 
 if __name__ == "__main__":

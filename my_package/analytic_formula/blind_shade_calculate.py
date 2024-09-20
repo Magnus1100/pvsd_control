@@ -1,7 +1,8 @@
 import math as mt
 import pandas as pd
 
-epw_data = pd.read_csv('./source/data/epw_dataset.csv')
+epw_data = pd.read_csv(r'D:\03-GitHub\pvsd_control\my_package\source\dataset\epw_data.csv')
+vis_data_path = r'D:\03-GitHub\pvsd_control\my_package\source\dataset\vis_data_outside_0920.csv'
 
 
 class pvShadeBlind:
@@ -27,10 +28,10 @@ class ShadeCalculate:
 
     @staticmethod
     def GetVis(sd_angle, sd_location):
-        vis_data_file_path = r'./source/dataset/vis_data.csv'
-        vis_data = pd.read_csv(vis_data_file_path)
+        vis_data = pd.read_csv(vis_data_path)
         vis = vis_data[(vis_data['sd_angle'] == sd_angle) &
-                       (vis_data['sd_location'] == sd_location)]['vis'].values
+                       (vis_data['sd_position'] == sd_location)]['vis'].values
+        vis = vis/100
         return vis
 
     @staticmethod

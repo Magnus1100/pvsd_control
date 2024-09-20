@@ -23,14 +23,9 @@ def normalize_data(data):
 df = pd.read_csv('../source/data/dataset_found.csv', header=None)
 df2 = pd.read_csv('../source/data/dataset_found (2).csv', header=None)
 
-# # 第一次训练数据
-# sDGP = np.loadtxt('../source/data/sDGP.txt')
-# sUDI = np.loadtxt('../source/data/sUDI.txt')
-# shade_angle = df2.iloc[:, 0]
-# shade_interval = df2.iloc[:, 1]
-
-
-sDGP = np.loadtxt('../source/data/1126335/240821_sDGP.txt')
+# 读取数据
+sDGP = np.loadtxt('../source/data/1126335/outside_0920/sDGP.txt')
+sUDI = np.loadtxt('../source/data/1126335/outside_0920/sUDI.txt')
 sd_angle = np.loadtxt('../source/data/1126335/angle_255.txt')
 sd_angle = [round(mt.radians(angle), 2) for angle in sd_angle]
 sd_position = np.loadtxt('../source/data/1126335/position_255.txt')
@@ -66,13 +61,13 @@ new_df['Altitude'] = copied_altitude
 new_df['Shade Angle'] = copied_angle
 new_df['Shade Interval'] = copied_interval
 new_df['sDGP'] = sDGP
-# new_df['sUDI'] = sUDI / 100
+new_df['sUDI'] = sUDI / 100
 
 # 重新索引，将连续的序号赋给 DataFrame
 new_df.index = index1
-new_df.to_csv('../source/data/1126335/240821_sDGP.csv', index=False)
+new_df.to_csv('../source/data/1126335/240920.csv', index=False)
 
-normalized_df = normalize_data(new_df)
-normalized_df.to_csv('../source/data/1126335/240821_normalized_sDGP.csv')
+normalized_data = normalize_data(new_df)
+normalized_data.to_csv('../source/data/1126335/240920_normalized.csv')
 # print(new_df)
 # print(normalized_df)

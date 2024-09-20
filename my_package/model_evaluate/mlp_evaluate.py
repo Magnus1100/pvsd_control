@@ -13,7 +13,7 @@ y = dp.new_df[['sUDI']]
 
 x_train, x_test, y_train, y_true = train_test_split(x, y, test_size=0.0001, random_state=22)
 
-#path_mlp = 'D:\pythonProject\pythonProject\.venv\model/mlp(kFold).keras'
+#path_mlp = 'D:\pythonProject\pythonProject\.venv\model_0920/mlp(kFold).keras'
 path_mlp = r'/.venv/my_package/models_unused\sUDI_model/mlp_sUDI(kFold)-V1-0515.keras'
 
 # 加载模型

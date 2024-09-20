@@ -5,22 +5,29 @@ from tqdm import tqdm
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 
+"""
+功能：训练随机森林模型
+使用步骤：
+1.更改数据集输入路径
+2.更改训练的特征值与预测值
+3.更改输出路径
+4.更改超参数（如必要，一般不用改）
+5.运行程序等模型输出（训练时间约5分钟） -> 去“model_evaluate”文件夹验证模型
+"""
 
+model_output_path = '../source/model_optimizer/model_0920/sUDI_RF_0920.pkl'
 # 建立数据集
-df_path = r'../source/data/1126335/240821_sDGP.csv'
-df = pd.read_csv(df_path)
-
-df_normalized_path = r'../source/data/1126335/240821_normalized_sDGP.csv'
+df_normalized_path = r'../source/data/1126335/outside_0920/240920_normalized.csv'
 df_normalized = pd.read_csv(df_normalized_path)
 
-print(df.shape)
 print(df_normalized.shape)
 
-data1 = df_normalized
-data2 = df
+train_data = df_normalized
 
-x = data1[['Azimuth', 'Altitude', 'Shade Angle', 'Shade Interval']]
-y = data2[['sDGP']]
+x = train_data[['Azimuth', 'Altitude', 'Shade Angle', 'Shade Interval']]
+y = train_data[['sUDI']]
+
+print(x.shape, y.shape)
 
 # 将 y 转换为一维数组
 y_array = y.values.ravel()
@@ -52,13 +59,12 @@ print("Training Scores for each tree:", train_scores)
 
 # 拟合模型
 random_forest.fit(x_train, y_train)
-model_path = r'F:\pvsd_code\pvsd_control\my_package\source\models\sDGP_RF_0821_V1.pkl'
 
 # 获取路径中不包括文件名的部分
-directory = os.path.dirname(model_path)
+directory = os.path.dirname(model_output_path)
 
 # 如果路径不存在，则创建路径
 if not os.path.exists(directory):
     os.makedirs(directory)
 # 保存模型
-joblib.dump(random_forest, model_path)
+joblib.dump(random_forest, model_output_path)

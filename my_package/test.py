@@ -36,7 +36,7 @@ import pygmo as pg
 # 测试min，max
 # sDGP = np.loadtxt('source/data/sDGP.txt')
 # sUDI = np.loadtxt('source/data/sUDI.txt')
-# vis_data = pd.read_csv('source/dataset/vis_data.csv')
+# vis_data = pd.read_csv('source/dataset/vis_data_outside_0920.csv')
 # vis = vis_data['vis']
 # print('min_sdgp:%.2f' % min(sDGP))
 # print('max_sdgp:%.2f' % max(sDGP))

@@ -220,7 +220,7 @@ def sanitizeIdentifier(identifier):
   # End fcn sanitizeIdentifier().
 
 
-#--- Fcn to insert model identifier into a source code file.
+#--- Fcn to insert model_0920 identifier into a source code file.
 #
 #   Replace a dummy string in {origFileName} with the required one, and save as
 # {modFileName}.
@@ -283,12 +283,12 @@ def makeFmuSharedLib(showDiagnostics, litter,
   modelIdName, fmiVersion):
   #
   if( showDiagnostics ):
-    printDiagnostic('Begin creating shared FMU library for model {' +modelIdName +'}')
+    printDiagnostic('Begin creating shared FMU library for model_0920 {' +modelIdName +'}')
   #
   # Sanitize {modelIdName}.
   modelIdSanitizedName = sanitizeIdentifier(modelIdName)
   if( showDiagnostics and (modelIdSanitizedName != modelIdName) ):
-    printDiagnostic('Converting model identifier from {' +modelIdName +'} to {' +modelIdSanitizedName +'}')
+    printDiagnostic('Converting model_0920 identifier from {' +modelIdName +'} to {' +modelIdSanitizedName +'}')
   #
   fmuSharedLibName = modelIdSanitizedName + SHARED_LIB_EXTENSION
   #
@@ -333,7 +333,7 @@ def makeFmuSharedLib(showDiagnostics, litter,
   # Define the version number
   if (fmiVersion == 2):
       vers = 'v20'
-  # Insert model identifier into source code files (not really needed here).
+  # Insert model_0920 identifier into source code files (not really needed here).
   origMainName = os.path.join(scriptDirName, '../SourceCode/'+vers+'/EnergyPlus/main.c')
   modMainName  = os.path.join(scriptDirName, '../SourceCode/'+vers+'/EnergyPlus', 'temp-'+modelIdSanitizedName+'.c')
   poundDefineModelId(showDiagnostics, origMainName, modelIdSanitizedName, modMainName)
@@ -505,12 +505,12 @@ if __name__ == '__main__':
   #
   # Get {modelIdName}.
   if( currIdx != lastIdx ):
-    quitWithError('Require exactly one command-line argument, <model-identifier>', True)
+    quitWithError('Require exactly one command-line argument, <model_0920-identifier>', True)
   modelIdName = sys.argv[lastIdx]
   if( showDiagnostics ):
-    printDiagnostic('Setting model identifier to {' +modelIdName +'}')
+    printDiagnostic('Setting model_0920 identifier to {' +modelIdName +'}')
   if( modelIdName.startswith('-') and len(modelIdName)==2 ):
-    quitWithError('Expecting model identifier, got what looks like a command-line option {' +modelIdName +'}', True)
+    quitWithError('Expecting model_0920 identifier, got what looks like a command-line option {' +modelIdName +'}', True)
   #
   # Run.
   (fmuSharedLibName, fmuBinDirName) = makeFmuSharedLib(showDiagnostics, litter, modelIdName)

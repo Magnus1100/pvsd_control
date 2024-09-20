@@ -5,22 +5,29 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from sklearn.model_selection import train_test_split
 
-# 指定特征与目标
-df_path = r'../source/data/1126335/240821_sDGP.csv'
-df_normalized_path = r'../source/data/1126335/240821_normalized_sDGP.csv'
+"""
+功能：评估随机森林模型的回归效果
+使用步骤：
+1.更改数据路径
+2.更改模型路径
+3.点击运行，更改test_size和random_state多试几次 -> 效果好的话就可以应用模型啦！
+"""
 
-df = pd.read_csv(df_path)
+
+# 指定特征与目标
+df_normalized_path = r'../source/data/1126335/outside_0920/240920_normalized.csv'
+
 df_normalized = pd.read_csv(df_normalized_path)
 
 # x = df_normalized[['Azimuth', 'Altitude', 'Shade Angle', 'Shade Interval']]
 x = df_normalized[['Azimuth', 'Altitude', 'Shade Angle', 'Shade Interval']]
-y = df[['sDGP']]
+y = df_normalized[['sUDI']]
 
 # 划分测试集
-x_train, x_test, y_train, y_true = train_test_split(x, y, test_size=0.001, random_state=50)
+x_train, x_test, y_train, y_true = train_test_split(x, y, test_size=0.00005, random_state=50)
 
 # 加载模型
-model_sdgp = joblib.load(r'..\source\models\sDGP_RF_0821_V1.pkl')
+model_sdgp = joblib.load(r'../source/model_optimizer/model_0920/sUDI_RF_0920.pkl')
 
 # 使用模型预测测试集
 y_pred = model_sdgp.predict(x_test)

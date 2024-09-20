@@ -13,33 +13,48 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from analytic_formula import blind_shade_calculate as bsc
 from analytic_formula import pvg_calculate as pc
 
+"""
+功能：通过调用机器学习模型和优化算法，生成某一段时间的遮阳形态参数
+使用步骤：
+1.设置各文件路径
+2.设置全局变量，权重
+3.点击运行输出最优形态 -> 做能耗和采光分析
+
+代码结构：
+1.类dataSaver-把dataframe输出成csv：方法get_unique_filename-生成文件名；方法save_dataframe
+2.类hoyEditor-生成一个hoy列表（输入开始/结束日期）生成一段时间的hoy列表
+"""
+
 # >>> 声明实例 <<<
 pvsd_instance = bsc.pvShadeBlind(0.15, 2.1, 20, 0.7, 0,
                                  0.6, 16, 2.4)
 # >>> 读取数据 <<<
-epw_data_file_path = 'source/dataset/epw_data.csv'
-vis_data = pd.read_csv('source/dataset/vis_data.csv')
-sDGP = np.loadtxt('source/data/1126335/240821_sDGP.txt')
-sUDI = np.loadtxt('source/data/sUDI.txt')
-azimuth = np.loadtxt('source/data/azimuth.txt')
-altitude = np.loadtxt('source/data/altitude.txt')
+epw_data_file_path = r'./source/dataset/epw_data.csv'
+vis_data = pd.read_csv('./source/dataset/vis_data.csv')
+sDGP = np.loadtxt('./source/data/1126335/outside_0920/sDGP.txt')
+sUDI = np.loadtxt('./source/data/1126335/outside_0920/sUDI.txt')
+Azimuth = np.loadtxt('./source/data/azimuth.txt')
+Altitude = np.loadtxt('./source/data/altitude.txt')
 
 # ml模型
-model_sdgp = joblib.load('./source/model_optimizer/sDGP_RF_0821_V1.pkl')
-model_sudi = joblib.load('./source/model_optimizer/sUDI_random_forest_model.pkl')
+model_sdgp = joblib.load('./source/model_optimizer/model_0920/sDGP_RF_0920.pkl')
+model_sudi = joblib.load('./source/model_optimizer/model_0920/sUDI_RF_0920.pkl')
 
 # >>> 全局变量 <<<
 all_data = []  # 数据记录
 optimizer_data = []  # 优化数据记录
 shade_schedule = pd.DataFrame(columns=['Hoy', 'SD_Angle', 'SD_Position'])
-pygmo_gen, pygmo_pop = 3, 3  # 迭代次数，每代人口
+
+# >>> 重要变量 <<<
+main_hoy = range(8, 18)
 weight_dgp, weight_udi, weight_vis, weight_pvg = 1, 1, 1, 1  # 各项权重[0,1]
+pygmo_gen, pygmo_pop = 3, 3  # 迭代次数，每代人口
 
 # 取值范围
 min_angle, max_angle = mt.radians(0), mt.radians(90)  # 角度范围
 min_position, max_position = -0.14, 0.14  # 位置范围
-min_azimuth, max_azimuth = mt.radians(min(azimuth)), mt.radians(max(azimuth))  # 方位角范围
-min_altitude, max_altitude = mt.radians(min(altitude)), mt.radians(max(altitude))  # 高度角范围
+min_azimuth, max_azimuth = mt.radians(min(Azimuth)), mt.radians(max(Azimuth))  # 方位角范围
+min_altitude, max_altitude = mt.radians(min(Altitude)), mt.radians(max(Altitude))  # 高度角范围
 
 print('angle_round:', [min_angle, round(max_angle, 3)])
 print('azimuth_round:', [round(min_azimuth, 3), round(max_azimuth, 3)])
@@ -47,25 +62,27 @@ print('altitude_round:', [round(min_altitude, 3), round(max_altitude, 3)])
 
 
 # 获取唯一的文件名字。应用在最后的csv生成中。
-def get_unique_filename(base_name, extension, counter):
-    today_date = datetime.now().strftime('%Y%m%d')  # 当前日期格式为 YYYYMMD
-    return f'{base_name}_{today_date}_{counter}.{extension}'
+class dataSaver:
+    @staticmethod
+    def get_unique_filename(base_name, extension, counter):
+        today_date = datetime.now().strftime('%Y%m%d')  # 当前日期格式为YYYYMMD
+        return f'{base_name}_{today_date}_{counter}.{extension}'
 
-
-# 将dataframe保存在可以自己命名的csv文件里。如果名字重复则生成一个新文件。
-def save_dataframe(df, base_name, extension='csv', start_counter=1):
-    counter = start_counter
-    while True:
-        filename = get_unique_filename(base_name, extension, counter)
-        if not os.path.exists(filename):
-            try:
-                df.to_csv(filename, index=False)
-                print(f'文件已保存为 {filename}')
-                break
-            except FileExistsError:
+    # 将dataframe保存在可以自己命名的csv文件里。如果名字重复则生成一个新文件。
+    @staticmethod
+    def save_dataframe(df, base_name, extension='csv', start_counter=1):
+        counter = start_counter
+        while True:
+            filename = dataSaver.get_unique_filename(base_name, extension, counter)
+            if not os.path.exists(filename):
+                try:
+                    df.to_csv(filename, index=False)
+                    print(f'文件已保存为 {filename}')
+                    break
+                except FileExistsError:
+                    counter += 1  # 如果文件已存在，则增加计数器
+            else:
                 counter += 1  # 如果文件已存在，则增加计数器
-        else:
-            counter += 1  # 如果文件已存在，则增加计数器
 
 
 # 生成hoy列表
@@ -73,7 +90,6 @@ class hoyEditor:
     """
     Fun1：生成hoy列表
     """
-
     @staticmethod
     def generateHoyList(start_date_str, end_date_str, exclude_weekends=False, start_hour=8, end_hour=17):
         """
@@ -143,17 +159,18 @@ def visualizeFitness(results, hoy_list):
     plt.show()
 
 
-def UpdateGenAndInd(data_list, gen_size, pop_size):  # 更新代数和个体数列表
-    gen_list = np.repeat(range(gen_size + 1), pop_size)
-    pop_list = []
-    for i in range(gen_size + 1):
-        for item in range(pop_size):
-            pop_list.append(item)
+def UpdateGenAndInd(data_list, gen_size, pop_size, hoy_list):
+    # 生成 Hoy、Gen 和 Pop 列表
+    hoy_list_extended = np.repeat(hoy_list, (gen_size + 1) * pop_size)  # HOY 列表扩展以匹配 gen 和 pop
+    gen_list = np.tile(np.repeat(range(gen_size + 1), pop_size), len(hoy_list))  # 每个 HOY 包含多个 gen，每个 gen 包含多个 pop
+    pop_list = np.tile(list(range(pop_size)), len(hoy_list) * (gen_size + 1))  # 每个 gen 包含多个 pop
+
+    # 将生成的列表添加到 DataFrame
+    data_list['Hoy'] = hoy_list_extended
     data_list['Gen'] = gen_list
     data_list['Ind'] = pop_list
 
     return data_list
-
 
 def normalizeValue(value, min_value, max_value):
     normalized_value = (value - min_value) / (max_value - min_value)
@@ -331,23 +348,12 @@ class shade_pygmo:
     @staticmethod
     def optimize_hoy(hoy, epw_dataset, my_weights, gen_size=pygmo_gen, pop_size=pygmo_pop):
 
-        # 尝试加载已有的数据，如果文件不存在则提示未找到旧值
-        try:
-            with open('saved_values.pkl', 'rb') as f:
-                old_values = pickle.load(f)
-                print("Old values:", old_values)
-        except FileNotFoundError:
-            old_values = [mt.radians(90), 0]
-            print("No previous values found.")
-
         # 垂直角，水平角
         my_ver_angle = bsc.ShadeCalculate.GetAngle(hoy, 'Ver_Angle')
         my_hor_angle = bsc.ShadeCalculate.GetAngle(hoy, 'Hor_Angle')
-
         # 方位角
         my_azimuth = epw_dataset.loc[hoy, 'Azimuth']
         my_azimuth = mt.radians(my_azimuth)
-
         # 高度角
         my_altitude = epw_dataset.loc[hoy, 'Altitude']
         my_altitude = mt.radians(my_altitude)
@@ -507,15 +513,14 @@ class shade_pygmo:
         # 转换为 DataFrame
         my_df = pd.DataFrame(flat_list)
         # 更新代数/个体列表
-        UpdateGenAndInd(my_df, pygmo_gen, pygmo_pop)
-        save_dataframe(my_df, 'output', 'csv')
+        UpdateGenAndInd(my_df, pygmo_gen, pygmo_pop,main_hoy)
+        dataSaver.save_dataframe(my_df, 'output', 'csv')
 
 
 def main():
     # ===== 输入值 =====
     # >>> 权重输入值 <<<
     my_weights = [weight_dgp, weight_udi, weight_vis, weight_pvg]  # 权重集合
-    main_hoy = range(8, 18)
     # ===== 计时器 =====
     start_time = time.time()
 
@@ -531,6 +536,7 @@ def main():
     # ===== 计时器 =====
     print(shade_schedule)
     print('done!')
+    shade_pygmo.outputCSV()
 
 
 if __name__ == "__main__":

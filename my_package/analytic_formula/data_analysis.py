@@ -4,13 +4,13 @@ import numpy as np
 import seaborn as sns
 from matplotlib.ticker import ScalarFormatter
 from collections import Counter
+from scipy import stats
 
 # 全局变量-数据
-sDGP_1541553 = np.loadtxt('../source/data/sDGP.txt')
-sDGP_1126335 = np.loadtxt('../source/data/1126335/240821_sDGP.txt')
-sUDI = np.loadtxt('../source/data/sUDI.txt')
+sDGP_1126335 = np.loadtxt('../source/data/1126335/outside_0920/sDGP.txt')
+sUDI_1126335 = np.loadtxt('../source/data/1126335/outside_0920/sUDI.txt')
 Vis = np.loadtxt('../source/data/vis_dataset_2821.txt')
-
+sUDI_1126335 = sUDI_1126335/100
 
 def main():
     # 创建图形和子图
@@ -58,36 +58,54 @@ def main():
     # plt.tight_layout()
     # # 显示图形
     # plt.show()
+    # 计算平均数（均值）
+    # mean_sDGP = np.mean(sDGP_1126335)
+    # mean_sUDI = np.mean(sUDI_1126335)
+    # # 计算中位数
+    # median_sDGP = np.median(sDGP_1126335)
+    # median_sUDI = np.median(sUDI_1126335)
+    # # 计算标准差
+    # std_dev_sDGP = np.std(sDGP_1126335)
+    # std_dev_sUDI = np.std(sUDI_1126335)
+    # # 计算方差
+    # variance = np.var(sUDI_1126335)
+    # # 计算四分位数（25th, 50th, 75th）
+    # q25, q50, q75 = np.percentile(sUDI_1126335, [25, 50, 75])
+    # # 计算偏度（反映分布的对称性）
+    # skewness = stats.skew(sUDI_1126335)
+    # # 计算峰度（反映分布的陡峭程度）
+    # kurtosis = stats.kurtosis(sUDI_1126335)
+    #
+    # # 输出结果
+    # print(f"平均数 (Mean): {mean_sUDI}")
+    # print(f"中位数 (Median): {median_sUDI,}")
+    # print(f"标准差 (Standard Deviation): {std_dev_sUDI}")
+    # print(f"方差 (Variance): {variance}")
+    # print(f"25th 百分位 (Q1): {q25}")
+    # print(f"50th 百分位 (Median): {q50}")
+    # print(f"75th 百分位 (Q3): {q75}")
+    # print(f"偏度 (Skewness): {skewness}")
+    # print(f"峰度 (Kurtosis): {kurtosis}")
 
     # 创建子图
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
 
     # 在第一个子图上绘制 sDGP_1541553 的分布
-    ax1.hist(sDGP_1541553, bins=50, color='blue', edgecolor='black')
-    ax1.set_title('Distribution of sDGP_1541553')
-    ax1.set_xlabel('Value')
-    ax1.set_ylabel('Frequency')
+    ax1.hist(sDGP_1126335, bins=50, color='black', edgecolor='black')
+    ax1.set_title('sDGP数据分布')
+    ax1.set_xlabel('序号')
+    ax1.set_ylabel('sDGP')
 
     # 在第二个子图上绘制 sDGP_1126335 的分布
-    ax2.hist(sDGP_1126335, bins=50, color='red', edgecolor='black')
-    ax2.set_title('Distribution of sDGP_1126335')
-    ax2.set_xlabel('Value')
-    ax2.set_ylabel('Frequency')
+    ax2.hist(sUDI_1126335, bins=75, color='black', edgecolor='black')
+    ax2.set_title('sUDI数据分布')
+    ax2.set_xlabel('序号')
+    ax2.set_ylabel('sUDI')
 
     # 调整布局并显示图像
     plt.tight_layout()
     plt.show()
 
-    # 每4417行转化成一列
-    chunk_size = 4417
-    num_chunks = len(sDGP_1126335) // chunk_size + int(len(sDGP_1541553) % chunk_size != 0)
-
-    # 将数组 reshape 并转置
-    reshaped_array = sDGP_1126335.reshape(num_chunks, chunk_size).T
-
-    # 输出 reshaped_array 或 flattened_column
-    print(reshaped_array.shape)
-    print(reshaped_array)
 
 
 if __name__ == '__main__':

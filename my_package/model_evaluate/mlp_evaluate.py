@@ -1,20 +1,20 @@
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 import tensorflow as tf
 
-import data_process as dp
 from sklearn.metrics import r2_score
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 
+data = pd.read_csv('../source/data/1126335/outside_0920/240920_normalized.csv')
 #指定特征与目标
-x = dp.normalized_data[['Azimuth', 'Altitude', 'Shade Angle', 'Shade Interval']]
-y = dp.new_df[['sUDI']]
+x = data[['Azimuth', 'Altitude', 'Shade Angle', 'Shade Interval']]
+y = data[['sDGP']]
 
 x_train, x_test, y_train, y_true = train_test_split(x, y, test_size=0.0001, random_state=22)
 
-#path_mlp = 'D:\pythonProject\pythonProject\.venv\model_0920/mlp(kFold).keras'
-path_mlp = r'/.venv/my_package/models_unused\sUDI_model/mlp_sUDI(kFold)-V1-0515.keras'
+path_mlp = 'mlp_sDGP(kFold)-0924.keras'
 
 # 加载模型
 model = tf.keras.models.load_model(path_mlp)
@@ -41,11 +41,19 @@ print(f"Root Mean Squared Error (RMSE): {rmse:.3f}")
 mae = np.mean(np.abs(np.array(y_true) - np.array(y_pred)))
 print(f"Mean Absolute Error (MAE): {mae:.3f}")
 
-# 绘制预测值和真实值的曲线
-plt.plot(x, y_pred, label='Predicted', color='blue')
-plt.plot(x, y_true, label='True', color='red')
-plt.xlabel('Index')
-plt.ylabel('Value')
-plt.title('Predicted vs True Values(mlp)')
+# 绘制实际值和预测值的散点图
+plt.figure(figsize=(10, 6))
+plt.scatter(y_true, y_pred, label='Predicted vs Actual', color='blue')
+
+# 绘制理想线 y = x
+plt.plot([y_true.min(), y_true.max()], [y_true.min(), y_true.max()], 'r--', label='Ideal Line (y=x)')
+
+# 添加标签和标题
+plt.xlabel('Actual sDGP')
+plt.ylabel('Predicted sDGP')
+plt.title('Predicted vs Actual sDGP')
 plt.legend()
+plt.grid()
+
+# 显示图形
 plt.show()

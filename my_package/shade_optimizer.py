@@ -17,8 +17,9 @@ from analytic_formula import pvg_calculate as pc
 功能：通过调用机器学习模型和优化算法，生成某一段时间的遮阳形态参数
 使用步骤：
 1.设置各文件路径
-2.设置全局变量，权重
-3.点击运行输出最优形态 -> 做能耗和采光分析
+2.设置模拟时间HOY
+3.设置模拟权重：眩光|采光|视野|发电
+4.点击运行输出最优形态 -> 做能耗和采光分析
 
 代码结构：
 1.类dataSaver-把dataframe输出成csv：方法get_unique_filename-生成文件名；方法save_dataframe
@@ -27,7 +28,7 @@ from analytic_formula import pvg_calculate as pc
 
 # >>> 声明实例 <<<
 pvsd_instance = bsc.pvShadeBlind(0.15, 2.1, 20, 0.7, 0,
-                                 0.6, 16, 2.4)
+                                 1, 16, 2.4)
 # >>> 读取数据 <<<
 epw_data_file_path = r'./source/dataset/epw_data.csv'
 vis_data = pd.read_csv('./source/dataset/vis_data.csv')
@@ -46,9 +47,10 @@ optimizer_data = []  # 优化数据记录
 shade_schedule = pd.DataFrame(columns=['Hoy', 'SD_Angle', 'SD_Position'])
 
 # >>> 重要变量 <<<
-main_hoy = range(8, 18)
+main_hoy = np.loadtxt('./source/data/hoy_3.txt')
+main_hoy = np.array([8, 9, 10, 11, 12, 13, 14, 15, 16, 17])
 weight_dgp, weight_udi, weight_vis, weight_pvg = 1, 1, 1, 1  # 各项权重[0,1]
-pygmo_gen, pygmo_pop = 3, 3  # 迭代次数，每代人口
+pygmo_gen, pygmo_pop = 20, 20  # 迭代次数，每代人口
 
 # 取值范围
 min_angle, max_angle = mt.radians(0), mt.radians(90)  # 角度范围
@@ -90,6 +92,7 @@ class hoyEditor:
     """
     Fun1：生成hoy列表
     """
+
     @staticmethod
     def generateHoyList(start_date_str, end_date_str, exclude_weekends=False, start_hour=8, end_hour=17):
         """
@@ -140,6 +143,9 @@ def visualizeFitness(results, hoy_list):
     cmap = plt.get_cmap('viridis')  # 获取viridis色图
     colors = cmap(np.linspace(0.2, 0.8, len(hoy_list)))  # 生成同一色系的不同深浅颜色
 
+    legend_labels = []  # 用于存储图例标签
+    hoy_values = []  # 用于存储对应的 hoy 值
+
     for i, (hoy, _, _, _, all_fitness) in enumerate(results):
         avg_fitness_per_generation = []
 
@@ -150,12 +156,22 @@ def visualizeFitness(results, hoy_list):
 
         # 绘制每代的折线图
         generations = np.arange(len(avg_fitness_per_generation))
-        plt.plot(generations, avg_fitness_per_generation, marker='o', color=colors[i], label=f"Hoy {hoy}")
+        plt.plot(generations, avg_fitness_per_generation, marker='o', markersize=4, color=colors[i])  # 调整标点大小
+
+        # 收集图例标签和对应的 hoy 值
+        legend_labels.append(f"Hoy {hoy}")
+        hoy_values.append(hoy)
+
+    # 根据 hoy 值的顺序重新排列图例
+    sorted_indices = np.argsort(hoy_values)
+    sorted_labels = [legend_labels[i] for i in sorted_indices]
 
     plt.xlabel('Generation')
     plt.ylabel('Average Fitness')
     plt.title('Average Fitness Values Over Generations for Different HOYs')
-    plt.legend()
+    plt.legend(sorted_labels)  # 使用排序后的图例
+
+    plt.grid()  # 添加网格线
     plt.show()
 
 
@@ -171,6 +187,7 @@ def UpdateGenAndInd(data_list, gen_size, pop_size, hoy_list):
     data_list['Ind'] = pop_list
 
     return data_list
+
 
 def normalizeValue(value, min_value, max_value):
     normalized_value = (value - min_value) / (max_value - min_value)
@@ -281,7 +298,7 @@ class MyProblem:
         # 4，调用公式计算pv发电量
         shade_percent = bsc.ShadeCalculate.AllShadePercent(pvsd.sd_length, pvsd.sd_width, sd_interval, self.ver_angle,
                                                            self.hor_angle, sd_angle)
-        shade_rad = pc.pvgCalculator.calculateIrradiance(pvsd.window_azimuth, sd_angle, 0.6, self.hoy)
+        shade_rad = pc.pvgCalculator.calculateIrradiance(pvsd.window_azimuth, sd_angle, 1, self.hoy)
         pvg_value = pc.pvgCalculator.calculateHoyPvGeneration(shade_rad, pvsd.panel_area,
                                                               pvsd.pv_efficiency) * (1 - shade_percent)
         normalized_pvg = pvg_value / self.max_pvg
@@ -290,6 +307,8 @@ class MyProblem:
         # final value - 加权优化值
         val_all = val_sdgp + val_sudi + val_vis + val_pvg
         val_optimize = - val_all
+        print(val_all)
+        print(val_sdgp,val_sudi,val_vis,val_pvg)
 
         # 保存每一步个体形态和适应度
         self.fitness_history.append(val_optimize)
@@ -357,7 +376,18 @@ class shade_pygmo:
         # 高度角
         my_altitude = epw_dataset.loc[hoy, 'Altitude']
         my_altitude = mt.radians(my_altitude)
-        my_max_pvg = epw_dataset.loc[hoy, 'max_pv_generation']
+
+        try:
+            # 尝试获 取 max_pv_generation 值
+            max_pv_value = epw_dataset.loc[hoy, 'max_pv_generation']
+
+            # 检查值是否为零
+            if max_pv_value != 0:
+                my_max_pvg = max_pv_value
+            else:
+                my_max_pvg = 1
+        except KeyError:
+            print(f"Value for hoy: {hoy} not found in the dataset.")
 
         # 声明优化问题实例
         problem_instance = MyProblem(hoy, my_azimuth, my_altitude, my_ver_angle, my_hor_angle, my_weights, my_max_pvg)
@@ -493,7 +523,7 @@ class shade_pygmo:
         best_fitness = [values[2] for values in schedule.values()]
 
         # # 可视化结果
-        # visualizeFitness(results, hoy_list)
+        visualizeFitness(results, hoy_list)
 
         # 使用字典创建 DataFrame
         schedule_df = pd.DataFrame({
@@ -513,7 +543,7 @@ class shade_pygmo:
         # 转换为 DataFrame
         my_df = pd.DataFrame(flat_list)
         # 更新代数/个体列表
-        UpdateGenAndInd(my_df, pygmo_gen, pygmo_pop,main_hoy)
+        UpdateGenAndInd(my_df, pygmo_gen, pygmo_pop, main_hoy)
         dataSaver.save_dataframe(my_df, 'output', 'csv')
 
 
@@ -524,17 +554,21 @@ def main():
     # ===== 计时器 =====
     start_time = time.time()
 
-    # >>> 主程序 <<<
-    for hoy in main_hoy:
-        schedule = shade_pygmo.main_single(my_weights, hoy)
-        shade_schedule.loc[main_hoy.index(hoy)] = [hoy, schedule[0], schedule[1]]
+    # # >>> 主程序 <<<
+    # for hoy in main_hoy:
+    #     schedule = shade_pygmo.main_single(my_weights, hoy)
+    #     main_hoy_list = main_hoy.tolist()
+    #     shade_schedule.loc[main_hoy_list.index(hoy)] = [hoy, schedule[0], schedule[1]]
+    shade_pygmo.main_parallel(my_weights, main_hoy)
 
     # ===== 计时器 =====
     end_time = time.time()
     execution_time = format(end_time - start_time, '.2f')
     print("Total time cost:", execution_time, "s")
     # ===== 计时器 =====
+
     print(shade_schedule)
+    shade_schedule.to_csv('3M-1111-1-schedule.csv')
     print('done!')
     shade_pygmo.outputCSV()
 

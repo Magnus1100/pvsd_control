@@ -1,14 +1,10 @@
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
-
-import data_process as dp
 import joblib
-
-data1 = dp.new_df
-data2= dp.normalized_data
-
-x = data2[['Azimuth', 'Altitude', 'Shade Angle', 'Shade Interval']]
-y = data1[['sDGP']]
+import pandas as pd
+data = pd.read_csv('../source/data/1126335/outside_0920/240920_normalized.csv')
+x = data[['Azimuth', 'Altitude', 'Shade Angle', 'Shade Interval']]
+y = data[['sDGP']]
 
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 # 创建线性回归模型
@@ -18,6 +14,6 @@ model = LinearRegression()
 model.fit(x_train, y_train)
 
 # 保存模型到文件
-joblib.dump(model, 'linear_regression_model.pkl')
+joblib.dump(model, '../model_evaluate/linear-0924.pkl')
  
  

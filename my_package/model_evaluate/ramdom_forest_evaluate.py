@@ -21,13 +21,13 @@ df_normalized = pd.read_csv(df_normalized_path)
 
 # x = df_normalized[['Azimuth', 'Altitude', 'Shade Angle', 'Shade Interval']]
 x = df_normalized[['Azimuth', 'Altitude', 'Shade Angle', 'Shade Interval']]
-y = df_normalized[['sUDI']]
+y = df_normalized[['sDGP']]
 
 # 划分测试集
-x_train, x_test, y_train, y_true = train_test_split(x, y, test_size=0.00005, random_state=50)
+x_train, x_test, y_train, y_true = train_test_split(x, y, test_size=0.0001, random_state=50)
 
 # 加载模型
-model_sdgp = joblib.load(r'../source/model_optimizer/model_0920/sUDI_RF_0920.pkl')
+model_sdgp = joblib.load(r'../source/model_optimizer/model_0920/sDGP_RF_0920.pkl')
 
 # 使用模型预测测试集
 y_pred = model_sdgp.predict(x_test)
@@ -66,11 +66,6 @@ plt.plot([min_val, max_val], [min_val, max_val], color='red', linestyle='--', li
 
 # 添加网格
 plt.grid(True, which='both', linestyle='--', linewidth=0.5)
-
-# 添加评价指标的文本到图外的右侧
-plt.figtext(1, 0.55, f'R^2: {r2:.3f}', fontsize=12, verticalalignment='top', horizontalalignment='right')
-plt.figtext(1, 0.50, f'MSE: {mse:.4f}', fontsize=12, verticalalignment='top', horizontalalignment='right')
-plt.figtext(1, 0.45, f'MAE: {mae:.3f}', fontsize=12, verticalalignment='top', horizontalalignment='right')
 
 plt.xlabel('Index')
 plt.ylabel('Value')

@@ -1,14 +1,11 @@
-import data_process as dp
 from sklearn.model_selection import KFold
 from sklearn.linear_model import Lasso
 import joblib
+import pandas as pd
 
-# 建立数据集
-data1 = dp.new_df
-data2= dp.normalized_data
-
-x = data2[['Azimuth', 'Altitude', 'Shade Angle', 'Shade Interval']]
-y = data1[['sDGP']]
+data = pd.read_csv('../source/data/1126335/outside_0920/240920_normalized.csv')
+x = data[['Azimuth', 'Altitude', 'Shade Angle', 'Shade Interval']]
+y = data[['sDGP']]
 
 # 创建k折对象（5折，洗牌）
 kf = KFold(n_splits=5, shuffle=True, random_state=42)
@@ -27,4 +24,4 @@ for train_index, val_index in kf.split(x,y):# train_index 就是分类的训练�
     lasso_model.fit(x_train, y_train)
 
 # 保存模型到文件
-joblib.dump(lasso_model, 'D:\pythonProject\pythonProject\.venv\model(kFold)/lasso(kFold)-V1-0513.pkl')
+joblib.dump(lasso_model, '../model_evaluate/lasso-0924.pkl')

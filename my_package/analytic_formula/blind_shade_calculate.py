@@ -3,7 +3,9 @@ import pandas as pd
 
 epw_data = pd.read_csv(r'D:\03-GitHub\pvsd_control\my_package\source\dataset\epw_data.csv')
 vis_data_path = r'D:\03-GitHub\pvsd_control\my_package\source\dataset\vis_data_outside_0920.csv'
-
+if 'Hoy' in epw_data.columns:
+    # 将 'hoy' 列设置为索引
+    epw_data = epw_data.set_index('Hoy')
 
 class pvShadeBlind:
     def __init__(self, sd_width, sd_length, pv_panel_area, pv_efficiency, window_azimuth, window_transmittance,
@@ -31,7 +33,7 @@ class ShadeCalculate:
         vis_data = pd.read_csv(vis_data_path)
         vis = vis_data[(vis_data['sd_angle'] == sd_angle) &
                        (vis_data['sd_position'] == sd_location)]['vis'].values
-        vis = vis/100
+        vis = vis / 100
         return vis
 
     @staticmethod

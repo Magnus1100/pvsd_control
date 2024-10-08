@@ -559,7 +559,8 @@ def main():
     #     schedule = shade_pygmo.main_single(my_weights, hoy)
     #     main_hoy_list = main_hoy.tolist()
     #     shade_schedule.loc[main_hoy_list.index(hoy)] = [hoy, schedule[0], schedule[1]]
-    shade_pygmo.main_parallel(my_weights, main_hoy)
+    # shade_pygmo.main_parallel(my_weights, main_hoy)
+    shade_pygmo.main_single(my_weights,single_hoy=8)
 
     # ===== 计时器 =====
     end_time = time.time()

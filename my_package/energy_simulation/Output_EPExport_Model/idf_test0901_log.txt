@@ -1,0 +1,2 @@
+FMIL: module = Model, log level = 2: [error][FMU status:Error] fmi2EnterInitializationMode: The FMU instance Model has no input and output variables. Please check the model description file.
+

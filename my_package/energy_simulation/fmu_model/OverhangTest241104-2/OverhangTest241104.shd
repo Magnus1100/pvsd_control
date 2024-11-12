@@ -1,0 +1,557 @@
+Shadowing Combinations
+..Solar Distribution=FullInteriorAndExteriorWithReflectionsFromExteriorSurfaces
+..In the following, only the first 10 reference surfaces will be shown.
+..But all surfaces are used in the calculations.
+==================================
+Surface=PVSD_STR_1_471CEC7D_1 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=22
+..Surface=Mir-PVSD_STR_2_BB2DE403_1
+..Surface=Mir-PVSD_STR_2_BB2DE403_2
+..Surface=PVSD_STR_2_BB2DE403_3
+..Surface=Mir-PVSD_STR_2_BB2DE403_4
+..Surface=WINDOW_03E8E87D 1
+..Surface=PVSDSLA1
+..Surface=PVSDSLA2
+..Surface=PVSDSLA3
+..Surface=PVSDSLA4
+..Surface=PVSDSLA5
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=Mir-PVSD_STR_1_471CEC7D_1 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=21
+..Surface=Mir-PVSD_STR_1_471CEC7D_2
+..Surface=Mir-PVSD_STR_1_471CEC7D_3
+..Surface=Mir-PVSD_STR_1_471CEC7D_4
+..Surface=WINDOW_03E8E87D 1
+..Surface=PVSDSLA1
+..Surface=PVSDSLA2
+..Surface=PVSDSLA3
+..Surface=PVSDSLA4
+..Surface=PVSDSLA5
+..Surface=PVSDSLA6
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=PVSD_STR_1_471CEC7D_2 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=Mir-PVSD_STR_1_471CEC7D_2 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=22
+..Surface=Mir-PVSD_STR_1_471CEC7D_1
+..Surface=Mir-PVSD_STR_1_471CEC7D_3
+..Surface=Mir-PVSD_STR_1_471CEC7D_4
+..Surface=Mir-PVSD_STR_2_BB2DE403_1
+..Surface=PVSD_STR_2_BB2DE403_3
+..Surface=Mir-PVSD_STR_2_BB2DE403_4
+..Surface=PVSDSLA1
+..Surface=PVSDSLA2
+..Surface=PVSDSLA3
+..Surface=PVSDSLA4
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=PVSD_STR_1_471CEC7D_3 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=1
+..Surface=WALL_3_CC46E025
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=Mir-PVSD_STR_1_471CEC7D_3 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=25
+..Surface=Mir-PVSD_STR_1_471CEC7D_1
+..Surface=Mir-PVSD_STR_1_471CEC7D_2
+..Surface=Mir-PVSD_STR_1_471CEC7D_4
+..Surface=Mir-PVSD_STR_2_BB2DE403_1
+..Surface=Mir-PVSD_STR_2_BB2DE403_2
+..Surface=PVSD_STR_2_BB2DE403_3
+..Surface=Mir-PVSD_STR_2_BB2DE403_4
+..Surface=WINDOW_03E8E87D 1
+..Surface=PVSDSLA1
+..Surface=PVSDSLA2
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=PVSD_STR_1_471CEC7D_4 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=16
+..Surface=PVSDSLA1
+..Surface=PVSDSLA2
+..Surface=PVSDSLA3
+..Surface=PVSDSLA4
+..Surface=PVSDSLA5
+..Surface=PVSDSLA6
+..Surface=PVSDSLA7
+..Surface=PVSDSLA8
+..Surface=PVSDSLA9
+..Surface=PVSDSLA10
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=Mir-PVSD_STR_1_471CEC7D_4 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=24
+..Surface=Mir-PVSD_STR_1_471CEC7D_1
+..Surface=Mir-PVSD_STR_1_471CEC7D_2
+..Surface=Mir-PVSD_STR_1_471CEC7D_3
+..Surface=Mir-PVSD_STR_2_BB2DE403_1
+..Surface=Mir-PVSD_STR_2_BB2DE403_2
+..Surface=PVSD_STR_2_BB2DE403_3
+..Surface=WINDOW_03E8E87D 1
+..Surface=PVSDSLA1
+..Surface=PVSDSLA2
+..Surface=PVSDSLA3
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=PVSD_STR_2_BB2DE403_1 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=1
+..Surface=WALL_3_CC46E025
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=Mir-PVSD_STR_2_BB2DE403_1 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=25
+..Surface=PVSD_STR_1_471CEC7D_1
+..Surface=Mir-PVSD_STR_1_471CEC7D_2
+..Surface=Mir-PVSD_STR_1_471CEC7D_3
+..Surface=Mir-PVSD_STR_1_471CEC7D_4
+..Surface=Mir-PVSD_STR_2_BB2DE403_2
+..Surface=Mir-PVSD_STR_2_BB2DE403_3
+..Surface=Mir-PVSD_STR_2_BB2DE403_4
+..Surface=WINDOW_03E8E87D 1
+..Surface=PVSDSLA1
+..Surface=PVSDSLA2
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=PVSD_STR_2_BB2DE403_2 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=Mir-PVSD_STR_2_BB2DE403_2 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=22
+..Surface=PVSD_STR_1_471CEC7D_1
+..Surface=Mir-PVSD_STR_1_471CEC7D_3
+..Surface=Mir-PVSD_STR_1_471CEC7D_4
+..Surface=Mir-PVSD_STR_2_BB2DE403_1
+..Surface=Mir-PVSD_STR_2_BB2DE403_3
+..Surface=Mir-PVSD_STR_2_BB2DE403_4
+..Surface=PVSDSLA1
+..Surface=PVSDSLA2
+..Surface=PVSDSLA3
+..Surface=PVSDSLA4
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=PVSD_STR_2_BB2DE403_3 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=22
+..Surface=PVSD_STR_1_471CEC7D_1
+..Surface=Mir-PVSD_STR_1_471CEC7D_2
+..Surface=Mir-PVSD_STR_1_471CEC7D_3
+..Surface=Mir-PVSD_STR_1_471CEC7D_4
+..Surface=WINDOW_03E8E87D 1
+..Surface=PVSDSLA1
+..Surface=PVSDSLA2
+..Surface=PVSDSLA3
+..Surface=PVSDSLA4
+..Surface=PVSDSLA5
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=Mir-PVSD_STR_2_BB2DE403_3 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=21
+..Surface=Mir-PVSD_STR_2_BB2DE403_1
+..Surface=Mir-PVSD_STR_2_BB2DE403_2
+..Surface=Mir-PVSD_STR_2_BB2DE403_4
+..Surface=WINDOW_03E8E87D 1
+..Surface=PVSDSLA1
+..Surface=PVSDSLA2
+..Surface=PVSDSLA3
+..Surface=PVSDSLA4
+..Surface=PVSDSLA5
+..Surface=PVSDSLA6
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=PVSD_STR_2_BB2DE403_4 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=16
+..Surface=PVSDSLA1
+..Surface=PVSDSLA2
+..Surface=PVSDSLA3
+..Surface=PVSDSLA4
+..Surface=PVSDSLA5
+..Surface=PVSDSLA6
+..Surface=PVSDSLA7
+..Surface=PVSDSLA8
+..Surface=PVSDSLA9
+..Surface=PVSDSLA10
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=Mir-PVSD_STR_2_BB2DE403_4 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=24
+..Surface=PVSD_STR_1_471CEC7D_1
+..Surface=Mir-PVSD_STR_1_471CEC7D_2
+..Surface=Mir-PVSD_STR_1_471CEC7D_3
+..Surface=Mir-PVSD_STR_2_BB2DE403_1
+..Surface=Mir-PVSD_STR_2_BB2DE403_2
+..Surface=Mir-PVSD_STR_2_BB2DE403_3
+..Surface=WINDOW_03E8E87D 1
+..Surface=PVSDSLA1
+..Surface=PVSDSLA2
+..Surface=PVSDSLA3
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=WINDOW_03E8E87D 1 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=24
+..Surface=PVSD_STR_1_471CEC7D_1
+..Surface=Mir-PVSD_STR_1_471CEC7D_1
+..Surface=Mir-PVSD_STR_1_471CEC7D_3
+..Surface=Mir-PVSD_STR_1_471CEC7D_4
+..Surface=Mir-PVSD_STR_2_BB2DE403_1
+..Surface=PVSD_STR_2_BB2DE403_3
+..Surface=Mir-PVSD_STR_2_BB2DE403_3
+..Surface=Mir-PVSD_STR_2_BB2DE403_4
+..Surface=PVSDSLA1
+..Surface=PVSDSLA2
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=Mir-WINDOW_03E8E87D 1 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=PVSDSLA1 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=1
+..Surface=WALL_3_CC46E025
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=Mir-PVSDSLA1 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=16
+..Surface=PVSDSLA2
+..Surface=PVSDSLA3
+..Surface=PVSDSLA4
+..Surface=PVSDSLA5
+..Surface=PVSDSLA6
+..Surface=PVSDSLA7
+..Surface=PVSDSLA8
+..Surface=PVSDSLA9
+..Surface=PVSDSLA10
+..Surface=PVSDSLA11
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=PVSDSLA2 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=1
+..Surface=WALL_3_CC46E025
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=Mir-PVSDSLA2 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=15
+..Surface=PVSDSLA3
+..Surface=PVSDSLA4
+..Surface=PVSDSLA5
+..Surface=PVSDSLA6
+..Surface=PVSDSLA7
+..Surface=PVSDSLA8
+..Surface=PVSDSLA9
+..Surface=PVSDSLA10
+..Surface=PVSDSLA11
+..Surface=PVSDSLA12
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=PVSDSLA3 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=1
+..Surface=WALL_3_CC46E025
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=Mir-PVSDSLA3 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=14
+..Surface=PVSDSLA4
+..Surface=PVSDSLA5
+..Surface=PVSDSLA6
+..Surface=PVSDSLA7
+..Surface=PVSDSLA8
+..Surface=PVSDSLA9
+..Surface=PVSDSLA10
+..Surface=PVSDSLA11
+..Surface=PVSDSLA12
+..Surface=PVSDSLA13
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=PVSDSLA4 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=1
+..Surface=WALL_3_CC46E025
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=Mir-PVSDSLA4 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=13
+..Surface=PVSDSLA5
+..Surface=PVSDSLA6
+..Surface=PVSDSLA7
+..Surface=PVSDSLA8
+..Surface=PVSDSLA9
+..Surface=PVSDSLA10
+..Surface=PVSDSLA11
+..Surface=PVSDSLA12
+..Surface=PVSDSLA13
+..Surface=PVSDSLA14
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=PVSDSLA5 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=1
+..Surface=WALL_3_CC46E025
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=Mir-PVSDSLA5 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=12
+..Surface=PVSDSLA6
+..Surface=PVSDSLA7
+..Surface=PVSDSLA8
+..Surface=PVSDSLA9
+..Surface=PVSDSLA10
+..Surface=PVSDSLA11
+..Surface=PVSDSLA12
+..Surface=PVSDSLA13
+..Surface=PVSDSLA14
+..Surface=PVSDSLA15
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=PVSDSLA6 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=Mir-PVSDSLA6 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=10
+..Surface=PVSDSLA7
+..Surface=PVSDSLA8
+..Surface=PVSDSLA9
+..Surface=PVSDSLA10
+..Surface=PVSDSLA11
+..Surface=PVSDSLA12
+..Surface=PVSDSLA13
+..Surface=PVSDSLA14
+..Surface=PVSDSLA15
+..Surface=PVSDSLA16
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=PVSDSLA7 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=Mir-PVSDSLA7 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=9
+..Surface=PVSDSLA8
+..Surface=PVSDSLA9
+..Surface=PVSDSLA10
+..Surface=PVSDSLA11
+..Surface=PVSDSLA12
+..Surface=PVSDSLA13
+..Surface=PVSDSLA14
+..Surface=PVSDSLA15
+..Surface=PVSDSLA16
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=PVSDSLA8 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=Mir-PVSDSLA8 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=8
+..Surface=PVSDSLA9
+..Surface=PVSDSLA10
+..Surface=PVSDSLA11
+..Surface=PVSDSLA12
+..Surface=PVSDSLA13
+..Surface=PVSDSLA14
+..Surface=PVSDSLA15
+..Surface=PVSDSLA16
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=PVSDSLA9 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=Mir-PVSDSLA9 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=7
+..Surface=PVSDSLA10
+..Surface=PVSDSLA11
+..Surface=PVSDSLA12
+..Surface=PVSDSLA13
+..Surface=PVSDSLA14
+..Surface=PVSDSLA15
+..Surface=PVSDSLA16
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=PVSDSLA10 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=Mir-PVSDSLA10 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=6
+..Surface=PVSDSLA11
+..Surface=PVSDSLA12
+..Surface=PVSDSLA13
+..Surface=PVSDSLA14
+..Surface=PVSDSLA15
+..Surface=PVSDSLA16
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=PVSDSLA11 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=Mir-PVSDSLA11 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=5
+..Surface=PVSDSLA12
+..Surface=PVSDSLA13
+..Surface=PVSDSLA14
+..Surface=PVSDSLA15
+..Surface=PVSDSLA16
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=PVSDSLA12 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=Mir-PVSDSLA12 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=4
+..Surface=PVSDSLA13
+..Surface=PVSDSLA14
+..Surface=PVSDSLA15
+..Surface=PVSDSLA16
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=PVSDSLA13 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=Mir-PVSDSLA13 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=3
+..Surface=PVSDSLA14
+..Surface=PVSDSLA15
+..Surface=PVSDSLA16
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=PVSDSLA14 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=Mir-PVSDSLA14 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=2
+..Surface=PVSDSLA15
+..Surface=PVSDSLA16
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=PVSDSLA15 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=Mir-PVSDSLA15 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=1
+..Surface=PVSDSLA16
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=PVSDSLA16 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=Mir-PVSDSLA16 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=WALL_1_0A3B8D2F is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=WALL_2_B32FDC77 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=WALL_3_CC46E025 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=26
+..Surface=PVSD_STR_1_471CEC7D_1
+..Surface=Mir-PVSD_STR_1_471CEC7D_1
+..Surface=PVSD_STR_1_471CEC7D_3
+..Surface=Mir-PVSD_STR_1_471CEC7D_3
+..Surface=Mir-PVSD_STR_1_471CEC7D_4
+..Surface=PVSD_STR_2_BB2DE403_1
+..Surface=Mir-PVSD_STR_2_BB2DE403_1
+..Surface=PVSD_STR_2_BB2DE403_3
+..Surface=Mir-PVSD_STR_2_BB2DE403_3
+..Surface=Mir-PVSD_STR_2_BB2DE403_4
+Number of back surfaces=5
+...Surface=WALL_1_0A3B8D2F
+...Surface=WALL_2_B32FDC77
+...Surface=WALL_4_E76387E1
+...Surface=FLOOR_393A6BF5
+...Surface=ROOFCEILING_230DEA77
+Number of receiving sub surfaces=1
+....Surface=WINDOW_03E8E87D
+==================================
+Surface=WINDOW_03E8E87D is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=WALL_4_E76387E1 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=FLOOR_393A6BF5 is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=ROOFCEILING_230DEA77 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=11
+..Surface=PVSDSLA6
+..Surface=PVSDSLA7
+..Surface=PVSDSLA8
+..Surface=PVSDSLA9
+..Surface=PVSDSLA10
+..Surface=PVSDSLA11
+..Surface=PVSDSLA12
+..Surface=PVSDSLA13
+..Surface=PVSDSLA14
+..Surface=PVSDSLA15
+Number of back surfaces=0
+Number of receiving sub surfaces=0

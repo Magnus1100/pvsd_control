@@ -1,0 +1,16 @@
+Program Version,EnergyPlus, Version 24.1.0-9d7789a3ac, YMD=2024.11.12 13:11
+1,5,Environment Title[],Latitude[deg],Longitude[deg],Time Zone[],Elevation[m]
+2,8,Day of Simulation[],Month[],Day of Month[],DST Indicator[1=yes 0=no],Hour[],StartMinute[],EndMinute[],DayType
+3,5,Cumulative Day of Simulation[],Month[],Day of Month[],DST Indicator[1=yes 0=no],DayType  ! When Daily Report Variables Requested
+4,2,Cumulative Days of Simulation[],Month[]  ! When Monthly Report Variables Requested
+5,1,Cumulative Days of Simulation[] ! When Run Period Report Variables Requested
+6,1,Calendar Year of Simulation[] ! When Annual Report Variables Requested
+128,1,ROOM_4_8151D354,Zone Lights Electricity Energy [J] !TimeStep
+581,1,ROOM_4_8151D354 IDEAL LOADS AIR SYSTEM,Zone Ideal Loads Zone Total Heating Energy [J] !TimeStep
+582,1,ROOM_4_8151D354 IDEAL LOADS AIR SYSTEM,Zone Ideal Loads Zone Total Cooling Energy [J] !TimeStep
+325,1,General:Cooling:EnergyTransfer:Zone:ROOM_4_8151D354 [J] !Hourly
+301,1,Cooling:EnergyTransfer:Zone:ROOM_4_8151D354 [J] !Hourly
+276,1,General:Heating:EnergyTransfer:Zone:ROOM_4_8151D354 [J] !Hourly
+252,1,Heating:EnergyTransfer:Zone:ROOM_4_8151D354 [J] !Hourly
+105,1,General:InteriorLights:Electricity:Zone:ROOM_4_8151D354 [J] !Hourly
+69,1,InteriorLights:Electricity:Zone:ROOM_4_8151D354 [J] !Hourly

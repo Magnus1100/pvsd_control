@@ -1,0 +1,1 @@
+[12:21:52.290238 WARN] [openstudio.EpwFile] Successive data points (1980-Jan-31 to 2000-Feb-01, ending on line 753) are greater than 1 day apart in EPW file 'C:/Users/Lala/AppData/Roaming/ladybug_tools/weather/CHN_Guangdong.Shenzhen.594930_SWERA/CHN_Guangdong.Shenzhen.594930_SWERA.epw'. Data will be treated as typical (TMY)

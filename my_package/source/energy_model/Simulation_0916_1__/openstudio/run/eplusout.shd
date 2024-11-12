@@ -1,0 +1,55 @@
+Shadowing Combinations
+..Solar Distribution=FullInteriorAndExteriorWithReflectionsFromExteriorSurfaces
+..In the following, only the first 10 reference surfaces will be shown.
+..But all surfaces are used in the calculations.
+==================================
+Surface=WINDOW_03E8E87D 1 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=Mir-WINDOW_03E8E87D 1 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=WALL_1_0A3B8D2F is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=WALL_2_B32FDC77 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=WALL_3_CC46E025 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=5
+...Surface=WALL_1_0A3B8D2F
+...Surface=WALL_2_B32FDC77
+...Surface=WALL_4_E76387E1
+...Surface=FLOOR_393A6BF5
+...Surface=ROOFCEILING_230DEA77
+Number of receiving sub surfaces=1
+....Surface=WINDOW_03E8E87D
+==================================
+Surface=WINDOW_03E8E87D is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=WALL_4_E76387E1 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=FLOOR_393A6BF5 is not used as Receiving Surface in calculations.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0
+==================================
+Surface=ROOFCEILING_230DEA77 is used as Receiving Surface in calculations and is convex.
+Number of general casting surfaces=0
+Number of back surfaces=0
+Number of receiving sub surfaces=0

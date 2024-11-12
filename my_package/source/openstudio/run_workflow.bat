@@ -1,0 +1,2 @@
+D:
+"C:\openstudio-3.7.0\bin\openstudio.exe" -I "C:\Users\ADMIN\ladybug_tools\resources\measures\honeybee_openstudio_gem\lib" run --show-stdout -m -w "D:\pythonProject\pythonProject\.venv\my_package\source\energymodel\test__\openstudio\workflow.osw"

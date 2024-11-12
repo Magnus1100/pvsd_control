@@ -1,0 +1,14 @@
+{
+  "FromHoneybeeModel" : 
+  {
+    "applicable" : true,
+    "include_datetimes" : false,
+    "model_json" : "F:\\pvsd_code\\pvsd_control\\my_package\\source\\energy_model\\Simulation_0910_WMB__\\openstudio\\Simulation_0910_WMB__.hbjson",
+    "schedule_csv_dir" : "F:\\pvsd_code\\pvsd_control\\my_package\\source\\energy_model\\Simulation_0910_WMB__\\openstudio\\schedules"
+  },
+  "FromHoneybeeSimulationParameter" : 
+  {
+    "applicable" : true,
+    "simulation_parameter_json" : "F:\\pvsd_code\\pvsd_control\\my_package\\source\\energy_model\\Simulation_0910_WMB__\\openstudio\\simulation_parameter.json"
+  }
+}

@@ -1,0 +1,427 @@
+Program Version,EnergyPlus, Version 24.1.0-9d7789a3ac, YMD=2024.11.06 10:45,
+   ** Warning ** Timestep: Requested number (1) is less than the suggested minimum of 4.
+   **   ~~~   ** Please see entry for Timestep in Input/Output Reference for discussion of considerations.
+   ************* Beginning Zone Sizing Calculations
+   ** Warning ** Weather file location will be used rather than entered (IDF) Location object.
+   **   ~~~   ** ..Location object=SITE 1
+   **   ~~~   ** ..Weather File Location=SHENZHEN - CHN SWERA WMO#=594930
+   **   ~~~   ** ..due to location differences, Latitude difference=[22.55] degrees, Longitude difference=[114.10] degrees.
+   **   ~~~   ** ..Time Zone difference=[8.0] hour(s), Elevation difference=[1800.00] percent, [18.00] meters.
+   ** Warning ** ProcessScheduleInput: Schedule:Constant="ALWAYS ON DISCRETE", Blank Schedule Type Limits Name input -- will not be validated.
+   ** Warning ** ProcessScheduleInput: Schedule:Constant="ALWAYS OFF DISCRETE", Blank Schedule Type Limits Name input -- will not be validated.
+   ** Warning ** ProcessScheduleInput: Schedule:Constant="ALWAYS ON CONTINUOUS", Blank Schedule Type Limits Name input -- will not be validated.
+   ** Warning ** GetHTSurfaceData: Surfaces with interface to Ground found but no "Ground Temperatures" were input.
+   **   ~~~   ** Found first in surface=FLOOR_393A6BF5
+   **   ~~~   ** Defaults, constant throughout the year of (18.0) will be used.
+   ** Warning ** CheckUsedConstructions: There are 12 nominally unused constructions in input.
+   **   ~~~   ** For explicit details on each unused construction, use Output:Diagnostics,DisplayExtraWarnings;
+   ** Warning ** DeterminePolygonOverlap: Too many figures [>15000]  detected in an overlap calculation. Use Output:Diagnostics,DisplayExtraWarnings; for more details.
+   ** Warning ** ManageSizing: For a plant sizing run, there must be at least 1 Sizing:Plant object input. SimulationControl Plant Sizing option ignored.
+   ************* Testing Individual Branch Integrity
+   ************* All Branches passed integrity testing
+   ************* Testing Individual Supply Air Path Integrity
+   ************* All Supply Air Paths passed integrity testing
+   ************* Testing Individual Return Air Path Integrity
+   ************* All Return Air Paths passed integrity testing
+   ************* No node connection errors were found.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA1
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA1
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA1
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =TILT ANGLE FROM WINDOW/DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA1
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA2
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA2
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA2
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =TILT ANGLE FROM WINDOW/DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA2
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA3
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA3
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA3
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =TILT ANGLE FROM WINDOW/DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA3
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA4
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA4
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA4
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =TILT ANGLE FROM WINDOW/DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA4
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA5
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA5
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA5
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =TILT ANGLE FROM WINDOW/DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA5
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA6
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA6
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA6
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =TILT ANGLE FROM WINDOW/DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA6
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA7
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA7
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA7
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =TILT ANGLE FROM WINDOW/DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA7
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA8
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA8
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA8
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =TILT ANGLE FROM WINDOW/DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA8
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA9
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA9
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA9
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =TILT ANGLE FROM WINDOW/DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA9
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA10
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA10
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA10
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =TILT ANGLE FROM WINDOW/DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA10
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA11
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA11
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA11
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =TILT ANGLE FROM WINDOW/DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA11
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA12
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA12
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA12
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =TILT ANGLE FROM WINDOW/DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA12
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA13
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA13
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA13
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =TILT ANGLE FROM WINDOW/DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA13
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA14
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA14
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA14
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =TILT ANGLE FROM WINDOW/DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA14
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA15
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA15
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA15
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =TILT ANGLE FROM WINDOW/DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA15
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA16
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA16
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA16
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =TILT ANGLE FROM WINDOW/DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SA16
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP1
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA1
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP1
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =HEIGHT ABOVE WINDOW OR DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP1
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP2
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA6
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP2
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =HEIGHT ABOVE WINDOW OR DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP2
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP3
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA3
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP3
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =HEIGHT ABOVE WINDOW OR DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP3
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP4
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA4
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP4
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =HEIGHT ABOVE WINDOW OR DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP4
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP5
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA5
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP5
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =HEIGHT ABOVE WINDOW OR DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP5
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP6
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA6
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP6
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =HEIGHT ABOVE WINDOW OR DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP6
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP7
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA7
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP7
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =HEIGHT ABOVE WINDOW OR DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP7
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP8
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA8
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP8
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =HEIGHT ABOVE WINDOW OR DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP8
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP9
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA9
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP9
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =HEIGHT ABOVE WINDOW OR DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP9
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP10
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA10
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP10
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =HEIGHT ABOVE WINDOW OR DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP10
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP11
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA11
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP11
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =HEIGHT ABOVE WINDOW OR DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP11
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP12
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA12
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP12
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =HEIGHT ABOVE WINDOW OR DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP12
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP13
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA13
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP13
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =HEIGHT ABOVE WINDOW OR DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP13
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP14
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA14
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP14
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =HEIGHT ABOVE WINDOW OR DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP14
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP15
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA15
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP15
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =HEIGHT ABOVE WINDOW OR DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP15
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   ** Severe  ** Invalid Actuated Component Type =SHADING:OVERHANG
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP16
+   **   ~~~   ** Component Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component types.
+   ** Severe  ** Invalid Actuated Component Unique Name =PVSDSLA16
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP16
+   **   ~~~   ** Component Unique key name not found 
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component names.
+   ** Severe  ** Invalid Actuated Component Control Type =HEIGHT ABOVE WINDOW OR DOOR
+   **   ~~~   ** Entered in ExternalInterface:FunctionalMockupUnitExport:To:Actuator=SP16
+   **   ~~~   ** Control Type not found
+   **   ~~~   ** Use Output:EnergyManagementSystem object to create .edd file for valid component control types.
+   **  Fatal  ** Errors found in processing Energy Management System input. Preceding condition causes termination.
+   ...Summary of Errors that led to program termination:
+   ..... Reference severe error count=96
+   ..... Last severe error=Invalid Actuated Component Control Type =HEIGHT ABOVE WINDOW OR DOOR
+   ************* Warning:  Node connection errors not checked - most system input has not been read (see previous warning).
+   ************* Fatal error -- final processing.  Program exited before simulations began.  See previous error messages.
+   *************
+   ************* ===== Final Error Summary =====
+   ************* The following error categories occurred.  Consider correcting or noting.
+   ************* Nominally Unused Constructions
+   ************* ..The nominally unused constructions warning is provided to alert you to potential conditions that can cause
+   ************* ..extra time during simulation. Each construction is calculated by the algorithm indicated in the HeatBalanceAlgorithm
+   ************* ..object. You may remove the constructions indicated (when you use the DisplayExtraWarnings option).
+   *************
+   ************* EnergyPlus Warmup Error Summary. During Warmup: 0 Warning; 0 Severe Errors.
+   ************* EnergyPlus Sizing Error Summary. During Sizing: 8 Warning; 0 Severe Errors.
+   ************* EnergyPlus Terminated--Fatal Error Detected. 9 Warning; 96 Severe Errors; Elapsed Time=00hr 00min  0.87sec

@@ -7,6 +7,7 @@ if 'Hoy' in epw_data.columns:
     # 将 'hoy' 列设置为索引
     epw_data = epw_data.set_index('Hoy')
 
+
 class pvShadeBlind:
     def __init__(self, sd_width, sd_length, pv_panel_area, pv_efficiency, window_azimuth, window_transmittance,
                  slat_count, window_height):

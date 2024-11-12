@@ -1,0 +1,24 @@
+{
+    "weather_file": "C:\\Users\\Lala\\AppData\\Roaming\\ladybug_tools\\weather\\CHN_Guangdong.Shenzhen.594930_SWERA\\CHN_Guangdong.Shenzhen.594930_SWERA.epw", 
+    "measure_paths": [
+        "C:\\Program Files\\ladybug_tools\\resources\\measures\\honeybee_openstudio_gem\\lib\\measures"
+    ], 
+    "steps": [
+        {
+            "arguments": {
+                "simulation_parameter_json": "F:\\pvsd_code\\pvsd_control\\my_package\\source\\energy_model\\Simulation_0916_1__\\openstudio\\simulation_parameter.json"
+            }, 
+            "measure_dir_name": "from_honeybee_simulation_parameter"
+        }, 
+        {
+            "arguments": {
+                "model_json": "F:\\pvsd_code\\pvsd_control\\my_package\\source\\energy_model\\Simulation_0916_1__\\openstudio\\Simulation_0916_1__.hbjson", 
+                "schedule_csv_dir": "F:\\pvsd_code\\pvsd_control\\my_package\\source\\energy_model\\Simulation_0916_1__\\openstudio\\schedules"
+            }, 
+            "measure_dir_name": "from_honeybee_model"
+        }
+    ], 
+    "file_paths": [
+        "F:\\pvsd_code\\pvsd_control\\my_package\\source\\energy_model\\Simulation_0916_1__\\openstudio\\schedules"
+    ]
+}

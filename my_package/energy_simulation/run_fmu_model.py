@@ -15,6 +15,9 @@ schedule_mapping = {
     for hoy, sa, sd in zip(hoy_list, sa_schedule, sd_schedule)
 }
 
+# 全局变量
+fmu = load_fmu("idf_test0704.fmu")
+
 # 初始化结果列表
 results = {
     'HOY': [],
@@ -24,34 +27,6 @@ results = {
     'Shading Angle': [],
     'Shading Position': []
 }
-
-
-class CalculateBlindAxis:
-    @staticmethod
-    def CalculatePoints(p1, p2, shade_length, shade_angle):
-        shade_angle = math.radians(shade_angle)
-        y_changed = shade_length * math.sin(shade_angle)
-        z_changed = shade_length * math.cos(shade_angle)
-
-        point1 = [p1[0], p1[1], p1[2]]
-        point2 = [p1[0], p1[1] + y_changed, p1[2] + z_changed]
-        point3 = [p2[0], p1[1] + y_changed, p2[2] + z_changed]
-        point4 = [p2[0], p1[1], p1[2]]
-
-        point_list = [point1, point2, point3, point4]
-        return point_list
-
-    @staticmethod
-    def GetBlindAxis(point_list, blind_count, shade_position):
-        blind_axis = []
-        shade_interval = 0.15 - abs(shade_position)
-
-        for i in range(blind_count):
-            adjusted_points = []
-            for point in point_list:
-                new_point = [point[0], point[1], point[2]-shade_interval*i]
-                adjusted_points.append(new_point)
-        blind_axis.append(adjusted_points)
 
 
 def simResultsShow(df):
@@ -67,7 +42,7 @@ def simResultsShow(df):
 
 def runFmu(fmu_hoy_list):
     # 加载FMU
-    fmu = load_fmu("idf_test0704.fmu")
+    fmu
 
     # 逐时仿真并记录结果
     for hoy in fmu_hoy_list:  # 一年共有8760个小时

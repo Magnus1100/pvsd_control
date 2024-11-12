@@ -1,0 +1,6 @@
+[15:52:52.144897 WARN] [openstudio.EpwFile] Successive data points (1980-Jan-31 to 2000-Feb-01, ending on line 753) are greater than 1 day apart in EPW file 'C:/Users/Lala/AppData/Roaming/ladybug_tools/weather/CHN_Guangdong.Shenzhen.594930_SWERA/CHN_Guangdong.Shenzhen.594930_SWERA.epw'. Data will be treated as typical (TMY)
+[15:52:54.368825 WARN] [openstudio.model.ShadingControl] ShadingMaterial detected in shaded construction, prefer to use the ShadingControl constructor from ShadingMaterial.
+[15:52:54.368825 WARN] [openstudio.model.SubSurface] As of 3.1.0, bool __cdecl openstudio::model::SubSurface::setShadingControl(const class openstudio::model::ShadingControl &) is deprecated. Use addShadingControl or addShadingControls instead.
+[15:52:54.417278 WARN] [utilities.idf.WorkspaceObject] Object of type 'Schedule:Constant' and named 'Always On Discrete', points to an object named OnOff from field 1, but that object cannot be located.
+[15:52:54.418182 WARN] [utilities.idf.WorkspaceObject] Object of type 'Schedule:Constant' and named 'Always Off Discrete', points to an object named OnOff 1 from field 1, but that object cannot be located.
+[15:52:54.418182 WARN] [utilities.idf.WorkspaceObject] Object of type 'Schedule:Constant' and named 'Always On Continuous', points to an object named Fractional 1 from field 1, but that object cannot be located.

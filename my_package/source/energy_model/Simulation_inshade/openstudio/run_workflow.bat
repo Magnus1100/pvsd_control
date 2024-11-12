@@ -1,0 +1,2 @@
+F:
+"C:\Program Files\ladybug_tools\openstudio\bin\openstudio.exe" -I "C:\Program Files\ladybug_tools\resources\measures\honeybee_openstudio_gem\lib" run --show-stdout -m -w "F:\pvsd_code\pvsd_control\my_package\source\energy_model\Simulation_inshade\openstudio\workflow.osw"

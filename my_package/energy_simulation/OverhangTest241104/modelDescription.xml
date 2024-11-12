@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This is file 'modelDescription.xml' for input 'OverhangTest241104.idf'. -->
+<fmiModelDescription  fmiVersion="2.0"
+  modelName="OverhangTest241104.idf"
+  guid="d9211138b62312371817543a70413dce"
+  description="Automatically generated from EnergyPlus input file OverhangTest241104.idf"
+  generationTool="idf-to-fmu-export-prep-win.exe"
+  generationDateAndTime="2024-11-05T13:50:32Z"
+  variableNamingConvention="flat"
+  numberOfEventIndicators="0">
+  <!-- Note guid is an md5 checksum of the IDF file. -->
+  <!-- EnergyPlus provided as tool (as opposed to source code or DLL). -->
+  <CoSimulation
+      modelIdentifier="OverhangTest241104"
+      needsExecutionTool="false"
+      canHandleVariableCommunicationStepSize="false"
+      canInterpolateInputs="false"
+      maxOutputDerivativeOrder="0"
+      canGetAndSetFMUstate="false"
+      canSerializeFMUstate="false"
+      canRunAsynchronuously="false"
+      canBeInstantiatedOnlyOncePerProcess="false"
+      canNotUseMemoryManagementFunctions="true"
+      providesDirectionalDerivative="false"/>
+  <!-- Exposed model variables. -->
+  <ModelVariables>
+      <ScalarVariable name="CoolingLoad" valueReference="100002" causality="output" type="Real" />
+      <ScalarVariable name="HeatingLoad" valueReference="100003" causality="output" type="Real" />
+  </ModelVariables>
+  
+  <ModelStructure>
+      <Outputs>
+          <Unknown name="CoolingLoad" valueReference="100002" />
+          <Unknown name="HeatingLoad" valueReference="100003" />
+      </Outputs>
+  </ModelStructure>
+</fmiModelDescription>

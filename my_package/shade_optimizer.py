@@ -30,8 +30,8 @@ from analytic_formula import pvg_calculate as pc
 pvsd_instance = bsc.pvShadeBlind(0.15, 2.1, 20, 0.7, 0,
                                  1, 16, 2.4)
 # >>> 读取数据 <<<
-epw_data_file_path = r'./source/dataset/epw_data.csv'
-vis_data = pd.read_csv('./source/dataset/vis_data.csv')
+epw_data_file_path = r'F:\pvsd_code\pvsd_control\my_package\analytic_formula\epw_data.csv'
+vis_data = pd.read_csv(r'F:\pvsd_code\pvsd_control\my_package\analytic_formula\vis_data_outside_0920.csv')
 sDGP = np.loadtxt('./source/data/1126335/outside_0920/sDGP.txt')
 sUDI = np.loadtxt('./source/data/1126335/outside_0920/sUDI.txt')
 Azimuth = np.loadtxt('./source/data/azimuth.txt')
@@ -46,11 +46,10 @@ all_data = []  # 数据记录
 optimizer_data = []  # 优化数据记录
 shade_schedule = pd.DataFrame(columns=['Hoy', 'SD_Angle', 'SD_Position'])
 
-# >>> 重要变量 <<<
+# >>> ！！！重要变量！！！ <<<
 main_hoy = np.loadtxt('./source/data/hoy_3.txt')
-main_hoy = np.array([8, 9, 10, 11, 12, 13, 14, 15, 16, 17])
 weight_dgp, weight_udi, weight_vis, weight_pvg = 1, 1, 1, 1  # 各项权重[0,1]
-pygmo_gen, pygmo_pop = 20, 20  # 迭代次数，每代人口
+pygmo_gen, pygmo_pop = 10, 10  # 迭代次数，每代人口
 
 # 取值范围
 min_angle, max_angle = mt.radians(0), mt.radians(90)  # 角度范围
@@ -308,7 +307,7 @@ class MyProblem:
         val_all = val_sdgp + val_sudi + val_vis + val_pvg
         val_optimize = - val_all
         print(val_all)
-        print(val_sdgp,val_sudi,val_vis,val_pvg)
+        print(val_sdgp, val_sudi, val_vis, val_pvg)
 
         # 保存每一步个体形态和适应度
         self.fitness_history.append(val_optimize)
@@ -560,7 +559,7 @@ def main():
     #     main_hoy_list = main_hoy.tolist()
     #     shade_schedule.loc[main_hoy_list.index(hoy)] = [hoy, schedule[0], schedule[1]]
     # shade_pygmo.main_parallel(my_weights, main_hoy)
-    shade_pygmo.main_single(my_weights,single_hoy=8)
+    shade_pygmo.main_single(my_weights, single_hoy=8)
 
     # ===== 计时器 =====
     end_time = time.time()

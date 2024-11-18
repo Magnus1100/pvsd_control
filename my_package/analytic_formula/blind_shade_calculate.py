@@ -1,8 +1,9 @@
 import math as mt
 import pandas as pd
 
-epw_data = pd.read_csv(r'D:\03-GitHub\pvsd_control\my_package\source\dataset\epw_data.csv')
-vis_data_path = r'D:\03-GitHub\pvsd_control\my_package\source\dataset\vis_data_outside_0920.csv'
+epw_data_path = r'F:\pvsd_code\pvsd_control\my_package\analytic_formula\epw_data.csv'
+vis_data_path = r'F:\pvsd_code\pvsd_control\my_package\analytic_formula\vis_data_outside_0920.csv'
+epw_data = pd.read_csv(epw_data_path)
 if 'Hoy' in epw_data.columns:
     # 将 'hoy' 列设置为索引
     epw_data = epw_data.set_index('Hoy')

@@ -1,5 +1,3 @@
 
-/my_package/source/model_optimizer
-/my_package/source/models
-/my_package/source/models_unused
+/my_package/source
 .idea/misc.xml

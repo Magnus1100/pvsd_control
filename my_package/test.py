@@ -429,15 +429,18 @@ import pygmo as pg
 # fp = [[32.030005, -43.670005, 2.83],
 #       [29.990005, -43.61625, 2.970037]]
 
-po1, po2 = fp[0], fp[1]
-bc, sl = 16, 0.15
-sp, sa = 0.02, 65
+# po1, po2 = fp[0], fp[1]
+# bc, sl = 16, 0.15
+# sp, sa = 0.02, 65
+#
+# top_pl = CalculateBlindAxis.CalculatePoints(po1, po2, sl, sa, sp, bc)
+# print(top_pl)
+# bpl_test = CalculateBlindAxis.GetBlindAxis(top_pl, bc, sp)
+#
+# # 方法 2: 使用 pprint 模块格式化输出
+# import pprint
+#
+# pprint.pprint(bpl_test)
 
-top_pl = CalculateBlindAxis.CalculatePoints(po1, po2, sl, sa, sp, bc)
-print(top_pl)
-bpl_test = CalculateBlindAxis.GetBlindAxis(top_pl, bc, sp)
-
-# 方法 2: 使用 pprint 模块格式化输出
-import pprint
-
-pprint.pprint(bpl_test)
+import os
+print(os.environ['PATH'])

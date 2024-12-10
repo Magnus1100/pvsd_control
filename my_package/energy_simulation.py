@@ -8,7 +8,7 @@ idf_template_path = r'C:\EnergyPlusV24-1-0\Energy+.idd'
 IDF.setiddname(idf_template_path)
 
 # 创建IDF对象
-idf_file_path = r'D:\pythonProject\pythonProject\.venv\my_package\source\energy_model\test__\openstudio\run\in.idf'
+idf_file_path = r'NoShading.idf'
 idf = IDF(idf_file_path)
 
 # 生成逐时遮阳位置数据

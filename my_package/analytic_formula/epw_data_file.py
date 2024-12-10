@@ -133,7 +133,7 @@ def calculateSolarParameters(f_hoys, lat, lon, tz):
 current_dir = Path(__file__).parent.resolve()
 
 # 构建数据文件的绝对路径
-hoys_path = current_dir.parent / 'source' / 'data' / 'hoys.txt'
+hoys_path = current_dir.parent / 'source' / 'data' / 'annual_hoy.txt'
 azimuth_path = current_dir.parent / 'source' / 'data' / 'azimuth.txt'
 altitude_path = current_dir.parent / 'source' / 'data' / 'altitude.txt'
 ver_angle_path = current_dir.parent / 'source' / 'data' / 'ver_angle.txt'

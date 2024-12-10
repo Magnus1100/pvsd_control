@@ -47,9 +47,10 @@ optimizer_data = []  # 优化数据记录
 shade_schedule = pd.DataFrame(columns=['Hoy', 'SD_Angle', 'SD_Position'])
 
 # >>> ！！！重要变量！！！ <<<
-main_hoy = np.loadtxt('./source/data/hoy_3.txt')
+main_hoy = np.loadtxt('./source/data/hoys.txt')
 weight_dgp, weight_udi, weight_vis, weight_pvg = 1, 1, 1, 1  # 各项权重[0,1]
 pygmo_gen, pygmo_pop = 10, 10  # 迭代次数，每代人口
+schedule_name = 'shenzhen_1111_annual_schedule'
 
 # 取值范围
 min_angle, max_angle = mt.radians(0), mt.radians(90)  # 角度范围
@@ -554,12 +555,18 @@ def main():
     start_time = time.time()
 
     # # >>> 主程序 <<<
-    # for hoy in main_hoy:
-    #     schedule = shade_pygmo.main_single(my_weights, hoy)
-    #     main_hoy_list = main_hoy.tolist()
-    #     shade_schedule.loc[main_hoy_list.index(hoy)] = [hoy, schedule[0], schedule[1]]
+
+    # 👇运算多个Hoy用这个👇
+    for hoy in main_hoy:
+        schedule = shade_pygmo.main_single(my_weights, hoy)
+        main_hoy_list = main_hoy.tolist()
+        shade_schedule.loc[main_hoy_list.index(hoy)] = [hoy, schedule[0], schedule[1]]
+
+    # 👇运算单个Hoy用这个👇
+    # shade_pygmo.main_single(my_weights, single_hoy=8)
+
+    # 并行运算目前有点问题，后续考虑优化迭代
     # shade_pygmo.main_parallel(my_weights, main_hoy)
-    shade_pygmo.main_single(my_weights, single_hoy=8)
 
     # ===== 计时器 =====
     end_time = time.time()
@@ -568,7 +575,7 @@ def main():
     # ===== 计时器 =====
 
     print(shade_schedule)
-    shade_schedule.to_csv('3M-1111-1-schedule.csv')
+    shade_schedule.to_csv(f'{schedule_name}.csv')
     print('done!')
     shade_pygmo.outputCSV()
 

@@ -3,6 +3,7 @@ import numpy as np
 import math as mt
 from sklearn.preprocessing import MinMaxScaler
 
+aim_location_name = 'km'
 
 # 标准化数据
 def normalize_data(data):
@@ -24,16 +25,23 @@ df = pd.read_csv('../source/data/dataset_found.csv', header=None)
 df2 = pd.read_csv('../source/data/dataset_found (2).csv', header=None)
 
 # 读取数据
-sDGP = np.loadtxt('../source/data/1126335/outside_0920/sDGP.txt')
-sUDI = np.loadtxt('../source/data/1126335/outside_0920/sUDI.txt')
+sDGP = np.loadtxt(f'../source/data/1126335/{aim_location_name}/{aim_location_name}_sDGP_nearWindow.txt')
+sUDI = np.loadtxt(f'../source/data/1126335/{aim_location_name}/{aim_location_name}_sUDI.txt')
+
 sd_angle = np.loadtxt('../source/data/1126335/angle_255.txt')
 sd_angle = [round(mt.radians(angle), 2) for angle in sd_angle]
 sd_position = np.loadtxt('../source/data/1126335/position_255.txt')
+direct_rad = np.loadtxt(f'../source/data/1126335/{aim_location_name}/{aim_location_name}_directRadiation.txt')
+# direct_ill = np.loadtxt('../source/data/1126335/direct_normal_ill.txt')
+
 azimuth = df.iloc[:, 0]
 altitude = df.iloc[:, 1]
 
+
 copied_azimuth = []
 copied_altitude = []
+copied_direct_rad = []
+# copied_direct_ill = []
 
 # 复制交替的列数据 255 次(循环复制)
 for i in range(255):
@@ -41,6 +49,10 @@ for i in range(255):
         copied_azimuth.append(item)
     for item in altitude:
         copied_altitude.append(item)
+    for item in direct_rad:
+        copied_direct_rad.append(item)
+
+
 
 # 重复复制遮阳数据4417次（单次复制）
 copied_angle = np.repeat(sd_angle, 4417)
@@ -60,14 +72,15 @@ new_df = pd.DataFrame({'Azimuth': copied_azimuth})
 new_df['Altitude'] = copied_altitude
 new_df['Shade Angle'] = copied_angle
 new_df['Shade Interval'] = copied_interval
+new_df['Direct Radiation'] = copied_direct_rad
 new_df['sDGP'] = sDGP
-new_df['sUDI'] = sUDI / 100
+new_df['sUDI'] = sUDI
 
 # 重新索引，将连续的序号赋给 DataFrame
 new_df.index = index1
-new_df.to_csv('../source/data/1126335/240920.csv', index=False)
+new_df.to_csv(f'../source/data/1126335/{aim_location_name}_mlDataset_241212.csv', index=False)
 
 normalized_data = normalize_data(new_df)
-normalized_data.to_csv('../source/data/1126335/240920_normalized.csv')
+normalized_data.to_csv(f'../source/data/1126335/{aim_location_name}_normalizedDataset_241212.csv')
 # print(new_df)
 # print(normalized_df)

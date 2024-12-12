@@ -13,21 +13,23 @@ from sklearn.model_selection import train_test_split
 3.点击运行，更改test_size和random_state多试几次 -> 效果好的话就可以应用模型啦！
 """
 
+fig_save_path = '../source/model_optimizer/model_bj1210/sDGP_NW_RF_1210.png'
 
 # 指定特征与目标
-df_normalized_path = r'../source/data/1126335/outside_0920/240920_normalized.csv'
+df_normalized_path = r'../source/data/1126335/beijing/bj_241210_normalizedDataset.csv'
 
 df_normalized = pd.read_csv(df_normalized_path)
 
 # x = df_normalized[['Azimuth', 'Altitude', 'Shade Angle', 'Shade Interval']]
-x = df_normalized[['Azimuth', 'Altitude', 'Shade Angle', 'Shade Interval']]
+x = df_normalized[['Azimuth', 'Altitude', 'Shade Angle', 'Shade Interval','Direct Radiation']]
 y = df_normalized[['sDGP']]
+z = df_normalized[['sUDI']]
 
 # 划分测试集
-x_train, x_test, y_train, y_true = train_test_split(x, y, test_size=0.0001, random_state=50)
+x_train, x_test, y_train, y_true = train_test_split(x, y, test_size=0.00001, random_state=50)
 
 # 加载模型
-model_sdgp = joblib.load(r'../source/model_optimizer/model_0920/sDGP_RF_0920.pkl')
+model_sdgp = joblib.load(r'../source/model_optimizer/model_bj1210/sDGP_NW_RF_1210bj.pkl')
 
 # 使用模型预测测试集
 y_pred = model_sdgp.predict(x_test)
@@ -72,3 +74,4 @@ plt.ylabel('Value')
 plt.title('Predicted vs True Values (Random Forest-sDGP)')
 plt.legend()
 plt.show()
+plt.savefig(fig_save_path,dpi=300,format='png')

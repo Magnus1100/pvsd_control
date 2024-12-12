@@ -8,24 +8,28 @@ from sklearn.model_selection import train_test_split
 """
 功能：训练随机森林模型
 使用步骤：
-1.更改数据集输入路径
+1.更改目标地点-【sz=北京；hb=哈尔滨；sz=深圳；km=昆明】
 2.更改训练的特征值与预测值
-3.更改输出路径
-4.更改超参数（如必要，一般不用改）
-5.运行程序等模型输出（训练时间约5分钟） -> 去“model_evaluate”文件夹验证模型
+3.更改超参数（如必要，一般不用改）
+4.运行程序等模型输出（训练时间约5分钟） -> 去“model_evaluate”文件夹验证模型
 """
+# 👇设置全局变量👇
+aim_location = 'km'
+aim_target = 'sUDI'
+train_date = '241212'
 
-model_output_path = '../source/model_optimizer/model_0920/sUDI_RF_0920.pkl'
+# 输出路径
+model_output_path = f'../source/model_optimizer/model_{aim_location}_{train_date}/{aim_target}_RF_{train_date}{aim_location}.pkl'
 # 建立数据集
-df_normalized_path = r'../source/data/1126335/outside_0920/240920_normalized.csv'
+df_normalized_path = f'../source/data/data_mlTrain/{aim_location}/{aim_location}_normalizedDataset_{train_date}.csv'
 df_normalized = pd.read_csv(df_normalized_path)
 
 print(df_normalized.shape)
 
 train_data = df_normalized
 
-x = train_data[['Azimuth', 'Altitude', 'Shade Angle', 'Shade Interval']]
-y = train_data[['sUDI']]
+x = train_data[['Azimuth', 'Altitude', 'Shade Angle', 'Shade Interval', 'Direct Radiation']]
+y = train_data[[f'{aim_target}']]
 
 print(x.shape, y.shape)
 
@@ -68,3 +72,4 @@ if not os.path.exists(directory):
     os.makedirs(directory)
 # 保存模型
 joblib.dump(random_forest, model_output_path)
+print("Model saved in", model_output_path)

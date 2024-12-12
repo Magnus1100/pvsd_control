@@ -3,7 +3,7 @@
 
 #--- Purpose.
 #
-#   Export an EnergyPlus model_0920 as a Functional Mockup Unit (FMU) for co-simulation.
+#   Export an EnergyPlus model_sz0920 as a Functional Mockup Unit (FMU) for co-simulation.
 
 
 #--- Note on directory location.
@@ -33,7 +33,7 @@ def printCmdLineUsage():
     print('USAGE:', os.path.basename(__file__),
           '-i <path-to-idd-file>  [-w <path-to-weather-file>]  [-a <fmi-version>] [-d]  [-L]  <path-to-idf-file>')
     #
-    print('-- Export an EnergyPlus model_0920 as a Functional Mockup Unit (FMU) for co-simulation')
+    print('-- Export an EnergyPlus model_sz0920 as a Functional Mockup Unit (FMU) for co-simulation')
     print('-- Input -i, use the named Input Data Dictionary (required)')
     print('-- Option -w, use the named weather file')
     print('-- Option -a, specify the FMI version')
@@ -189,13 +189,13 @@ def exportEnergyPlusAsFMU(showDiagnostics, litter, iddFileName, wthFileName, fmi
     except:
         quitWithError('Unable to import {makeExportPrepApp.py}', False)
     #
-    # Get valid model_0920 identifier.
+    # Get valid model_sz0920 identifier.
     modelIdName = os.path.basename(idfFileName)
     if (modelIdName.endswith('.idf') or modelIdName.endswith('.IDF')):
         modelIdName = modelIdName[:-4]
     modelIdName = makeFMULib.sanitizeIdentifier(modelIdName)
     if (showDiagnostics):
-        printDiagnostic('Using model_0920 identifier {' + modelIdName + '}')
+        printDiagnostic('Using model_sz0920 identifier {' + modelIdName + '}')
     #
     # Delete expected outputs if they already exist.
     #   To prevent confusion in case of an error.

@@ -26,7 +26,7 @@
 # print(min(sUDI))
 # print(max(sUDI))
 
-import blind_shade_calculate as bsc
+from pvsd_control.my_package import blind_shade_calculate as bsc
 
 a = bsc.ShadeCalculate.GetVis(0, 0.06)
 print(a)

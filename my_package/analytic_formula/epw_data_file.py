@@ -1,7 +1,18 @@
 import math
 import numpy as np
 import pandas as pd
-from pathlib import Path
+
+aim_location = 'bj'
+location_bj = [39.93, 116.28, 8.0]
+location_sz = [22.55, 114.10, 8.0]
+
+epw_data_path = '../source/data/data_shadeCalculate/bj/bj_epwData.csv'
+hoys_path = '../source/data/hoys/annual_hoy.txt'
+output_path = '../source/data/data_shadeCalculate/bj/bj_f_Directory.csv'
+
+# 读取文件
+epw_dataset = pd.read_csv(epw_data_path)
+hoys = np.loadtxt(hoys_path)
 
 
 # 获取f_value
@@ -99,16 +110,20 @@ def calculateSolarParameters(f_hoys, lat, lon, tz):
 
         # Epsilon ε a clearness 一种天空透明度指数
         zenithDegree = zenith / math.pi * 180
+        print(zenithDegree)
+        if zenithDegree > 96.07995:  # 96.07995 是一个经验常数，用于太阳天顶角的修正公式。它的物理意义是描述太阳接近地平线时的辐射特性。
+            print(f"Warning: zenithDegree {zenithDegree} exceeds 96.07995, may cause math domain error.")
 
-        if epw_dataset["I_diffuse"][h] != 0:
-            epsilon = (((epw_dataset["I_direct"][h] + epw_dataset["I_diffuse"][h]) / epw_dataset["I_diffuse"][h]) +
+        if epw_dataset["Diffuse_Rad"][h] != 0:
+            epsilon = (((epw_dataset["Direct_Rad"][h] + epw_dataset["Diffuse_Rad"][h]) / epw_dataset["Diffuse_Rad"][
+                h]) +
                        (0.000005535 * zenithDegree * zenithDegree * zenithDegree)) / (
                               1 + (0.000005535 * zenithDegree * zenithDegree * zenithDegree))
         else:
             # 处理分母为零的情况
             epsilon = float('inf')  # 或者设置为其他你认为合适的值
 
-        brightness = epw_dataset["I_diffuse"][h] / (
+        brightness = epw_dataset["Diffuse_Rad"][h] / (
                 (zenith_cos + 0.50572 * math.pow(96.07995 - zenithDegree, -1.6364)) * Gon_365[h // 24])
         fValues = getFValues(epsilon)
         F1 = max(0, fValues[0] + fValues[1] * brightness + zenith * fValues[2])
@@ -129,41 +144,5 @@ def calculateSolarParameters(f_hoys, lat, lon, tz):
     return df_f1_f2
 
 
-# 获取当前脚本文件的绝对路径
-current_dir = Path(__file__).parent.resolve()
-
-# 构建数据文件的绝对路径
-hoys_path = current_dir.parent / 'source' / 'data' / 'annual_hoy.txt'
-azimuth_path = current_dir.parent / 'source' / 'data' / 'azimuth.txt'
-altitude_path = current_dir.parent / 'source' / 'data' / 'altitude.txt'
-ver_angle_path = current_dir.parent / 'source' / 'data' / 'ver_angle.txt'
-hor_angle_path = current_dir.parent / 'source' / 'data' / 'hor_angle.txt'
-direct_rad_path = current_dir.parent / 'source' / 'data' / 'I_direct.txt'
-diffuse_rad_path = current_dir.parent / 'source' / 'data' / 'I_diffuse.txt'
-sky_cover_path = current_dir.parent / 'source' / 'data' / 'sky_cover4417.txt'
-
-# 读取文件
-hoys = np.loadtxt(hoys_path)
-azimuth = np.loadtxt(azimuth_path)
-altitude = np.loadtxt(altitude_path)
-ver_angle = np.loadtxt(ver_angle_path)
-hor_angle = np.loadtxt(hor_angle_path)
-direct_rad = np.loadtxt(direct_rad_path)
-diffuse_rad = np.loadtxt(diffuse_rad_path)
-sky_cover = np.loadtxt(sky_cover_path)
-
-# 构建 dataset 包含天空信息
-epw_dataset = pd.DataFrame({'Hoy': hoys.astype(int)})
-epw_dataset.set_index('Hoy', inplace=True)
-epw_dataset['Azimuth'] = azimuth
-epw_dataset['Altitude'] = altitude
-epw_dataset['Hor_Angle'] = hor_angle
-epw_dataset['Ver_Angle'] = ver_angle
-epw_dataset['I_direct'] = direct_rad
-epw_dataset['I_diffuse'] = diffuse_rad
-epw_dataset['sky_cover'] = sky_cover/10
-
-f_directory = calculateSolarParameters(hoys, 22.55, 114.10, 8.0)
-# epw_dataset.to_csv('../source/data/epw_dataset.csv')
-# f_directory.to_csv('../source/data/f_directory.csv')
-# print(epw_dataset, f_directory)
+f_directory = calculateSolarParameters(hoys, lat=location_bj[0], lon=location_bj[1], tz=location_bj[2])
+f_directory.to_csv(output_path)

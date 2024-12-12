@@ -211,7 +211,7 @@ def makeExportPrepApp(showDiagnostics, litter, forceRebuild, fmiVersion):
         vers = 'v20'
     srcDirName = os.path.join(scriptDirName, '../SourceCode/' + vers + '/fmu-export-prep')
     for theRootName in [
-        'fmu-export-write-model_0920-desc'
+        'fmu-export-write-model_sz0920-desc'
     ]:
         srcFileNameList.append(os.path.join(srcDirName, theRootName + '.cpp'))
     #

@@ -1590,7 +1590,7 @@ EOF
 	continue
 	;;
 
-      # Tru64 UNIX uses -model_0920 [arg] to determine the layout of C++
+      # Tru64 UNIX uses -model_sz0920 [arg] to determine the layout of C++
       # classes, name mangling, and exception handling.
       -model)
 	compile_command="$compile_command $arg"

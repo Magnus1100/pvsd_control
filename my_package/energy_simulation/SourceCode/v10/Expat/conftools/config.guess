@@ -272,7 +272,7 @@ case "${UNAME_MACHINE}:${UNAME_SYSTEM}:${UNAME_RELEASE}:${UNAME_VERSION}" in
     Alpha\ *:Windows_NT*:*)
 	# How do we know it's Interix rather than the generic POSIX subsystem?
 	# Should we change UNAME_MACHINE based on the output of uname instead
-	# of the specific Alpha model_0920?
+	# of the specific Alpha model_sz0920?
 	echo alpha-pc-interix
 	exit ;;
     21064:Windows_NT:50:3)
@@ -908,7 +908,7 @@ EOF
 	echo powerpc64-unknown-linux-gnu
 	exit ;;
     alpha:Linux:*:*)
-	case `sed -n '/^cpu model_0920/s/^.*: \(.*\)/\1/p' < /proc/cpuinfo` in
+	case `sed -n '/^cpu model_sz0920/s/^.*: \(.*\)/\1/p' < /proc/cpuinfo` in
 	  EV5)   UNAME_MACHINE=alphaev5 ;;
 	  EV56)  UNAME_MACHINE=alphaev56 ;;
 	  PCA56) UNAME_MACHINE=alphapca56 ;;

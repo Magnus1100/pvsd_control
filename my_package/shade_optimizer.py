@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 from datetime import datetime, timedelta
 from concurrent.futures import ProcessPoolExecutor, as_completed
-from analytic_formula import blind_shade_calculate as bsc
+from pvsd_control.my_package import blind_shade_calculate as bsc
 from analytic_formula import pvg_calculate as pc
 
 """
@@ -38,8 +38,8 @@ Azimuth = np.loadtxt('./source/data/azimuth.txt')
 Altitude = np.loadtxt('./source/data/altitude.txt')
 
 # ml模型
-model_sdgp = joblib.load('./source/model_optimizer/model_0920/sDGP_RF_0920.pkl')
-model_sudi = joblib.load('./source/model_optimizer/model_0920/sUDI_RF_0920.pkl')
+model_sdgp = joblib.load('source/model_optimizer/model_bj_241212/sDGP_NW_RF_1210bj.pkl')
+model_sudi = joblib.load('source/model_optimizer/model_bj1212/s.pkl')
 
 # >>> 全局变量 <<<
 all_data = []  # 数据记录
@@ -47,7 +47,7 @@ optimizer_data = []  # 优化数据记录
 shade_schedule = pd.DataFrame(columns=['Hoy', 'SD_Angle', 'SD_Position'])
 
 # >>> ！！！重要变量！！！ <<<
-main_hoy = np.loadtxt('./source/data/hoys.txt')
+main_hoy = np.loadtxt('./source/data/annual_hoy.txt')
 weight_dgp, weight_udi, weight_vis, weight_pvg = 1, 1, 1, 1  # 各项权重[0,1]
 pygmo_gen, pygmo_pop = 10, 10  # 迭代次数，每代人口
 schedule_name = 'shenzhen_1111_annual_schedule'
@@ -336,7 +336,7 @@ class MyProblem:
             'Val_Pvg': round(val_pvg, round_size),
             'shade_percent': round(shade_percent, round_size),
             'shade_rad': round(shade_rad, round_size),
-            'Optimizer': round(val_optimize, round_size)
+             'Optimizer': round(val_optimize, round_size)
         })
         all_data.append(self.data_collector.copy())
         self.data_collector.clear()

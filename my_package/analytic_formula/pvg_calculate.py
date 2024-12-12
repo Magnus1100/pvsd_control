@@ -157,7 +157,7 @@ def main():
 
     edf.epw_dataset['max_irradiance'] = max_pv_generation['Max_Irradiance']
     edf.epw_dataset['max_pv_generation'] = max_pv_generation['PV_Generation(Wh)']
-    # edf.epw_dataset.to_csv('epw_data.csv')
+    # edf.epw_dataset.to_csv('sz_epwData.csv')
     # print(edf.epw_dataset)
 
 

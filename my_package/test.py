@@ -6,7 +6,7 @@ from scipy.spatial import distance
 import pygmo as pg
 
 # 测试路径
-# epw_data_file_path = './source/data/epw_data.csv'
+# epw_data_file_path = './source/data/sz_epwData.csv'
 # epw_dataset = pd.read_csv(epw_data_file_path, index_col=0)
 # print(epw_dataset)
 #

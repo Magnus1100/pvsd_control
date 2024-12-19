@@ -6,12 +6,13 @@ aim_location = 'bj'
 location_bj = [39.93, 116.28, 8.0]
 location_sz = [22.55, 114.10, 8.0]
 
-epw_data_path = '../source/data/data_shadeCalculate/bj/bj_epwData.csv'
+epw_data_path = '../source/data/data_shadeCalculate/bj/epwData_bj.csv'
 hoys_path = '../source/data/hoys/annual_hoy.txt'
-output_path = '../source/data/data_shadeCalculate/bj/bj_f_Directory.csv'
+output_path = '../source/data/data_shadeCalculate/bj/f_Directory_bj.csv'
 
 # 读取文件
 epw_dataset = pd.read_csv(epw_data_path)
+epw_dataset.set_index('Hoy', inplace=True)  # 将 'hoy' 列设置为索引
 hoys = np.loadtxt(hoys_path)
 
 
@@ -116,15 +117,18 @@ def calculateSolarParameters(f_hoys, lat, lon, tz):
 
         if epw_dataset["Diffuse_Rad"][h] != 0:
             epsilon = (((epw_dataset["Direct_Rad"][h] + epw_dataset["Diffuse_Rad"][h]) / epw_dataset["Diffuse_Rad"][
-                h]) +
-                       (0.000005535 * zenithDegree * zenithDegree * zenithDegree)) / (
+                h]) +(0.000005535 * zenithDegree * zenithDegree * zenithDegree)) / (
                               1 + (0.000005535 * zenithDegree * zenithDegree * zenithDegree))
         else:
             # 处理分母为零的情况
             epsilon = float('inf')  # 或者设置为其他你认为合适的值
 
-        brightness = epw_dataset["Diffuse_Rad"][h] / (
-                (zenith_cos + 0.50572 * math.pow(96.07995 - zenithDegree, -1.6364)) * Gon_365[h // 24])
+        if zenithDegree > 96.07995:
+            brightness = 1e-5
+        else:
+            brightness = epw_dataset["Diffuse_Rad"][h] / (
+                    (zenith_cos + 0.50572 * math.pow(96.07995 - zenithDegree, -1.6364)) * Gon_365[h // 24])
+        print(brightness)
         fValues = getFValues(epsilon)
         F1 = max(0, fValues[0] + fValues[1] * brightness + zenith * fValues[2])
         F2 = fValues[3] + fValues[4] * brightness + zenith * fValues[5]

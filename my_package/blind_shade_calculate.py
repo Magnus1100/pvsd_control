@@ -3,7 +3,7 @@ import pandas as pd
 
 aim_location = 'bj'
 
-epw_data_path = f'source/data/data_shadeCalculate/{aim_location}/{aim_location}_epwData.csv'
+epw_data_path = f'source/data/data_shadeCalculate/{aim_location}/epwData_{aim_location}.csv'
 epw_data = pd.read_csv(epw_data_path)
 
 vis_data_path = r'source/data/data_shadeCalculate/vis_data_outside_0920.csv'
@@ -11,6 +11,7 @@ vis_data_path = r'source/data/data_shadeCalculate/vis_data_outside_0920.csv'
 if 'Hoy' in epw_data.columns:
     # 将 'hoy' 列设置为索引
     epw_data = epw_data.set_index('Hoy')
+
 
 class pvShadeBlind:
     def __init__(self, sd_width, sd_length, pv_panel_area, pv_efficiency, window_azimuth, window_transmittance,

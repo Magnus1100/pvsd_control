@@ -7,7 +7,7 @@ import shade_optimizer as so
 model_sdgp = joblib.load('source/model_optimizer/model_sz0920/sDGP_RF_0920.pkl')
 model_sudi = joblib.load('source/model_optimizer/model_sz0920/sUDI_RF_0920.pkl')
 
-epw_data_file_path = r'source/data/data_shadeCalculate/sz/sz_epwData.csv'
+epw_data_file_path = r'source/data/data_shadeCalculate/sz/epwData_sz.csv'
 epw_dataset = pd.read_csv(epw_data_file_path, index_col=0)
 Azimuth = np.loadtxt('./source/data/azimuth.txt')
 Altitude = np.loadtxt('./source/data/altitude.txt')

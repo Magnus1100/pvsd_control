@@ -1,4 +1,0 @@
-[20:26:09.712137 WARN] [openstudio.EpwFile] Successive data points (1980-Jan-31 to 2000-Feb-01, ending on line 753) are greater than 1 day apart in EPW file 'C:/Users/ADMIN/AppData/Roaming/ladybug_tools/weather/CHN_Guangdong.Shenzhen.594930_SWERA/CHN_Guangdong.Shenzhen.594930_SWERA.epw'. Data will be treated as typical (TMY)
-[20:26:12.729230 WARN] [utilities.idf.WorkspaceObject] Object of type 'Schedule:Constant' and named 'Always On Discrete', points to an object named OnOff from field 1, but that object cannot be located.
-[20:26:12.729230 WARN] [utilities.idf.WorkspaceObject] Object of type 'Schedule:Constant' and named 'Always Off Discrete', points to an object named OnOff 1 from field 1, but that object cannot be located.
-[20:26:12.729230 WARN] [utilities.idf.WorkspaceObject] Object of type 'Schedule:Constant' and named 'Always On Continuous', points to an object named Fractional 1 from field 1, but that object cannot be located.

@@ -4,8 +4,8 @@ import os
 
 vis_path = r'../source/data/vis_dataset_outside.txt'
 
-def main():
 
+def main():
     vis = np.loadtxt(vis_path)
     sd_position = np.linspace(-0.14, 0.14, 29)
     sd_angle = np.linspace(0, 90, 91)
@@ -21,7 +21,7 @@ def main():
     # 单次复制
     copied_position = np.repeat(sd_position, 91)
     vis_dataset = pd.DataFrame({
-        'vis':vis
+        'vis': vis
     })
     vis_dataset['sd_angle'] = copied_angle
     vis_dataset['sd_position'] = copied_position.round(2)

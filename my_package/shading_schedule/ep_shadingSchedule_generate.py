@@ -1,15 +1,20 @@
 import pandas as pd
 
-# 1. 创建示例数据
-# 你的Hoy和SR数据（可以从文件读取）
+window_name = 'WINDOW_BF23BD9D'
+shading_schedule_name = 'SHADING_SCHEDULE-bj240106'
+
+origin_shading_ratio_path = rf'sz-241202/ori_sr.txt'
+shading_ratio_path = rf'sz-241202/window_shading_schedule.txt'
+
+# Hoy和SR数据（从文件读取）
 annual_hoy = pd.DataFrame(range(1, 8761), columns=['Hoy'])
-ori_sr = pd.read_csv('sz-241202/ori_sr.txt')
+ori_sr = pd.read_csv(origin_shading_ratio_path)
 origin_shading = pd.concat([annual_hoy, ori_sr], axis=1)  # 将两个列合并到同一个 DataFrame.
 print(origin_shading)
 
 hoy = pd.read_csv('sz-241202/annual_hoy.txt')
-sr = pd.read_csv('sz-241202/window_shading_schedule.txt')
-new_shading = pd.concat([hoy, sr], axis=1)  # 将两个列合并到同一个 DataFrame.
+shading_ratio = pd.read_csv(shading_ratio_path)
+new_shading = pd.concat([hoy, shading_ratio], axis=1)  # 将两个列合并到同一个 DataFrame.
 print(new_shading)
 
 # 合并数据
@@ -21,5 +26,5 @@ merged['ori_shading_percent'] = merged['Shading_Percent'].fillna(merged['ori_sha
 # 删除临时列（如果不需要）
 merged = merged.drop(columns=['Shading_Percent'])
 merged = merged.drop(columns=['Hoy'])
-merged.rename(columns={'ori_shading_percent':'WINDOW_BF23BD9D'},inplace=True)
-merged.to_csv('shading_schedule.csv', index=False)
+merged.rename(columns={'ori_shading_percent': f'{window_name}'}, inplace=True)
+merged.to_csv(f'{shading_schedule_name}.csv', index=False)

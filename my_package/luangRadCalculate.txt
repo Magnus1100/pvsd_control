@@ -1,0 +1,137 @@
+for (int k = 0; k < SolarSurfaces.Paths.Count; k++)//遍历每个zone
+{
+    double[] radianceT = new double[8760];
+    double[] radianceW = new double[8760];
+    
+    for (int i = 0; i < SolarSurfaces.Branches[k].Count; i++)                
+    {
+
+        EnvelopeSetting SolarSurface = SolarSurfaces[SolarSurfaces.Paths[k]][i].Value.EnvelopeSetting.Value;
+        double wwr = SolarSurface.WWR;
+        double area = SolarSurface.GetPlanePartArea();
+        //List<double> radianceBeamNew = new List<double>();
+
+        double rg = 0.2;//ground reflectivity
+        double radiance;
+        double diffuse;//漫射
+        double total;//漫射加直射加反射
+
+        double E = SolarSurface.Opaques[0].Material.Emissivity;
+        double U = SolarSurface.Opaques[0].Material.UValue;
+        double Absort = SolarSurface.Opaques[0].Material.AbsorptionCoefficient;
+        double shgc = 0;
+        double we = 0;
+        if (SolarSurface.Windows != null && SolarSurface.Windows.Count > 0)
+        {
+            shgc = SolarSurface.Windows[0].Material.SHGC;
+            we = SolarSurface.Windows[0].Material.Emissivity;
+        }
+
+        Surface surface = SolarSurface.GetAllSurfaces()[0].Value.Faces[0].ToNurbsSurface(); //bug1
+        Point3d center = surface.GetBoundingBox(false).Center;
+        _ = surface.ClosestPoint(center, out double u, out double v);
+        Vector3d normal = surface.NormalAt(u, v);
+        double gama = 0; //表面方向角，南偏东为负，南偏西
+        double radianceTest;
+        double beta_cos = 0; //表面坡度 slope 与水平面的夹角
+        double beta_sin = 0;
+
+        SurfaceType surfaceType;
+        if (normal.Z == 0)//墙面，垂直Slope=90°
+        {
+            surfaceType = SurfaceType.Facade;
+            if (normal.Y > 0)
+            {
+                if (normal.X >= 0)
+                {
+                    gama = -Math.PI / 2 - Math.Acos(normal.X);//𝛾  Surface azimuth angle 第一象限，东北方向，-90°——-180°  , the deviation of the projection on a horizontal plane of the nnormal to the surface from the local meridian, with zero due south, east negative, and west positive; −180∘ ≤ 𝛾 ≤ 180∘.
+                }
+                else
+                {
+                    gama = 3 * Math.PI / 2 - Math.Acos(normal.X);//𝛾 Surface azimuth angle 第二象限，西北方向，90°——180°
+                }
+            }
+            else
+            {
+                gama = Math.Acos(normal.X) - Math.PI / 2;//𝛾  Surface azimuth angle 三四象限，南方向，-90°——90°
+            }
+        }
+        else if (normal.Z != 0 && (normal.Y == 0 && normal.X == 0))//屋顶，slope=0°
+        {
+            surfaceType = SurfaceType.Plane;
+        }
+        else//斜面
+        {
+            surfaceType = SurfaceType.Slope;
+            beta_cos = normal.Z;//表面坡度 slope 与水平面的夹角
+            double beta = Math.Acos(normal.Z);
+            beta_sin = Math.Sin(beta);
+            if (normal.Y > 0)
+            {
+                if (normal.X >= 0){
+                    gama = -Math.PI / 2 - Math.Acos(normal.X / Math.Sqrt(normal.Y * normal.Y + normal.X * normal.X));//𝛾  Surface azimuth angle 第一象限，东北方向，-90°——-180°  , the deviation of the projection on a horizontal plane of the nnormal to the surface from the local meridian, with zero due south, east negative, and west positive; −180∘ ≤ 𝛾 ≤ 180∘.
+                }
+                else{
+                    gama = 3 * Math.PI / 2 - Math.Acos(normal.X / Math.Sqrt(normal.Y * normal.Y + normal.X * normal.X));//𝛾 Surface azimuth angle 第二象限，西北方向，90°——180°
+                }
+            }
+            else{
+                gama = Math.Acos(normal.X / Math.Sqrt(normal.Y * normal.Y + normal.X * normal.X)) - Math.PI / 2;//𝛾  Surface azimuth angle 三四象限，南方向，-90°——90°
+            }
+        }
+        double viewFraction = 0.5;
+        for (int h = 0; h < 8760; h++){
+            if (surfaceType == SurfaceType.Facade){
+                double theta_cos = Solardata["zenith_sin"][h] * Math.Cos(Solardata["azimuth"][h] - gama);
+                if (theta_cos <= 0)
+                {
+                    radianceTest = 0;
+                }
+                else { radianceTest = Solardata["EB"][h] * theta_cos; }
+
+                if (radianceTest > 0) { radiance = radianceTest; }
+                else { radiance = 0; }
+                diffuse = Solardata["ED"][h] * ((1 - Solardata["f1"][h]) * 0.5 + (Solardata["f1"][h] * Math.Max(0, theta_cos) / Math.Max(Math.Cos(1.48353), Solardata["zenith_cos"][h])) + Solardata["f2"][h]);
+                if (diffuse < 0 || double.IsNaN(diffuse))
+                { diffuse = 0; }
+
+                total = radiance + diffuse + (Solardata["ED"][h] + Solardata["EB"][h]) * rg * 0.5;
+            }
+            else if (surfaceType == SurfaceType.Plane)//屋顶，slope=0°
+            {
+                radianceTest = Solardata["EB"][h] * Solardata["zenith_cos"][h];
+                if (radianceTest > 0) { radiance = radianceTest; }
+                else { radiance = 0; }
+                diffuse = Solardata["ED"][h] *
+                ((1 - Solardata["f1"][h])
+                + (Solardata["f1"][h] * Math.Max(0, Solardata["zenith_cos"][h]) / Math.Max(Math.Cos(1.48353), Solardata["zenith_cos"][h])));
+                if (diffuse < 0 || double.IsNaN(diffuse))
+                { diffuse = 0; }
+                total = radiance + diffuse;
+                viewFraction = 1;
+            }
+            else//斜面
+            {
+                double theta_cos = Solardata["zenith_sin"][h] * Math.Cos(Solardata["azimuth"][h] - gama);
+                if (theta_cos <= 0)
+                {
+                    radianceTest = 0;
+                }
+                else { radianceTest = Solardata["EB"][h] * theta_cos; }
+                if (radianceTest > 0) { radiance = radianceTest; }
+                else { radiance = 0; }
+                diffuse = Solardata["ED"][h] *
+                            ((1 - Solardata["f1"][h]) * ((1 + beta_cos) / 2)
+                            + (Solardata["f1"][h] * Math.Max(0, theta_cos) / Math.Max(Math.Cos(1.48353), Solardata["zenith_cos"][h]))
+                            + (Solardata["f2"][h] * beta_sin));
+                if (diffuse < 0 || double.IsNaN(diffuse))
+                { diffuse = 0; }
+                total = radiance + diffuse + (Solardata["ED"][h] + Solardata["EB"][h]) * rg * (1 - beta_cos) / 2;
+            }
+            radianceW[h] += (total * shgc - we * 5.67e-8 * (Math.Pow(t[h] + 273.15, 4) - Math.Pow(ter[h] + 273.15, 4))) *area * wwr * 0.8;//窗吸收的辐照//(total * lst[3] - lst[1]  * lst[-1] * (self.Te - self.T_er))* self.rse * lst[2] * lst[0]
+            radianceT[h] += total * (area - area * wwr) * U * Absort * rse[h] - viewFraction * rse[h] * U * E * area * (t[h] - ter[h]);// self.SCal_dict['surf'][orient]['GSR']*lst[0]*lst[2]*lst[3]*self.rse-lst[1]*self.rse*lst[2]*lst[0]*lst[-1]*(self.Te - self.T_er) 
+            //radianceT[h] += total * Absort - (E * 5.67e-8 * (Math.Pow(t[h] + 273.15, 4) - Math.Pow(ter[h] + 273.15, 4)) * (area - area * wwr));                                                  
+            
+        }
+        //var radianceDN=radianceD.Select(x => double.IsNaN(x) ? 0 : x).ToList();
+    }

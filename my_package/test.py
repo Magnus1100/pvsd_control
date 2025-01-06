@@ -441,6 +441,24 @@ import pygmo as pg
 # import pprint
 #
 # pprint.pprint(bpl_test)
+#
 
-import os
-print(os.environ['PATH'])
+# import math
+# print(math.cos(1.48353))
+#
+# print(math.cos(85))
+
+# data = "{-0.831203,0.55312,-0.056211}"
+# # 替换大括号为中括号
+# data_list = data.replace("{", "[").replace("}", "]")
+# # 转换为 Python 的列表对象
+# result = eval(data_list)
+#
+# print(result)  # 输出：[-0.831203, 0.55312, -0.056211]
+
+import math
+shading_angles = range(0,90)
+for shading_angle in shading_angles:
+
+    surface_normal = [0, math.cos(math.radians(180 - shading_angle)), math.sin(math.radians(shading_angle))]
+    print(surface_normal)

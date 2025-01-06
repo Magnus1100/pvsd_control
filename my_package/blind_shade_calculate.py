@@ -14,16 +14,14 @@ if 'Hoy' in epw_data.columns:
 
 
 class pvShadeBlind:
-    def __init__(self, sd_width, sd_length, pv_panel_area, pv_efficiency, window_azimuth, window_transmittance,
-                 slat_count, window_height):
+    def __init__(self, sd_width, sd_length, pv_panel_area, P_stc, window_azimuth, slat_count, window_height):
         self.sd_width = sd_width
         self.sd_length = sd_length
         self.panel_area = pv_panel_area
-        self.pv_efficiency = pv_efficiency
+        self.P_stc = P_stc
         self.window_azimuth = window_azimuth
         self.slat_count = slat_count
         self.window_height = window_height
-        self.window_transmittance = window_transmittance
 
 
 class ShadeCalculate:

@@ -21,7 +21,7 @@ min_altitude, max_altitude = mt.radians(min(Altitude)), mt.radians(max(Altitude)
 pred_sDGP_data = []
 pred_sUDI_data = []
 
-hoys = np.loadtxt('./source/data/annual_hoy.txt')
+hoys = np.loadtxt('./source/data/annual_hoy.txt.txt')
 orientation = -90
 angle = 90
 position = 0

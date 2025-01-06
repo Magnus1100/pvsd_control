@@ -15,7 +15,6 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 import blind_shade_calculate as bsc
 import pvg_calculate as pc
 
-
 """
 功能：通过调用机器学习模型和优化算法，生成某一段时间的遮阳形态参数
 使用步骤：
@@ -31,13 +30,15 @@ import pvg_calculate as pc
 
 # >>> 声明实例 <<<
 aim_location = 'bj'
-pvsd_instance = bsc.pvShadeBlind(0.15, 2.1, 20, 0.7, 0,
-                                 1, 16, 2.4)
+aim_hoy = 'hoy_s4'
+pvsd_instance = bsc.pvShadeBlind(0.15, 2.1, 20, 0.7, 0
+                                 , 16, 2.4)
 # >>> 读取数据 <<<
 vis_data = pd.read_csv(r'./source/data/data_shadeCalculate/vis_data_outside_0920.csv')
 
 # 导入数据集
-epw_data_file_path = fr'./source/data/data_shadeCalculate/{aim_location}/epwData_{aim_location}.csv'
+epw_data_file_path = fr'./source/data/data_shadeCalculate/{aim_location}/epwData_{aim_location}_withPVG.csv'
+print(f'!!!Have read epw data:{epw_data_file_path}')
 epw_dataset = pd.read_csv(epw_data_file_path, index_col=0)
 Azimuth = epw_dataset['Azimuth']
 Altitude = epw_dataset['Altitude']
@@ -56,10 +57,16 @@ optimizer_data = []  # 优化数据记录
 shade_schedule = pd.DataFrame(columns=['Hoy', 'SD_Angle', 'SD_Position'])
 
 # >>> ！！！重要变量！！！ <<<
-main_hoy = np.loadtxt('./source/data/hoys/2half_hoy.txt')
+main_hoy = np.loadtxt(f'source/data/hoys/hoy_{aim_location}/{aim_hoy}.txt')
 weight_dgp, weight_udi, weight_vis, weight_pvg = 1, 1, 1, 1  # 各项权重[0,1]
 pygmo_gen, pygmo_pop = 10, 10  # 迭代次数，每代人口
-schedule_name = 'beijing_1111_schedule-2half'
+
+# schedule命名
+base_schedule_name = f'beijing_1111_schedule_{aim_hoy}'
+# 获取当前日期和时间，只到分钟
+current_datetime = datetime.now().strftime('%Y%m%d_%H%M')
+# 拼接日期和时间到名称后
+schedule_name = f"{base_schedule_name}_{current_datetime}"
 
 # 取值范围
 min_angle, max_angle = mt.radians(0), mt.radians(90)  # 角度范围
@@ -71,14 +78,14 @@ min_radiation, max_radiation = min(Radiation), max(Radiation)  # 👈新加的�
 print('angle_round:', [min_angle, round(max_angle, 3)])
 print('azimuth_round:', [round(min_azimuth, 3), round(max_azimuth, 3)])
 print('altitude_round:', [round(min_altitude, 3), round(max_altitude, 3)])
+print('radiation_round:', [round(min_radiation, 3), round(max_radiation, 3)])
 
 
-# 获取唯一的文件名字。应用在最后的csv生成中。
-class dataSaver:
+class dataSaver:  # 获取唯一的文件名字。应用在最后的csv生成中。
     @staticmethod
     def get_unique_filename(base_name, extension, counter):
         today_date = datetime.now().strftime('%Y%m%d')  # 当前日期格式为YYYYMMD
-        return f'{base_name}_{today_date}_{counter}.{extension}'
+        return f'{base_name}_{counter}.{extension}'
 
     # 将dataframe保存在可以自己命名的csv文件里。如果名字重复则生成一个新文件。
     @staticmethod
@@ -281,7 +288,6 @@ class MyProblem:
         # 预测特征序列
         predict_parameter = [normalized_azimuth, normalized_altitude, normalized_angle, normalized_position,
                              normalized_radiation]
-        # print(predict_parameter)
         feature_names = ['Azimuth', 'Altitude', 'Shade Angle', 'Shade Interval', 'Direct Radiation']
         predict_parameters = pd.DataFrame([predict_parameter], columns=feature_names)
 
@@ -295,7 +301,7 @@ class MyProblem:
         5, ED_percent : 形变的欧式距离，用在一定程度上减少形变
         - weighted_vals : 加权得到的优化值
         """
-        # 1，2，sudi/sdgp 机器学习模型预测
+        # 1，2 - sudi/sdgp 机器学习模型预测
         pred_sdgp = model_sdgp.predict(predict_parameters)[0]
         normalized_sdgp = normalizeValue(pred_sdgp, min(sDGP), max(sDGP))  # 标准化sDGP
         val_sdgp = normalized_sdgp * self.my_weights[0]
@@ -303,17 +309,17 @@ class MyProblem:
         pred_sudi = model_sudi.predict(predict_parameters)[0]
         val_sudi = pred_sudi * self.my_weights[1]
 
-        # 3，数据库调用查询vis
+        # 3 - 数据库调用查询vis
         vis = bsc.ShadeCalculate.GetVis(sd_angle_degree, sd_location)
         vis = float(vis[0])
         val_vis = vis * self.my_weights[2]
 
-        # 4，调用公式计算pv发电量
+        # 4 - 调用公式计算pv发电量
         shade_percent = bsc.ShadeCalculate.AllShadePercent(pvsd.sd_length, pvsd.sd_width, sd_interval, self.ver_angle,
                                                            self.hor_angle, sd_angle)
-        shade_rad = pc.pvgCalculator.calculateIrradiance(pvsd.window_azimuth, sd_angle, 1, self.hoy)
-        pvg_value = pc.pvgCalculator.calculateHoyPvGeneration(shade_rad, pvsd.panel_area,
-                                                              pvsd.pv_efficiency) * (1 - shade_percent)
+        shade_rad = pc.pvgCalculator.calculateRadiant(sd_angle, self.hoy)
+        pvg_value = pc.pvgCalculator.calculateHoyPVGeneration(self.hoy, shade_rad, pvsd.panel_area,
+                                                              pvsd.P_stc) * (1 - shade_percent)
         normalized_pvg = pvg_value / self.max_pvg
         val_pvg = normalized_pvg * self.my_weights[3]
 
@@ -394,13 +400,14 @@ class shade_pygmo:
 
         try:
             # 尝试获 取 max_pv_generation 值
-            max_pv_value = epw_dataset.loc[hoy, 'max_pv_generation']
+            max_pv_value = epw_dataset.loc[hoy, 'Max_Radiant(W/m2)']
             my_max_pvg = max_pv_value if max_pv_value != 0 else 1  # 检查值是否为零
         except KeyError:
             print(f"Value for HOY: {hoy} not found in the dataset.")
 
         # 声明优化问题实例
-        problem_instance = MyProblem(hoy, my_azimuth, my_altitude, my_ver_angle, my_hor_angle, my_weights, my_max_pvg, my_radiation)
+        problem_instance = MyProblem(hoy, my_azimuth, my_altitude, my_ver_angle, my_hor_angle, my_weights, my_max_pvg,
+                                     my_radiation)
         prob = pg.problem(problem_instance)
 
         # 粒子群优化算法
@@ -555,7 +562,7 @@ class shade_pygmo:
         my_df = pd.DataFrame(flat_list)
         # 更新代数/个体列表
         UpdateGenAndInd(my_df, pygmo_gen, pygmo_pop, main_hoy)
-        dataSaver.save_dataframe(my_df, 'output', 'csv')
+        dataSaver.save_dataframe(my_df, schedule_name, 'csv')
 
 
 def main():
@@ -594,7 +601,6 @@ def main():
     end_time = time.time()
     print(f"All HOY optimizations completed in {end_time - start_time:.2f} seconds.")
     # ===== 计时器 =====
-
     print(shade_schedule)
     shade_schedule.to_csv(f'{schedule_name}.csv')
     print('done!')

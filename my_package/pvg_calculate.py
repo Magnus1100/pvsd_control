@@ -2,7 +2,7 @@ import math
 import ast
 import pandas as pd
 import numpy as np
-from datetime import datetime
+from datetime_gen import datetime
 
 #  全局变量
 aim_location = 'bj'

@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from fmpy import *
-from datetime import timedelta
+from datetime_gen import timedelta
 
 # 全局变量
 my_fmu_path = 'OverhangTest241104.fmu'  # 替换为你的FMU文件路径

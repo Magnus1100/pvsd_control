@@ -1,15 +1,13 @@
 import os
 import time
-import pickle
 import joblib
-import logging
 import math as mt
 import numpy as np
 import pandas as pd
 import pygmo as pg
 import matplotlib.pyplot as plt
 from tqdm import tqdm
-from datetime import datetime
+from datetime_gen import datetime
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import blind_shade_calculate as bsc
 import pvg_calculate as pc
@@ -29,7 +27,7 @@ import pvg_calculate as pc
 
 # >>> 声明实例 <<<
 aim_location = 'bj'  # 目标地 bj|sz|km|hb
-aim_hoy = 'hoy_8'  # 目标时间 hoy1-12|annual_hoy
+aim_hoy = 'hoy_9'  # 目标时间 hoy1-12|annual_hoy
 current_datetime = datetime.now().strftime('%Y%m%d_%H%M')  # 获取当前日期和时间，精确到分钟
 used_model = f'model_bj_241212'  # 使用的模型，在model_optimizer中
 log_output_path = f'./shading_schedule/bj-1100-250114/log'  # 日志输出路径

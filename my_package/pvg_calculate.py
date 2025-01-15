@@ -2,24 +2,31 @@ import math
 import ast
 import pandas as pd
 import numpy as np
+from datetime import datetime
 
 #  全局变量
 aim_location = 'bj'
 single_panel_area, total_panel_area = 0.306, 4.896
-pvg_epw_dataset = pd.read_csv(f'./source/data/data_shadeCalculate/{aim_location}/epwData_{aim_location}.csv')
+pvg_epw_dataset = pd.read_csv(f'./source/data/data_shadeCalculate/{aim_location}/epwData_{aim_location}_withPVG.csv')
 pvg_f_directory = pd.read_csv(f'./source/data/data_shadeCalculate/{aim_location}/f_Directory_{aim_location}.csv')
 
 pvg_epw_dataset.set_index('Hoy', inplace=True)
 pvg_f_directory.set_index('Hoy', inplace=True)
 
-# 计算的hoy列表
-pvg_hoy = pd.read_csv(f'./source/data/hoys/hoy_{aim_location}/annual_hoy.txt', header=None)
+pvg_hoy = pd.read_csv(f'./source/data/hoys/hoy_{aim_location}/annual_hoy.txt', header=None)  # 计算的hoy列表
 
 pvg_log = pd.DataFrame(columns=[
     'hoy', 'sd_angle', 'beta', 'azimuth', 'zenith',
     'theta', 'epw_direct(W/m2)', 'surface_direct(W/m2)', 'epw_diffuse(W/m2)',
     'surface_diffuse(W/m2)', 'surface_reflect(W/m2)', 'surface_total_radiant']
 )
+
+# 输出文件夹，保存更新后的数据到同一文件
+updated_epw_file_path = f'./source/data/data_shadeCalculate/{aim_location}/epwData_{aim_location}_withPVG.csv'
+
+# 获取当前日期和时间，只到分钟
+current_datetime = datetime.now().strftime('%Y%m%d_%H%M')
+log_name = current_datetime + f'_{aim_location}_log.txt'
 
 
 def angle_between_vectors(v1, v2):  # v1: 太阳向量（计算中取反向向量）| v2: 表面法向量
@@ -314,14 +321,12 @@ def main():
         right_on='Hoy'
     )
 
-    # 保存更新后的数据到同一文件
-    updated_epw_file_path = f'./source/data/data_shadeCalculate/{aim_location}/epwData_{aim_location}_withPVG.csv'
     updated_epw_data.to_csv(updated_epw_file_path, index=False)
     print(f"Updated EPW data saved to {updated_epw_file_path}")
 
     # 保存详细日志
     print("Saving calculation log...")
-    pvg_log.to_csv('pvg_detailed_log-250103-Perez.csv', index=False)
+    pvg_log.to_csv(log_name, index=False)
     print(f"Log saved with {len(pvg_log)} entries")
 
 

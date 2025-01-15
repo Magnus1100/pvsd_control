@@ -4,72 +4,91 @@ import pandas as pd
 from tqdm import tqdm
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
+import logging
 
-"""
-功能：训练随机森林模型
-使用步骤：
-1.更改目标地点-【sz=北京；hb=哈尔滨；sz=深圳；km=昆明】
-2.更改训练的特征值与预测值
-3.更改超参数（如必要，一般不用改）
-4.运行程序等模型输出（训练时间约5分钟） -> 去“mlModel_evaluate”文件夹验证模型
-"""
-# 👇设置全局变量👇
-aim_location = 'km'
-aim_target = 'sUDI'
-train_date = '241212'
+# 配置日志
+logging.basicConfig(
+    filename='model_training.log',
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
 
-# 输出路径
-model_output_path = f'../source/model_optimizer/model_{aim_location}_{train_date}/{aim_target}_RF_{train_date}{aim_location}.pkl'
-# 建立数据集
-df_normalized_path = f'../source/data/data_mlTrain/{aim_location}/{aim_location}_normalizedDataset_{train_date}.csv'
-df_normalized = pd.read_csv(df_normalized_path)
 
-print(df_normalized.shape)
+def setup_logging():
+    """打印日志到控制台"""
+    console = logging.StreamHandler()
+    console.setLevel(logging.INFO)
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    console.setFormatter(formatter)
+    logging.getLogger().addHandler(console)
 
-train_data = df_normalized
 
-x = train_data[['Azimuth', 'Altitude', 'Shade Angle', 'Shade Interval', 'Direct Radiation']]
-y = train_data[[f'{aim_target}']]
+setup_logging()
 
-print(x.shape, y.shape)
 
-# 将 y 转换为一维数组
-y_array = y.values.ravel()
+def train_random_forest_model(aim_target, model_output_path, df_normalized_path):
+    """训练随机森林模型并保存"""
+    try:
+        logging.info("Reading normalized dataset...")
+        df_normalized = pd.read_csv(df_normalized_path)
+        logging.info(f"Dataset shape: {df_normalized.shape}")
 
-# 划分数据集
-x_train, x_test, y_train, y_test = train_test_split(x, y_array, test_size=0.2, random_state=42)
+        x = df_normalized[['Azimuth', 'Altitude', 'Shade Angle', 'Shade Interval', 'Direct Radiation']]
+        y = df_normalized[[f'{aim_target}']]
 
-# 初始化随机森林回归模型
-random_forest = RandomForestRegressor(n_estimators=15,
-                                      min_samples_leaf=2,
-                                      min_samples_split=5,
-                                      max_depth=None,
-                                      random_state=42)
+        logging.info(f"Features shape: {x.shape}, Target shape: {y.shape}")
 
-# 进度条
-# 迭代次数
-n_estimators = random_forest.n_estimators
-# 训练过程中的每棵树的得分列表
-train_scores = []
-# 使用 tqdm 创建进度条，并在循环中更新进度条
-for i in tqdm(range(n_estimators), desc="Training Progress"):
-    random_forest.fit(x_train, y_train)
-    train_score = random_forest.score(x_train, y_train)
-    train_scores.append(train_score)
-    print(f"Iteration {i + 1}, Training Score: {train_score}")
+        # 将 y 转换为一维数组
+        y_array = y.values.ravel()
 
-# 输出训练过程中每棵树的得分
-print("Training Scores for each tree:", train_scores)
+        # 划分数据集
+        x_train, x_test, y_train, y_test = train_test_split(x, y_array, test_size=0.2, random_state=42)
 
-# 拟合模型
-random_forest.fit(x_train, y_train)
+        # 初始化随机森林回归模型
+        random_forest = RandomForestRegressor(n_estimators=15,
+                                              min_samples_leaf=2,
+                                              min_samples_split=5,
+                                              max_depth=None,
+                                              random_state=42)
 
-# 获取路径中不包括文件名的部分
-directory = os.path.dirname(model_output_path)
+        # 进度条
+        n_estimators = random_forest.n_estimators
+        train_scores = []
 
-# 如果路径不存在，则创建路径
-if not os.path.exists(directory):
-    os.makedirs(directory)
-# 保存模型
-joblib.dump(random_forest, model_output_path)
-print("Model saved in", model_output_path)
+        logging.info("Starting training with progress bar...")
+        for i in tqdm(range(n_estimators), desc="Training Progress"):
+            random_forest.fit(x_train, y_train)
+            train_score = random_forest.score(x_train, y_train)
+            train_scores.append(train_score)
+            logging.info(f"Iteration {i + 1}, Training Score: {train_score}")
+
+        logging.info("Training completed.")
+        logging.info(f"Training Scores for each tree: {train_scores}")
+
+        # 拟合模型
+        random_forest.fit(x_train, y_train)
+
+        # 创建输出目录
+        directory = os.path.dirname(model_output_path)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        # 保存模型
+        joblib.dump(random_forest, model_output_path)
+        logging.info(f"Model saved at {model_output_path}")
+
+    except Exception as e:
+        logging.error(f"Error in training model: {e}")
+        raise
+
+
+if __name__ == "__main__":
+    # 配置参数
+    aim_location = 'sz'
+    my_aim_target = 'sUDI'
+    train_date = '250107'
+
+    my_model_output_path = f'../source/model_optimizer/model_{aim_location}-{train_date}/{my_aim_target}_RF.pkl'
+    my_df_normalized_path = f'../source/data/data_mlTrain/{aim_location}/{aim_location}_normalizedDataset.csv'
+
+    train_random_forest_model(my_aim_target, my_model_output_path, my_df_normalized_path)

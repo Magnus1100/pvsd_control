@@ -64,6 +64,9 @@ class ShadeCalculate:
     @staticmethod
     def HorizontalShadePercent(sd_length, sd_interval, hor_angle):
 
+        if hor_angle > mt.pi:
+            hor_angle = 180 - hor_angle
+
         hor_unshade_area = sd_interval / mt.tan(hor_angle)
         hor_sd_percent = 1 - (hor_unshade_area / sd_length)
 

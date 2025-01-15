@@ -8,9 +8,8 @@ import numpy as np
 import pandas as pd
 import pygmo as pg
 import matplotlib.pyplot as plt
-
 from tqdm import tqdm
-from datetime import datetime, timedelta
+from datetime import datetime
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import blind_shade_calculate as bsc
 import pvg_calculate as pc
@@ -29,17 +28,22 @@ import pvg_calculate as pc
 """
 
 # >>> 声明实例 <<<
-aim_location = 'bj'
-aim_hoy = 'hoy_s4'
-pvsd_instance = bsc.pvShadeBlind(0.15, 2.1, 20, 0.7, 0
+aim_location = 'bj'  # 目标地 bj|sz|km|hb
+aim_hoy = 'hoy_8'  # 目标时间 hoy1-12|annual_hoy
+current_datetime = datetime.now().strftime('%Y%m%d_%H%M')  # 获取当前日期和时间，精确到分钟
+used_model = f'model_bj_241212'  # 使用的模型，在model_optimizer中
+log_output_path = f'./shading_schedule/bj-1100-250114/log'  # 日志输出路径
+
+pvsd_instance = bsc.pvShadeBlind(0.15, 2.1, 4.896, 100, 0
                                  , 16, 2.4)
 # >>> 读取数据 <<<
 vis_data = pd.read_csv(r'./source/data/data_shadeCalculate/vis_data_outside_0920.csv')
 
 # 导入数据集
 epw_data_file_path = fr'./source/data/data_shadeCalculate/{aim_location}/epwData_{aim_location}_withPVG.csv'
-print(f'!!!Have read epw data:{epw_data_file_path}')
 epw_dataset = pd.read_csv(epw_data_file_path, index_col=0)
+print(f'!!!Have read epw data:{epw_data_file_path}')
+
 Azimuth = epw_dataset['Azimuth']
 Altitude = epw_dataset['Altitude']
 Radiation = epw_dataset['Direct_Rad']
@@ -48,8 +52,9 @@ sDGP = np.loadtxt(fr'./source/data/data_mlTrain/{aim_location}/{aim_location}_sD
 sUDI = np.loadtxt(fr'./source/data/data_mlTrain/{aim_location}/{aim_location}_sUDI.txt')
 
 # ml模型
-model_sdgp = joblib.load(f'source/model_optimizer/model_{aim_location}_241212/sDGP_NW_RF.pkl')
-model_sudi = joblib.load(f'source/model_optimizer/model_{aim_location}_241212/sUDI_RF.pkl')
+model_sdgp = joblib.load(f'./source/model_optimizer/{used_model}/sDGP_RF.pkl')
+model_sudi = joblib.load(f'./source/model_optimizer/{used_model}/sUDI_RF.pkl')
+print(f'!!!Have read ml model:{used_model}')
 
 # >>> 全局变量 <<<
 all_data = []  # 数据记录
@@ -57,16 +62,18 @@ optimizer_data = []  # 优化数据记录
 shade_schedule = pd.DataFrame(columns=['Hoy', 'SD_Angle', 'SD_Position'])
 
 # >>> ！！！重要变量！！！ <<<
-main_hoy = np.loadtxt(f'source/data/hoys/hoy_{aim_location}/{aim_hoy}.txt')
-weight_dgp, weight_udi, weight_vis, weight_pvg = 1, 1, 1, 1  # 各项权重[0,1]
+main_hoy_path = f'source/data/hoys/hoy_{aim_location}/{aim_hoy}.txt'
+main_hoy = np.loadtxt(main_hoy_path)
+print(f'!!!Have read hoy data:{main_hoy_path}')
+
+weight_dgp, weight_udi, weight_vis, weight_pvg = 1, 1, 0, 0  # 各项权重[0,1]
 pygmo_gen, pygmo_pop = 10, 10  # 迭代次数，每代人口
 
 # schedule命名
-base_schedule_name = f'beijing_1111_schedule_{aim_hoy}'
-# 获取当前日期和时间，只到分钟
-current_datetime = datetime.now().strftime('%Y%m%d_%H%M')
+base_schedule_name = f'{aim_location}_1100_schedule_{aim_hoy}'
 # 拼接日期和时间到名称后
 schedule_name = f"{base_schedule_name}_{current_datetime}"
+schedule_output_path = f'./shading_schedule/sz-250106/{schedule_name}.csv'
 
 # 取值范围
 min_angle, max_angle = mt.radians(0), mt.radians(90)  # 角度范围
@@ -95,58 +102,13 @@ class dataSaver:  # 获取唯一的文件名字。应用在最后的csv生成中
             filename = dataSaver.get_unique_filename(base_name, extension, counter)
             if not os.path.exists(filename):
                 try:
-                    df.to_csv(filename, index=False)
-                    print(f'文件已保存为 {filename}')
+                    df.to_csv(f'{log_output_path}/{aim_location}_{aim_hoy}_{current_datetime}.csv', index=False)
+                    print(f'文件已保存为 {log_output_path}')
                     break
                 except FileExistsError:
                     counter += 1  # 如果文件已存在，则增加计数器
             else:
                 counter += 1  # 如果文件已存在，则增加计数器
-
-
-# 生成hoy列表
-class hoyEditor:
-    """
-    Fun1：生成hoy列表
-    """
-
-    @staticmethod
-    def generateHoyList(start_date_str, end_date_str, exclude_weekends=False, start_hour=8, end_hour=17):
-        """
-        根据输入的日期范围和条件生成 HOY 列表。
-
-        Args:
-            start_date_str (str): 开始日期，格式为 'MM-DD'。
-            end_date_str (str): 结束日期，格式为 'MM-DD'。
-            exclude_weekends (bool): 是否排除周末，默认为 False。
-            start_hour (int): 每天的开始小时，默认为 0。
-            end_hour (int): 每天的结束小时，默认为 23。
-        Returns:
-            list: 对应的 HOY 列表。
-        """
-        # 获取当前年份
-        current_year = datetime.now().year
-
-        # 使用当前年份解析开始日期和结束日期
-        start_date = datetime.strptime(f"{current_year}-{start_date_str}", '%Y-%m-%d')
-        end_date = datetime.strptime(f"{current_year}-{end_date_str}", '%Y-%m-%d')
-
-        hoy_list = []
-        current_date = start_date
-
-        while current_date <= end_date:
-            if exclude_weekends and current_date.weekday() >= 5:  # 排除周末
-                current_date += timedelta(days=1)
-                continue
-
-            for hour in range(start_hour, end_hour + 1):
-                days_since_start_of_year = (current_date - datetime(current_date.year, 1, 1)).days
-                hoy = days_since_start_of_year * 24 + hour
-                hoy_list.append(hoy)
-
-            current_date += timedelta(days=1)
-
-        return hoy_list
 
 
 def visualizeFitness(results, hoy_list):
@@ -184,7 +146,7 @@ def visualizeFitness(results, hoy_list):
     sorted_labels = [legend_labels[i] for i in sorted_indices]
 
     plt.xlabel('Generation')
-    plt.ylabel('Average Fitness')
+    plt.ylabel('A+verage Fitness')
     plt.title('Average Fitness Values Over Generations for Different HOYs')
     plt.legend(sorted_labels)  # 使用排序后的图例
 
@@ -602,7 +564,7 @@ def main():
     print(f"All HOY optimizations completed in {end_time - start_time:.2f} seconds.")
     # ===== 计时器 =====
     print(shade_schedule)
-    shade_schedule.to_csv(f'{schedule_name}.csv')
+    shade_schedule.to_csv(schedule_output_path)
     print('done!')
     shade_pygmo.outputCSV()
 

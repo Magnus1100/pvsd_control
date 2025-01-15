@@ -1,0 +1,66 @@
+2025-01-07 15:57:31,195 - INFO - Reading normalized dataset...
+2025-01-07 15:57:31,741 - INFO - Dataset shape: (1126335, 7)
+2025-01-07 15:57:31,753 - INFO - Features shape: (1126335, 5), Target shape: (1126335, 1)
+2025-01-07 15:57:31,818 - INFO - Starting training with progress bar...
+2025-01-07 15:57:49,541 - INFO - Iteration 1, Training Score: 1.0
+2025-01-07 15:58:07,042 - INFO - Iteration 2, Training Score: 1.0
+2025-01-07 15:58:24,632 - INFO - Iteration 3, Training Score: 1.0
+2025-01-07 15:58:42,155 - INFO - Iteration 4, Training Score: 1.0
+2025-01-07 15:58:59,707 - INFO - Iteration 5, Training Score: 1.0
+2025-01-07 15:59:17,225 - INFO - Iteration 6, Training Score: 1.0
+2025-01-07 15:59:34,955 - INFO - Iteration 7, Training Score: 1.0
+2025-01-07 15:59:52,594 - INFO - Iteration 8, Training Score: 1.0
+2025-01-07 16:00:10,663 - INFO - Iteration 9, Training Score: 1.0
+2025-01-07 16:00:28,612 - INFO - Iteration 10, Training Score: 1.0
+2025-01-07 16:00:47,525 - INFO - Iteration 11, Training Score: 1.0
+2025-01-07 16:01:07,126 - INFO - Iteration 12, Training Score: 1.0
+2025-01-07 16:01:26,021 - INFO - Iteration 13, Training Score: 1.0
+2025-01-07 16:01:45,602 - INFO - Iteration 14, Training Score: 1.0
+2025-01-07 16:02:04,914 - INFO - Iteration 15, Training Score: 1.0
+2025-01-07 16:02:04,914 - INFO - Training completed.
+2025-01-07 16:02:04,914 - INFO - Training Scores for each tree: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+2025-01-07 16:02:22,488 - INFO - Model saved at ../source/model_optimizer/model_sz250107/sUDI_RF.pkl
+2025-01-07 16:03:00,991 - INFO - Reading normalized dataset...
+2025-01-07 16:03:01,528 - INFO - Dataset shape: (1126335, 7)
+2025-01-07 16:03:01,538 - INFO - Features shape: (1126335, 5), Target shape: (1126335, 1)
+2025-01-07 16:03:01,613 - INFO - Starting training with progress bar...
+2025-01-07 16:03:27,433 - INFO - Iteration 1, Training Score: 0.9918882214360084
+2025-01-07 16:03:51,688 - INFO - Iteration 2, Training Score: 0.9918882214360084
+2025-01-07 16:04:15,381 - INFO - Iteration 3, Training Score: 0.9918882214360084
+2025-01-07 16:04:39,127 - INFO - Iteration 4, Training Score: 0.9918882214360084
+2025-01-07 16:05:04,736 - INFO - Iteration 5, Training Score: 0.9918882214360084
+2025-01-07 16:05:32,518 - INFO - Iteration 6, Training Score: 0.9918882214360084
+2025-01-07 16:05:58,423 - INFO - Iteration 7, Training Score: 0.9918882214360084
+2025-01-07 16:06:25,298 - INFO - Iteration 8, Training Score: 0.9918882214360084
+2025-01-07 16:06:50,323 - INFO - Iteration 9, Training Score: 0.9918882214360084
+2025-01-07 16:07:14,874 - INFO - Iteration 10, Training Score: 0.9918882214360084
+2025-01-07 16:07:39,324 - INFO - Iteration 11, Training Score: 0.9918882214360084
+2025-01-07 16:08:03,798 - INFO - Iteration 12, Training Score: 0.9918882214360084
+2025-01-07 16:08:29,203 - INFO - Iteration 13, Training Score: 0.9918882214360084
+2025-01-07 16:08:53,847 - INFO - Iteration 14, Training Score: 0.9918882214360084
+2025-01-07 16:09:19,464 - INFO - Iteration 15, Training Score: 0.9918882214360084
+2025-01-07 16:09:19,464 - INFO - Training completed.
+2025-01-07 16:09:19,464 - INFO - Training Scores for each tree: [0.9918882214360084, 0.9918882214360084, 0.9918882214360084, 0.9918882214360084, 0.9918882214360084, 0.9918882214360084, 0.9918882214360084, 0.9918882214360084, 0.9918882214360084, 0.9918882214360084, 0.9918882214360084, 0.9918882214360084, 0.9918882214360084, 0.9918882214360084, 0.9918882214360084]
+2025-01-07 16:09:42,287 - INFO - Model saved at ../source/model_optimizer/model_sz250107/sDGP_RF.pkl
+2025-01-11 13:37:34,550 - INFO - Reading normalized dataset...
+2025-01-11 13:37:35,149 - INFO - Dataset shape: (1126335, 7)
+2025-01-11 13:37:35,165 - INFO - Features shape: (1126335, 5), Target shape: (1126335, 1)
+2025-01-11 13:37:35,221 - INFO - Starting training with progress bar...
+2025-01-11 13:37:51,846 - INFO - Iteration 1, Training Score: 1.0
+2025-01-11 13:38:08,159 - INFO - Iteration 2, Training Score: 1.0
+2025-01-11 13:38:24,619 - INFO - Iteration 3, Training Score: 1.0
+2025-01-11 13:38:40,909 - INFO - Iteration 4, Training Score: 1.0
+2025-01-11 13:38:57,225 - INFO - Iteration 5, Training Score: 1.0
+2025-01-11 13:39:13,557 - INFO - Iteration 6, Training Score: 1.0
+2025-01-11 13:39:29,839 - INFO - Iteration 7, Training Score: 1.0
+2025-01-11 13:39:46,128 - INFO - Iteration 8, Training Score: 1.0
+2025-01-11 13:40:02,494 - INFO - Iteration 9, Training Score: 1.0
+2025-01-11 13:40:18,900 - INFO - Iteration 10, Training Score: 1.0
+2025-01-11 13:40:35,266 - INFO - Iteration 11, Training Score: 1.0
+2025-01-11 13:40:51,562 - INFO - Iteration 12, Training Score: 1.0
+2025-01-11 13:41:07,758 - INFO - Iteration 13, Training Score: 1.0
+2025-01-11 13:41:23,871 - INFO - Iteration 14, Training Score: 1.0
+2025-01-11 13:41:40,196 - INFO - Iteration 15, Training Score: 1.0
+2025-01-11 13:41:40,196 - INFO - Training completed.
+2025-01-11 13:41:40,196 - INFO - Training Scores for each tree: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+2025-01-11 13:41:55,423 - INFO - Model saved at ../source/model_optimizer/model_sz-250107/sUDI_RF.pkl

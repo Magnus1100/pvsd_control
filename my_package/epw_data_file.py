@@ -2,13 +2,23 @@ import math
 import numpy as np
 import pandas as pd
 
-aim_location = 'bj'
+'''
+！！！需要修改的内容
+地区：【深圳 = sz】|【北京 = bj】|【昆明 = km】|【哈尔滨 = hb】
+要改：
+1. aim_location
+2. 主程序里用的经纬和时区，在最⬇️
+'''
+
+aim_location = 'sz'
 location_bj = [39.93, 116.28, 8.0]
 location_sz = [22.55, 114.10, 8.0]
+location_hb = [45.75, 126.77, 8.0]
+location_km = [25.02, 102.68, 8.0]
 
-epw_data_path = f'../source/data/data_shadeCalculate/{aim_location}/epwData_{aim_location}.csv'
-hoys_path = f'../source/data/hoys/hoy_{aim_location}/annual_hoy.txt'
-output_path = f'../source/data/data_shadeCalculate/bj/f_Directory_{aim_location}.csv'
+epw_data_path = f'./source/data/data_shadeCalculate/{aim_location}/epwData_{aim_location}.csv'
+hoys_path = f'./source/data/hoys/hoy_{aim_location}/annual_hoy.txt'
+output_path = f'./source/data/data_shadeCalculate/{aim_location}/f_Directory_{aim_location}.csv'
 
 # 读取文件
 epw_dataset = pd.read_csv(epw_data_path)
@@ -148,5 +158,10 @@ def calculateSolarParameters(f_hoys, lat, lon, tz):
     return df_f1_f2
 
 
-f_directory = calculateSolarParameters(hoys, lat=location_bj[0], lon=location_bj[1], tz=location_bj[2])
-f_directory.to_csv(output_path)
+def main():
+    f_directory = calculateSolarParameters(hoys, lat=location_km[0], lon=location_km[1], tz=location_km[2])
+    f_directory.to_csv(output_path)
+
+
+if __name__ == '__main__':
+    main()

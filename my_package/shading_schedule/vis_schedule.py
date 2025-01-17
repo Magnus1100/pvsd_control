@@ -1,8 +1,8 @@
 import pandas as pd
 
 # 读取数据
-shading_schedule = pd.read_csv('bj-1111-250106/beijing_1111_schedule_20250105.csv')
-new_shading_schedule_path = 'bj/beijing_1111_schedule_20250108.csv'
+shading_schedule = pd.read_csv('bj-1100-250114/bj_1100_schedule-250117.csv')
+new_shading_schedule_path = 'bj-1100-250114/bj_1100_schedule-250117_withVIS.csv'
 shading_angle = shading_schedule['SD_Angle']
 shading_position = shading_schedule['SD_Position']
 
@@ -21,3 +21,5 @@ shading_schedule['vis'] = vis_schedule
 
 # 保存结果到新文件（可选）
 shading_schedule.to_csv(new_shading_schedule_path, index=False)
+
+print(f"VIS计算完成，文件已保存为 {new_shading_schedule_path}")

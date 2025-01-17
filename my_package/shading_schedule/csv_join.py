@@ -2,8 +2,8 @@ import os
 import pandas as pd
 
 # 设置文件夹路径
-folder_path = "sz-250106"
-output_file = "sz-250106/sz_1111_schedule-250113.csv"
+folder_path = "bj-1100-250114"
+output_file = "bj-1100-250114/bj_1100_schedule-250117.csv"
 
 # 获取文件夹中所有的CSV文件
 csv_files = [f for f in os.listdir(folder_path) if f.endswith('.csv')]

@@ -5,10 +5,12 @@ import math as mt
 import numpy as np
 import pandas as pd
 import pygmo as pg
-import matplotlib.pyplot as plt
 from tqdm import tqdm
+import matplotlib.pyplot as plt
 from datetime_gen import datetime
 from concurrent.futures import ProcessPoolExecutor, as_completed
+
+# 自己的一些算法，主要计算板之间的遮挡和光伏发电
 import blind_shade_calculate as bsc
 import pvg_calculate as pc
 
@@ -26,21 +28,25 @@ import pvg_calculate as pc
 """
 
 # >>> 声明实例 <<<
-aim_location = 'bj'  # 目标地 bj|sz|km|hb
-aim_hoy = 'hoy_9'  # 目标时间 hoy1-12|annual_hoy
+aim_location = 'sz'  # 目标地 bj|sz|km|hb
+aim_hoy = 'annual_hoy'  # 目标时间 hoy1-12|annual_hoy
 current_datetime = datetime.now().strftime('%Y%m%d_%H%M')  # 获取当前日期和时间，精确到分钟
-used_model = f'model_bj_241212'  # 使用的模型，在model_optimizer中
-log_output_path = f'./shading_schedule/bj-1100-250114/log'  # 日志输出路径
+used_model = f'model_sz-250107'  # 使用的模型，在model_optimizer中
 
+# >>> 输出路径 <<<
+base_schedule_name = f'{aim_location}_1100_schedule_{aim_hoy}'
+schedule_name = f"{base_schedule_name}_{current_datetime}"
+schedule_output_path = f'./shading_schedule/sz-1100-250117/{schedule_name}.csv'
+log_output_path = f'./shading_schedule/sz-1100-250117/log'  # 日志输出路径
+
+# >>> pvsd实例 <<<
 pvsd_instance = bsc.pvShadeBlind(0.15, 2.1, 4.896, 100, 0
                                  , 16, 2.4)
 # >>> 读取数据 <<<
 vis_data = pd.read_csv(r'./source/data/data_shadeCalculate/vis_data_outside_0920.csv')
-
-# 导入数据集
 epw_data_file_path = fr'./source/data/data_shadeCalculate/{aim_location}/epwData_{aim_location}_withPVG.csv'
 epw_dataset = pd.read_csv(epw_data_file_path, index_col=0)
-print(f'!!!Have read epw data:{epw_data_file_path}')
+print(f'so - Have read epw data:{epw_data_file_path}')
 
 Azimuth = epw_dataset['Azimuth']
 Altitude = epw_dataset['Altitude']
@@ -49,10 +55,10 @@ Radiation = epw_dataset['Direct_Rad']
 sDGP = np.loadtxt(fr'./source/data/data_mlTrain/{aim_location}/{aim_location}_sDGP_nearWindow.txt')
 sUDI = np.loadtxt(fr'./source/data/data_mlTrain/{aim_location}/{aim_location}_sUDI.txt')
 
-# ml模型
+# >>> 读取ml模型 <<<
 model_sdgp = joblib.load(f'./source/model_optimizer/{used_model}/sDGP_RF.pkl')
 model_sudi = joblib.load(f'./source/model_optimizer/{used_model}/sUDI_RF.pkl')
-print(f'!!!Have read ml model:{used_model}')
+print(f'so - Have read ml model:{used_model}')
 
 # >>> 全局变量 <<<
 all_data = []  # 数据记录
@@ -62,16 +68,10 @@ shade_schedule = pd.DataFrame(columns=['Hoy', 'SD_Angle', 'SD_Position'])
 # >>> ！！！重要变量！！！ <<<
 main_hoy_path = f'source/data/hoys/hoy_{aim_location}/{aim_hoy}.txt'
 main_hoy = np.loadtxt(main_hoy_path)
-print(f'!!!Have read hoy data:{main_hoy_path}')
+print(f'so - Have read hoy data:{main_hoy_path}')
 
 weight_dgp, weight_udi, weight_vis, weight_pvg = 1, 1, 0, 0  # 各项权重[0,1]
 pygmo_gen, pygmo_pop = 10, 10  # 迭代次数，每代人口
-
-# schedule命名
-base_schedule_name = f'{aim_location}_1100_schedule_{aim_hoy}'
-# 拼接日期和时间到名称后
-schedule_name = f"{base_schedule_name}_{current_datetime}"
-schedule_output_path = f'./shading_schedule/sz-250106/{schedule_name}.csv'
 
 # 取值范围
 min_angle, max_angle = mt.radians(0), mt.radians(90)  # 角度范围

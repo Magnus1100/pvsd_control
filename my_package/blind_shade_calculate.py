@@ -1,10 +1,12 @@
 import math as mt
 import pandas as pd
 
-aim_location = 'bj'
+aim_location = 'sz'
 
 epw_data_path = f'source/data/data_shadeCalculate/{aim_location}/epwData_{aim_location}.csv'
 epw_data = pd.read_csv(epw_data_path)
+
+print(f'bsc - have read {epw_data_path}')
 
 vis_data_path = r'source/data/data_shadeCalculate/vis_data_outside_0920.csv'
 

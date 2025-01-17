@@ -5,7 +5,7 @@ import blind_shade_calculate as bsc
 epw = pd.read_csv('source/data/data_shadeCalculate/bj/epwData_bj_withPVG.csv')
 panel_area = 4.896
 P_stc = 100
-shading_schedule = pd.read_csv('shading_schedule/bj-1111-250106/beijing_1111_schedule_20250105.csv')
+shading_schedule = pd.read_csv('shading_schedule/bj-1100-250114/bj_1100_schedule-250117_withVIS.csv')
 
 shading_angle = shading_schedule['SD_Angle']
 shading_position = shading_schedule['SD_Position']
@@ -25,4 +25,7 @@ for i in range(0, len(hoy)):
     pvg.append(pvg_true)
 
 shading_schedule['PVG'] = pvg
-shading_schedule.to_csv('shading_schedule_withPVG.csv', index=False)
+output_path = 'shading_schedule/bj-1100-250114/bj_1100_schedule-250117_withPVG.csv'
+shading_schedule.to_csv(output_path, index=False)
+
+print(f"整合完成，文件已保存为 {output_path}")

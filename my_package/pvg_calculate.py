@@ -5,10 +5,17 @@ import numpy as np
 from datetime_gen import datetime
 
 #  全局变量
-aim_location = 'bj'
+aim_location = 'sz'
 single_panel_area, total_panel_area = 0.306, 4.896
-pvg_epw_dataset = pd.read_csv(f'./source/data/data_shadeCalculate/{aim_location}/epwData_{aim_location}_withPVG.csv')
-pvg_f_directory = pd.read_csv(f'./source/data/data_shadeCalculate/{aim_location}/f_Directory_{aim_location}.csv')
+
+pvg_epw_path = f'./source/data/data_shadeCalculate/{aim_location}/epwData_{aim_location}_withPVG.csv'
+pvg_f_directory_path = f'./source/data/data_shadeCalculate/{aim_location}/f_Directory_{aim_location}.csv'
+
+pvg_epw_dataset = pd.read_csv(pvg_epw_path)
+pvg_f_directory = pd.read_csv(pvg_f_directory_path)
+
+print(f'pc - have read {pvg_epw_path}')
+print(f'pc - have read {pvg_f_directory_path}')
 
 pvg_epw_dataset.set_index('Hoy', inplace=True)
 pvg_f_directory.set_index('Hoy', inplace=True)
